@@ -15,11 +15,12 @@ public class EmailKonto {
 	private String benutzerNamePop;
 	private String passwortPop;
 	private String smtpServer;
+	private int smtpPort;
 	private String benutzerNameSmtp;
 	private String passwortSmtp;
 	
   public EmailKonto(String konto,String name,String email,String pop3Server,int pop3Port,
-		  String benutzerNamePop,String passwortPop,String smtpServer,
+		  String benutzerNamePop,String passwortPop,String smtpServer,int smtpPort,
 		  String benutzerNameSmtp,
 		  String passwortSmtp) {
     this.konto = konto;
@@ -30,6 +31,7 @@ public class EmailKonto {
     this.benutzerNamePop = benutzerNamePop;
     this.passwortPop = passwortPop;
     this.smtpServer = smtpServer;
+    this.smtpPort = smtpPort;
     this.benutzerNameSmtp = benutzerNameSmtp;
     this.passwortSmtp = passwortSmtp;
 	  
@@ -138,6 +140,10 @@ public class EmailKonto {
 	 */
 	public String getSmtpServer() {
 		return smtpServer;
+	}
+	
+	public int getSmtpPort() {
+		return smtpPort;
 	}
 
 	/**

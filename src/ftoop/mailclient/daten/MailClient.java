@@ -13,19 +13,27 @@ public class MailClient {
 	 int pop3Port = 995;
 	 String benutzerNamePop = "hervesatori@gmail.com";
 	 String passwortPop = "";
-	 String smtpServer = "";
-	 String benutzerNameSmtp = "";
+	 String smtpServer = "smtp.mail.yahoo.fr";
+	 int smtpPort = 465;
+	 String benutzerNameSmtp = "satori_herve@yahoo.fr";
 	 String passwortSmtp = "";
 	 
-	 Speichern.xmlParser(MailControl.file);
+	 
 	 
 	 EmailKonto eKonto = new EmailKonto(konto,name,email,pop3Server,pop3Port,benutzerNamePop,passwortPop,smtpServer,
-		 benutzerNameSmtp,passwortSmtp);
+		 smtpPort,benutzerNameSmtp,passwortSmtp);
 	 MailControl mCtrl = new MailControl(eKonto);
 	 try {
+		mCtrl.sendMsg(new Mail("hervesatori@gmail.com","satori_herve@yahoo.fr","TESTTEST","this is a test"));
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
 		mCtrl.receiveMsg();
 	} catch (NoSuchProviderException e) {
-		// TODO Auto-generated catch block
+		
 		e.printStackTrace();
 	}
 	}
