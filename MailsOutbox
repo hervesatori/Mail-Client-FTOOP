@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mails>
+  <mail>
+    <datum>04/05/2016 17:08:17</datum>
+    <subject>TESTTEST</subject>
+    <from>satori_herve@yahoo.fr</from>
+    <message>this is a test</message>
+  </mail>
+</mails>
