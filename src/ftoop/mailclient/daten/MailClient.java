@@ -5,7 +5,8 @@ import javax.mail.NoSuchProviderException;
 public class MailClient {
 
 	public static void main(String[] args) {
-	 	
+	 System.out.println("Starte Applikation...");	
+	 
 	 String konto = "";
 	 String name = "";
 	 String email = "";
@@ -36,6 +37,8 @@ public class MailClient {
 		
 		e.printStackTrace();
 	}
+	
+	 System.out.println("Beende Applikation...");	
 	}
 	
 	
