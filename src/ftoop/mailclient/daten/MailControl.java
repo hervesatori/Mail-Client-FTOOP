@@ -194,6 +194,7 @@ public class MailControl {
 	  properties.put("mail.smtp.socketFactory.port", Integer.toString(currentKonto.getSmtpPort()));  
 	  properties.put("mail.smtp.socketFactory.class", SSL_FACTORY);  
 	  properties.put("mail.smtp.auth", "true");  
+	  properties.put("mail.smtp.starttls.enable", "true"); 
 	  properties.put("mail.smtp.port", Integer.toString(currentKonto.getSmtpPort()));  
 	   
 	  Session session = Session.getInstance(properties,new javax.mail.Authenticator() {  
@@ -212,8 +213,10 @@ public class MailControl {
 	   message.setText(mail.getMessage());  
 	     
 	   //Message wird gesendet
-	   
-	   Transport.send(message);  
+//	   transport.connect(currentKonto.getBenutzerNameSmtp(),currentKonto.getPasswortSmtp());
+	   System.out.println(currentKonto.getBenutzerNameSmtp() +" " +currentKonto.getPasswortSmtp());
+	   transport.connect();
+	   transport.sendMessage(message, message.getAllRecipients());  
 	  
 	   System.out.println("message sent successfully");
 	   Date d = new Date();
