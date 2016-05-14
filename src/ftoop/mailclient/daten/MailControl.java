@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.io.*;
 import java.text.SimpleDateFormat;
 
@@ -16,13 +17,16 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
+import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -205,6 +209,11 @@ public class MailControl {
 				  xmlFrom.setText(this.getFromAddresses(msg));
 				  xmlMail.addContent(xmlFrom); 
 				  
+				  //Attachment hinzufügen
+				  Element xmlAttachement = new Element("Attachement");
+				  xmlAttachement.setText(this.handleAttachement(msg));
+				  xmlMail.addContent(xmlAttachement); 
+				  
 				  //Nach Erstellung des XML Nodes hinzufügen zum Parent
 				  xmlFolder.addContent(xmlMail);
 			  }
@@ -264,10 +273,23 @@ public class MailControl {
 	              System.out.println("Mail have some attachment");
 
 	              DataHandler handler = bodyPart.getDataHandler();
-	              System.out.println("file name : " + handler.getName());                                 
+	              System.out.println("file name : " + handler.getName());    	              
 	            }
 	          else { 
-	                  content = (String) bodyPart.getContent();  // the changed code         
+	                  if (bodyPart.isMimeType("text/plain")){
+	                	  content = (String) bodyPart.getContent();
+	                  } else if (bodyPart.isMimeType("text/html")){
+	                      content = (String) bodyPart.getContent();
+
+	                  }
+
+	        	  
+	        	  
+	        	  
+	        	  
+	        	  
+	        	  
+//	                  content = (String) bodyPart.getContent();  // the changed code         
 	            }
 	        }
 	     }
@@ -276,13 +298,65 @@ public class MailControl {
 	     }
 	  return content;
   }
-  private void getAttachement(Message message) throws MessagingException{
+  private String getTextFromMessage(Message message) throws Exception {
+	    if (message.isMimeType("text/plain")){
+	        return message.getContent().toString();
+	    }else if (message.isMimeType("multipart/*")) {
+	        String result = "";
+	        MimeMultipart mimeMultipart = (MimeMultipart)message.getContent();
+	        int count = mimeMultipart.getCount();
+	        for (int i = 0; i < count; i ++){
+	            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+	            if (bodyPart.isMimeType("text/plain")){
+	                result = result + "\n" + bodyPart.getContent();
+	                break;  //without break same text appears twice in my tests
+	            } else if (bodyPart.isMimeType("text/html")){
+	                String html = (String) bodyPart.getContent();
+	                result = html;//result + "\n" + Jsoup.parse(html).text();
+
+	            }
+	        }
+	        return result;
+	    }
+	    return "";
+  }
+  
+  private String handleAttachement(Message message) throws MessagingException, IOException{
 	  // suppose 'message' is an object of type Message
+	  String nameGuid = "";
 	  String contentType = message.getContentType();
 	   
 	  if (contentType.contains("multipart")) {
 	      // this message may contain attachment
+		  Multipart multiPart = (Multipart) message.getContent();
+		  
+		  for (int i = 0; i < multiPart.getCount(); i++) {
+		      MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(i);
+		      if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+		          // this part is attachment
+		          // code to save attachment...
+		    	// save an attachment from a MimeBodyPart to a file
+		    	//Erstellen des Filenamen plus universally unique identifier, welches als Referenz im XML dient
+		    	  nameGuid = UUID.randomUUID()+"-"+part.getFileName();
+		    	  String destFilePath = "Attachment/" + nameGuid;
+		    	  
+		    	  
+		    	  FileOutputStream output = new FileOutputStream(destFilePath);
+		    	   
+		    	  InputStream input = part.getInputStream();
+		    	   
+		    	  byte[] buffer = new byte[4096];
+		    	   
+		    	  int byteRead;
+		    	   
+		    	  while ((byteRead = input.read(buffer)) != -1) {
+		    	      output.write(buffer, 0, byteRead);
+		    	  }
+		    	  output.close();
+		      }
+		  }
 	  }
+	  return nameGuid;
   }
   private String getFromAddresses(Message msg){
 	  String fromAddress ="";
