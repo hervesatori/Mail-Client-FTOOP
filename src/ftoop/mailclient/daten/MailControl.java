@@ -1,14 +1,20 @@
 package ftoop.mailclient.daten;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.io.*;
+import java.text.SimpleDateFormat;
 
+import javax.activation.DataHandler;
+import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -17,6 +23,12 @@ import javax.mail.Transport;
 import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.jdom2.Attribute;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import com.sun.mail.pop3.POP3SSLStore;
 /**
@@ -31,14 +43,13 @@ public class MailControl {
 	private Speichern speichernInbox;
 	private Speichern speichernOutbox;
 	private EmailKonto currentKonto;
+	private ArrayList<Folder> mailFolders;
 	private MailContainer inbox;
 	private MailContainer outbox;
 	private  final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	
   public MailControl(EmailKonto currentKonto) {
 	  this.currentKonto = currentKonto;
-	  this.inbox = inbox;
-	  this.outbox = outbox;
 	  speichernInbox = new Speichern();
 	  speichernOutbox = new Speichern();
 	  
@@ -145,8 +156,165 @@ public class MailControl {
       }
       return strings;
   }
-  
-  private void safeContainers(Message[] msg,String file) {
+  public void saveMailFolders(){
+	  //Root Element Erstellen
+	  Element root = new Element("MailFolders");
+	  //neues Dokument 
+	  org.jdom2.Document doc = new Document(root);    
+	  //Pro Konto eigenen XML Zweig hinzufügen
+	  for(Folder folder:this.getMailFolders()){
+	      //Objekt Folder wird instanziert
+		  try {
+			folder.open(Folder.READ_ONLY);
+			Element xmlFolder = new Element("Folder");
+			Attribute atFullName = new Attribute("fullName", folder.getFullName());
+			xmlFolder.setAttribute(atFullName);
+		  //Erstellen aller Mails des Folders  
+		  
+			for(Message msg:folder.getMessages()){
+				  Element xmlMail = new Element("Mail");				 	 
+				  
+				  //Datum speichern
+				  Element xmlDate =  new Element("Date"); 
+				  SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
+				  xmlDate.setText(sdf.format(msg.getSentDate()));
+				  xmlMail.addContent(xmlDate); 
+				  
+				  // Betreff speichern
+				  Element xmlSubject =  new Element("Subject");  
+				  xmlSubject.setText(msg.getSubject());
+				  xmlMail.addContent(xmlSubject); 
+				  
+				  //Mailinhalt speichern
+				  Element xmlMessage =  new Element("Message");  
+				  xmlMessage.setText(this.getMessageContent(msg));
+				  xmlMail.addContent(xmlMessage);
+				  
+				  //Adressaten speichern
+				  Element xmlTo =  new Element("To");  
+				  xmlTo.setText(this.getToAddresses(msg));
+				  xmlMail.addContent(xmlTo); 
+				  
+				  //CC Adressaten speichern
+				  Element xmlCC =  new Element("CC");  
+				  xmlCC.setText(this.getToAddresses(msg));
+				  xmlMail.addContent(xmlCC); 
+				  
+				  //From speichern
+				  Element xmlFrom =  new Element("From");  
+				  xmlFrom.setText(this.getFromAddresses(msg));
+				  xmlMail.addContent(xmlFrom); 
+				  
+				  //Nach Erstellung des XML Nodes hinzufügen zum Parent
+				  xmlFolder.addContent(xmlMail);
+			  }
+		 //Hinzufügen des Kontos zum root Zweig
+		  root.addContent(xmlFolder);	
+		} catch (MessagingException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if (folder != null && folder.isOpen()) { 
+		          try {         	  
+		        	  folder.close(false); // false -> Mails die DELETED markiert sind, werden nicht gelöscht
+		          } catch (Exception e) { 
+		              e.printStackTrace(); 
+		            } 
+		    } 
+//	        try { 
+//	            if (store != null && store.isConnected()) { 
+//	                store.close(); 
+//	            } 
+//	        } catch (MessagingException e) { 
+//	            e.printStackTrace(); 
+//	        } 
+		 }   	  
+	  }
+	  
+	  try {
+	      //Normal Anzeige mit getPrettyFormat()
+	      XMLOutputter outputFile = new XMLOutputter(Format.getPrettyFormat());
+	     
+	      outputFile.output(doc, new FileOutputStream("Mailbox.xml"));
+	   }
+	   catch (java.io.IOException e){
+		   System.out.println("Konnte die Konten nicht im XML Format speichern.");
+		   e.printStackTrace();
+	   }
+	  
+  }
+  public ArrayList<Folder> getMailFolders() {
+	return mailFolders;
+}
+  private String getMessageContent(Message msg) throws IOException, MessagingException{
+	  Object msgContent = msg.getContent();
+	  String content ="";
+	  /* Check if content is pure text/html or in parts */                     
+	     if (msgContent instanceof Multipart) {
+	    	 
+	         Multipart multipart = (Multipart) msgContent;        
+
+	         for (int j = 0; j < multipart.getCount(); j++) {
+
+	          BodyPart bodyPart = multipart.getBodyPart(j);
+
+	          String disposition = bodyPart.getDisposition();
+
+	          if (disposition != null && (disposition.equalsIgnoreCase("ATTACHMENT"))) { 
+	              System.out.println("Mail have some attachment");
+
+	              DataHandler handler = bodyPart.getDataHandler();
+	              System.out.println("file name : " + handler.getName());                                 
+	            }
+	          else { 
+	                  content = (String) bodyPart.getContent();  // the changed code         
+	            }
+	        }
+	     }
+	     else{         
+	         content= msg.getContent().toString();
+	     }
+	  return content;
+  }
+  private void getAttachement(Message message) throws MessagingException{
+	  // suppose 'message' is an object of type Message
+	  String contentType = message.getContentType();
+	   
+	  if (contentType.contains("multipart")) {
+	      // this message may contain attachment
+	  }
+  }
+  private String getFromAddresses(Message msg){
+	  String fromAddress ="";
+		try {
+			for(Address ad:msg.getReplyTo()){
+				fromAddress += ad.toString() +";";
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  return fromAddress;
+  }
+private String getToAddresses(Message msg){
+	String addresses ="";
+	try {
+		for(Address ad:msg.getAllRecipients()){
+			addresses += ad.toString() +";";
+		}
+	} catch (MessagingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return addresses;
+	
+	
+}
+public void setMailFolders(ArrayList<Folder> mailFolders) {
+	this.mailFolders = mailFolders;
+}
+private void safeContainers(Message[] msg,String file) {
 	  speichernInbox.xmlParser(MailControl.fileInbox);
 	    try {
 
@@ -156,19 +324,19 @@ public class MailControl {
 			  speichernInbox.setDate(message.getSentDate());
 			  speichernInbox.setSubject(message.getSubject());
 			  speichernInbox.setFrom(message.getFrom()[0].toString());
-	          for (String line : inputStreamToStrings(message.getInputStream())) { 
-
-	        	  speichernInbox.setMessage(line);
-
-	          } 
-
+//	          for (String line : inputStreamToStrings(message.getInputStream())) { 
+//
+//	        	  speichernInbox.setMessage(line);
+//
+//	          } 
+			  speichernInbox.setMessage(message.getContent().toString());
 		  }
 	    }catch (Exception e) { 
 	        e.printStackTrace(); 
 	    } 
 	    speichernInbox.speichern(file);
 	  } 
-  private void safeContainers(MimeMessage msg,String file,Date d) {
+  private void saveContainers(MimeMessage msg,String file,Date d) {
 	  speichernOutbox.xmlParser(MailControl.fileOutbox);
 		 
 	    try {
@@ -220,7 +388,7 @@ public class MailControl {
 	  
 	   System.out.println("message sent successfully");
 	   Date d = new Date();
-	   safeContainers(message,fileOutbox,d);
+	   saveContainers(message,fileOutbox,d);
 	   
 	  } catch (MessagingException e) {
 		  throw new RuntimeException(e);

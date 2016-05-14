@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.mail.NoSuchProviderException;
 
@@ -32,28 +34,20 @@ public class UnitTests extends TestCase{
 				   benutzerNamePop, passwortPop, smtpServer, smtpPort,
 				   benutzerNameSmtp,
 				   passwortSmtp);
+	
+		String fileName = "kontos_test.xml";
+
+		testControl.saveKonten(fileName);
+		File currentDirectory = new File(new File(".").getAbsolutePath());
+		System.out.println(fileName + " saved to: " + currentDirectory.getCanonicalPath());
 		
-		if (System.getProperty("os.name").toLowerCase().indexOf("win")<0) {
-            System.err.println("Sorry, Windows only!");
-            System.exit(1);
-        }
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        System.out.println(desktopDir.getPath() + " " + desktopDir.exists());
-   
-		testControl.saveKonten(desktopDir.getPath() + "/kontos.xml");
 		assertTrue(true);
 	}
 	public void testLoardEmailKontos(){
 		EmailKontoControl testControl = new EmailKontoControl();
 		
-		if (System.getProperty("os.name").toLowerCase().indexOf("win")<0) {
-            System.err.println("Sorry, Windows only!");
-            System.exit(1);
-        }
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        System.out.println(desktopDir.getPath() + " " + desktopDir.exists());
-        
-		testControl.loadKonten(desktopDir.getPath() + "/kontos.xml");
+
+		testControl.loadKonten("kontos.xml");
 		
 		System.out.println(testControl.toString());
 		EmailKonto konto = testControl.getKontos().get(0);
@@ -64,19 +58,12 @@ public class UnitTests extends TestCase{
 		TestCase.assertEquals(3456, konto.getPop3Port());
 		TestCase.assertEquals("pop3.not.exist", konto.getPop3Server());
 		TestCase.assertEquals(3456, konto.getSmtpPort());
-		TestCase.assertEquals("pop3.not.exist", konto.getSmtpServer());
+		TestCase.assertEquals("smtp.not.exist", konto.getSmtpServer());
 	}
-	public void sendTestMail(){
-		EmailKontoControl testControl = new EmailKontoControl();
+	public void testSendMail(){
+		EmailKontoControl testControl = new EmailKontoControl();		
 		
-		if (System.getProperty("os.name").toLowerCase().indexOf("win")<0) {
-            System.err.println("Sorry, Windows only!");
-            System.exit(1);
-        }
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        System.out.println(desktopDir.getPath() + " " + desktopDir.exists());
-        
-		testControl.loadKonten(desktopDir.getPath() + "/kontos.xml");
+		testControl.loadKonten("kontos.xml");
 		
 		MailControl mailControl = new MailControl(testControl.getKontos().get(1));
 		Mail testMail = new Mail("ftoop.zh@gmail.com", "ftoop.zh@gmail.com", "Most important test subject","this is a spam test mail");
@@ -86,6 +73,7 @@ public class UnitTests extends TestCase{
 		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			TestCase.fail();
 		}
 		
 	}

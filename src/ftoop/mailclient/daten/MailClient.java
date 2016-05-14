@@ -1,66 +1,73 @@
 package ftoop.mailclient.daten;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Properties;
 
+import javax.mail.Folder;
+import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Store;
 
 public class MailClient {
+	
+	
 
-	public static void main(String[] args) {
-//	 System.out.println("Starte Applikation...");	
-//	 
-//	 String konto = "";
-//	 String name = "";
-//	 String email = "";
-//	 String pop3Server = "pop.gmail.com";
-//	 int pop3Port = 995;
-//	 String benutzerNamePop = "hervesatori@gmail.com";
-//	 String passwortPop = "";
-//	 String smtpServer = "smtp.mail.yahoo.fr";
-//	 int smtpPort = 465;
-//	 String benutzerNameSmtp = "satori_herve@yahoo.fr";
-//	 String passwortSmtp = "";
-//	 
-//	 
-//	 
-//	 EmailKonto eKonto = new EmailKonto(konto,name,email,pop3Server,pop3Port,benutzerNamePop,passwortPop,smtpServer,
-//		 smtpPort,benutzerNameSmtp,passwortSmtp);
-//	 MailControl mCtrl = new MailControl(eKonto);
-//	 try {
-//		mCtrl.sendMsg(new Mail("hervesatori@gmail.com","satori_herve@yahoo.fr","TESTTEST","this is a test"));
+	public static void main(String[] args) {	
+		//**********Programm Initialisierung
+		//**********Laden der Konti
+		EmailKontoControl kontoControl = new EmailKontoControl();
+		
+		kontoControl.loadKonten("kontos.xml");
+		
+		//********** Verwenden eines Kontos mit MailControl
+		MailControl mailControl = new MailControl(kontoControl.getKontos().get(1));
+		
+		
+		//********** Abrufen neuer Mails
+		try {
+			mailControl.receiveMsg();
+		} catch (NoSuchProviderException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		//********** Erstellen der Mailbox
+		ArrayList<Folder> rootContainer = new ArrayList<Folder>();
+		Properties props = System.getProperties();
+		props.setProperty("mail.store.protocol", "imaps");
+		try {
+		    Session session = Session.getDefaultInstance(props, null);
+		    javax.mail.Store store = session.getStore("imaps");
+		    store.connect("imap.gmail.com", "FTOOP.Zh@gmail.com", "ftoop.zh.1234");
+		    javax.mail.Folder[] folders = store.getDefaultFolder().list("*");
+		    for (javax.mail.Folder folder : folders) {
+		        if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
+		        	rootContainer.add(folder);
+		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount());		            
+		        }
+		    }
+		} catch (MessagingException e) {
+		    e.printStackTrace();
+		}
+		mailControl.setMailFolders(rootContainer);
+		mailControl.saveMailFolders();
+		
+		
+		
+//		//**********Erstellen der Mail
+//		Mail testMail = new Mail("ftoop.zh@gmail.com", "ftoop.zh@gmail.com", "Most important test subject","this is a spam test mail");
+//		
+//		
+//		//**********Über MailControl die Mail versenden
 //		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			
+//			mailControl.sendMsg(testMail);
+//		} catch (NoSuchProviderException e) {
+//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-//		mCtrl.receiveMsg();
-//	} catch (NoSuchProviderException e) {
-//		
-//		e.printStackTrace();
-//	}
-//	
-//	 System.out.println("Beende Applikation...");	
-		EmailKontoControl testControl = new EmailKontoControl();
-		
-		if (System.getProperty("os.name").toLowerCase().indexOf("win")<0) {
-            System.err.println("Sorry, Windows only!");
-            System.exit(1);
-        }
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        System.out.println(desktopDir.getPath() + " " + desktopDir.exists());
-        
-		testControl.loadKonten(desktopDir.getPath() + "/kontos.xml");
-		
-		MailControl mailControl = new MailControl(testControl.getKontos().get(1));
-		Mail testMail = new Mail("ftoop.zh@gmail.com", "ftoop.zh@gmail.com", "Most important test subject","this is a spam test mail");
-		
-		try {
-			mailControl.sendMsg(testMail);
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	
