@@ -6,4 +6,46 @@
     <from>satori_herve@yahoo.fr</from>
     <message>this is a test</message>
   </mail>
+  <mail>
+    <datum>12/05/2016 13:46:15</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 14:46:08</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 14:51:13</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 14:53:27</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 15:53:27</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 15:55:23</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
+  <mail>
+    <datum>12/05/2016 16:14:45</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail</message>
+  </mail>
 </mails>

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mails>
   <mail>
-    <datum>04/05/2016 17:08:19</datum>
-    <subject>TESTTEST</subject>
-    <from>satori_herve@yahoo.fr</from>
-    <message>this is a test</message>
+    <datum>12/05/2016 16:14:45</datum>
+    <subject>Most important test subject</subject>
+    <from>ftoop.zh@gmail.com</from>
+    <message>this is a spam test mail&#xD;
+&#xD;
+---&#xD;
+Diese E-Mail wurde von Avast Antivirus-Software auf Viren geprüft.&#xD;
+https://www.avast.com/antivirus</message>
   </mail>
 </mails>

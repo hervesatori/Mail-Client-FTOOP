@@ -42,7 +42,9 @@ public class EmailKontoControl {
 					el.getChildText("SmtpServer"),
 					Integer.parseInt(el.getChildText("SmtpPort")),
 					el.getChildText("Benutzername"),
-					el.getChildText("Passwort"));
+					el.getChildText("Passwort"),
+					el.getChildText("ImapServer"),
+					Integer.parseInt(el.getChildText("ImapPort")));
 
 		}
 	
@@ -79,6 +81,10 @@ public class EmailKontoControl {
 		  xmlSmtpServer.setText(konto.getSmtpServer());
 		  Element xmlSmtpPort = new Element("SmtpPort");
 		  xmlSmtpPort.setText(Integer.toString(konto.getSmtpPort()));
+		  Element xmlImapServer = new Element("ImapServer");
+		  xmlSmtpServer.setText(konto.getSmtpServer());
+		  Element xmlImapPort = new Element("ImapPort");
+		  xmlSmtpPort.setText(Integer.toString(konto.getSmtpPort()));
 		  
 		  //Hinzufügen der Children zum Konto
 		  xmlKonto.addContent(xmlKontoName);
@@ -89,6 +95,8 @@ public class EmailKontoControl {
 		  xmlKonto.addContent(xmlPopPort);
 		  xmlKonto.addContent(xmlSmtpServer);
 		  xmlKonto.addContent(xmlSmtpPort);
+		  xmlKonto.addContent(xmlImapServer);
+		  xmlKonto.addContent(xmlImapPort);
 		  
 		  //Hinzufügen des Kontos zum root Zweig
 		  root.addContent(xmlKonto);
@@ -117,11 +125,12 @@ public class EmailKontoControl {
 	public void newKonto(String konto,String name,String email,String pop3Server,int pop3Port,
 			  String benutzerNamePop,String passwortPop,String smtpServer,int smtpPort,
 			  String benutzerNameSmtp,
-			  String passwortSmtp) {
+			  String passwortSmtp,String imapServer,
+			  int imapPort) {
 		EmailKonto newKonto = new EmailKonto(konto,name, email, pop3Server, pop3Port,
 				   benutzerNamePop, passwortPop, smtpServer, smtpPort,
 				   benutzerNameSmtp,
-				   passwortSmtp);
+				   passwortSmtp, imapServer, imapPort);
 		
 		this.getKontos().add(newKonto);
 	}
@@ -147,6 +156,8 @@ public class EmailKontoControl {
 		  returnStr += "Pop3 Server: "+konto.getPop3Server() + "\n";
 		  returnStr += "SMTP Port: "+konto.getSmtpPort() + "\n";
 		  returnStr += "SMTP Server: "+konto.getSmtpServer() + "\n";
+		  returnStr += "IMAP Port: "+konto.getImapPort() + "\n";
+		  returnStr += "IMAP Server: "+konto.getImapServer() + "\n";
 	  }
 	  return returnStr;
   }

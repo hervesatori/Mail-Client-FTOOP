@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.activation.DataHandler;
@@ -31,10 +34,13 @@ import javax.mail.internet.MimeMultipart;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import com.sun.mail.pop3.POP3SSLStore;
+import java.util.HashMap;
 /**
  * 
  * @author Herve Satori & Dominique Borer
@@ -47,7 +53,11 @@ public class MailControl {
 	private Speichern speichernInbox;
 	private Speichern speichernOutbox;
 	private EmailKonto currentKonto;
-	private ArrayList<Folder> mailFolders;
+	private ArrayList<Folder> serverMailFolders;
+	private HashMap<String, MailContainer> mailContainers;
+//	private ArrayList<MailContainer> mailContainers;
+	private Store store;
+
 	private MailContainer inbox;
 	private MailContainer outbox;
 	private  final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -57,8 +67,70 @@ public class MailControl {
 	  speichernInbox = new Speichern();
 	  speichernOutbox = new Speichern();
 	  
+	  
+	  //Initialisieren des Konto Stores für die Mailabfrage
+	  Properties props = System.getProperties();
+	  props.setProperty("mail.store.protocol", "imaps");
+	  try {
+		    Session session = Session.getDefaultInstance(props, null);
+		    this.store = session.getStore("imaps");
+		    store.connect(this.getCurrentKonto().getImapServer(), this.getCurrentKonto().getName(), this.getCurrentKonto().getPasswortPop());
+		    initializeServerMailFolders();
+	  } catch (MessagingException e) {
+		    e.printStackTrace();
+	  }
+	  // Überprüfen, ob bereits eine Konto Mailbox XML vorhanden ist und falls nicht,
+	  //erstellen, plus herunterladen aller Mails vom Account. Andernfalls Aktualisieren der Mailbox
+	  if(this.existsMailboxXML()){
+		  try {
+			this.updateMailFolders(Folder.READ_WRITE);
+		} catch (MessagingException e) {
+			System.out.println("Fehler beim Aktualisieren der Mailbox");
+			e.printStackTrace();
+		}
+	  }else{
+		  //********** Erstellen der Mailbox
+		  this.initializeMailbox();
+	  }
+		
   }
   /**
+   * Initialisiere ServerMailFolders - Reflektiert die Ordner auf dem Server, mit welchen später auch die direkte Mailabfrage gemacht wird
+   */
+  private void initializeServerMailFolders(){
+	  try {
+		    System.out.println("Initialisiere MailControl ServerMailFolders");
+		    for (javax.mail.Folder folder:store.getDefaultFolder().list("*")) {
+		        if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
+		        	this.getServerMailFolders().add(folder);
+		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount());		            
+		        }
+		    }
+		} catch (MessagingException e) {
+		    e.printStackTrace();
+		}
+  }
+  /**
+ * @return the serverMailFolders
+ */
+private ArrayList<Folder> getServerMailFolders() {
+	return serverMailFolders;
+}
+private boolean existsMailboxXML(){
+	  boolean exists = false;
+	  File mailboxXML = new File("Mailbox"+this.getCurrentKonto().getKonto()+".xml");
+	  if(mailboxXML.exists() && !mailboxXML.isDirectory()) { 
+		  exists = true;
+	  }	  
+	  return exists;
+  }
+  public EmailKonto getCurrentKonto() {
+	return currentKonto;
+  }
+	public void setCurrentKonto(EmailKonto currentKonto) {
+		this.currentKonto = currentKonto;
+	}
+	/**
    * 
    * @throws NoSuchProviderException
    * 
@@ -120,12 +192,16 @@ public class MailControl {
 	 }
     }
   
+	public HashMap<String, MailContainer> getMailContainers() {
+		return mailContainers;
+	}
+	public void setMailContainers(HashMap<String, MailContainer> mailContainers) {
+		this.mailContainers = mailContainers;
+	}
 
   private void printMessages(Message[] msg) {
     try {
 	  System.out.println(msg.length+" Mails");
-	
-
 	  for (int i = 0, n = msg.length; i < n; i++) {
 		  Message message = msg[i];
 		  System.out.println("---------------------------------");
@@ -135,12 +211,8 @@ public class MailControl {
 		  System.out.println("From: " + message.getFrom()[0]);
 		  System.out.println("Text: " );
           for (String line : inputStreamToStrings(message.getInputStream())) { 
-
               System.out.println(line); 
-              
-
           } 
-
 	  }
     }catch (Exception e) { 
         e.printStackTrace(); 
@@ -160,100 +232,193 @@ public class MailControl {
       }
       return strings;
   }
-  public void saveMailFolders(){
-	  //Root Element Erstellen
-	  Element root = new Element("MailFolders");
-	  //neues Dokument 
-	  org.jdom2.Document doc = new Document(root);    
-	  //Pro Konto eigenen XML Zweig hinzufügen
-	  for(Folder folder:this.getMailFolders()){
-	      //Objekt Folder wird instanziert
-		  try {
-			folder.open(Folder.READ_ONLY);
-			Element xmlFolder = new Element("Folder");
-			Attribute atFullName = new Attribute("fullName", folder.getFullName());
-			xmlFolder.setAttribute(atFullName);
-		  //Erstellen aller Mails des Folders  
-		  
-			for(Message msg:folder.getMessages()){
-				  Element xmlMail = new Element("Mail");				 	 
-				  
-				  //Datum speichern
-				  Element xmlDate =  new Element("Date"); 
-				  SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
-				  xmlDate.setText(sdf.format(msg.getSentDate()));
-				  xmlMail.addContent(xmlDate); 
-				  
-				  // Betreff speichern
-				  Element xmlSubject =  new Element("Subject");  
-				  xmlSubject.setText(msg.getSubject());
-				  xmlMail.addContent(xmlSubject); 
-				  
-				  //Mailinhalt speichern
-				  Element xmlMessage =  new Element("Message");  
-				  xmlMessage.setText(this.getMessageContent(msg));
-				  xmlMail.addContent(xmlMessage);
-				  
-				  //Adressaten speichern
-				  Element xmlTo =  new Element("To");  
-				  xmlTo.setText(this.getToAddresses(msg));
-				  xmlMail.addContent(xmlTo); 
-				  
-				  //CC Adressaten speichern
-				  Element xmlCC =  new Element("CC");  
-				  xmlCC.setText(this.getToAddresses(msg));
-				  xmlMail.addContent(xmlCC); 
-				  
-				  //From speichern
-				  Element xmlFrom =  new Element("From");  
-				  xmlFrom.setText(this.getFromAddresses(msg));
-				  xmlMail.addContent(xmlFrom); 
-				  
-				  //Attachment hinzufügen
-				  Element xmlAttachement = new Element("Attachement");
-				  xmlAttachement.setText(this.handleAttachement(msg));
-				  xmlMail.addContent(xmlAttachement); 
-				  
-				  //Nach Erstellung des XML Nodes hinzufügen zum Parent
-				  xmlFolder.addContent(xmlMail);
-			  }
-		 //Hinzufügen des Kontos zum root Zweig
-		  root.addContent(xmlFolder);	
-		} catch (MessagingException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			if (folder != null && folder.isOpen()) { 
-		          try {         	  
-		        	  folder.close(false); // false -> Mails die DELETED markiert sind, werden nicht gelöscht
-		          } catch (Exception e) { 
-		              e.printStackTrace(); 
-		            } 
-		    } 
-//	        try { 
-//	            if (store != null && store.isConnected()) { 
-//	                store.close(); 
-//	            } 
-//	        } catch (MessagingException e) { 
-//	            e.printStackTrace(); 
-//	        } 
-		 }   	  
+  public void loadMailFolders(String pathToXML){	  	 
+	  SAXBuilder builder = new SAXBuilder();
+	  File xmlFile = new File(pathToXML);
+
+	  try {
+
+		Document document = (Document) builder.build(xmlFile);
+		Element rootNode = document.getRootElement();
+		List<Element> folders = rootNode.getChildren("Folder");
+		
+		//Jeden Folder im XML durchloopen und 
+		for (Element folder:folders) {
+			//.. für jeden einzelnen Folder einen neuen MailContainer erstellen
+			MailContainer newContainer = new MailContainer(folder.getAttribute("fullName").toString());
+			//hinzufügen der einzelnen Mails aus dem XML zum Container
+			List<Element> mails = folder.getChildren("Mail");
+			for (Element xmlMail:mails){
+				 //Laden der einzelnen Kontoattributen und hinzufügen zu einem neuen Konto
+				ArrayList<File> attachmentPaths = new ArrayList<File>();
+				for(Element attachment:xmlMail.getChildren("Attachment")){
+					attachmentPaths.add(new File(attachment.getText()));
+				}
+				DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+				Date date = null;
+				try {
+					date = format.parse(xmlMail.getChildText("Date"));
+				} catch (ParseException e) {
+					System.out.println("Konnte das Datum von String "+ xmlMail.getChildText("Date")+" nicht zu Date konvertieren");
+					e.printStackTrace();
+				}
+				Mail mailToAdd = new Mail(xmlMail.getChildText("MessageID"),date, xmlMail.getChildText("To"), xmlMail.getChildText("CC"),xmlMail.getChildText("BCC"), xmlMail.getChildText("From"), xmlMail.getChildText("Subject"), xmlMail.getChildText("Message"), attachmentPaths);
+				newContainer.addMailToContainer(mailToAdd);
+			}
+			//MailContainer zum MailControl hinzufügen
+			this.getMailContainers().put(folder.getName(),newContainer);
+		}
+		 
+	
+	  } catch (IOException io) {
+		System.out.println(io.getMessage());
+	  } catch (JDOMException jdomex) {
+		System.out.println(jdomex.getMessage());
 	  }
+  }
+  private Store getKontoStore(){
+	  return this.store; 
 	  
+  }
+  /**
+   * 
+   * @param readOrWriteFolderModus Zu setzen über Folder.Read_Write oder Folder.Read_Only
+   * @throws MessagingException
+   */
+  public void updateMailFolders(int readOrWriteFolderModus) throws MessagingException{
+		if(readOrWriteFolderModus == Folder.READ_WRITE || readOrWriteFolderModus == Folder.READ_ONLY){
+			for(Folder folder:this.getMailFolders()){
+				folder.open(readOrWriteFolderModus);
+			  // Array Messages wird instanziert	
+				 for(Message message:folder.getMessages()){
+					try {
+						this.getMailContainers().get(folder.getName()).addMailToContainer(this.generateMailFromMessage(message));
+					} catch (IOException e) {
+						System.out.println("Konnte kein Mailobjekt erstellen: ");
+						e.printStackTrace();
+					}
+				 }
+			}
+		}else{
+			try {
+				throw new Exception("readOrWriteFolderModus muss entweder für Folder.READ_WRITE:"+Folder.READ_WRITE+ " oder für Folder.READ_ONLY:"+ Folder.READ_ONLY+" sein."  );
+			} catch (Exception e) {				
+				e.printStackTrace();
+			}
+				
+		}
+	}
+	public Mail generateMailFromMessage(Message msg) throws MessagingException, IOException{
+		String messageID = msg.getHeader("Message-ID")[0];
+		Date received = msg.getSentDate();
+		String to = this.getToAddresses(msg);
+		String cc = this.getToAddresses(msg);
+		String bcc = this.getToAddresses(msg);
+		String from = this.getFromAddresses(msg);
+		String subject = msg.getSubject();
+		String message = this.getMessageContent(msg);
+		ArrayList<File>  attachments = new ArrayList<File>();
+		 		  
+	  //Attachments hinzufügen
+	  for(String attachment:this.handleAttachement(msg)){
+		  attachments.add(new File(attachment));
+	  }
+		Mail mail = new Mail(messageID, received, to, cc, bcc, from, subject, message, attachments);
+		return mail;
+	}
+	/**
+	 * Speichert die geladenen MailContainers zurück in ein XML
+	 */
+	public void saveMailContainers(){
+		 //Root Element Erstellen
+		  Element root = new Element("MailFolders");
+		  //neues Dokument 
+		  org.jdom2.Document doc = new Document(root);
+		  //Pro MailContailer / Folder eigenen XML Zweig hinzufügen
+		  for(MailContainer mc:this.getMailContainers().values()){  
+
+				Element xmlFolder = new Element("Folder");
+				Attribute atFullName = new Attribute("fullName", mc.getFolderFullPath());
+				xmlFolder.setAttribute(atFullName);
+			  //Erstellen aller Mails des Folders  
+			  
+				for(Mail mail:mc.getContainingMails()){
+					  Element xmlMail = new Element("Mail");				 	 
+					  
+					  //Mesage-ID speichern 
+					  Element xmlMessageID =  new Element("MessageID"); 
+					  xmlMessageID.setText(mail.getMessageID());
+					  xmlMail.addContent(xmlMessageID); 
+					  
+					  //Datum speichern
+					  Element xmlDate =  new Element("Date"); 
+					  SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
+					  xmlDate.setText(sdf.format(mail.getReceived()));
+					  xmlMail.addContent(xmlDate); 
+					  
+					  // Betreff speichern
+					  Element xmlSubject =  new Element("Subject");  
+					  xmlSubject.setText(mail.getSubject());
+					  xmlMail.addContent(xmlSubject); 
+					  
+					  //Mailinhalt speichern
+					  Element xmlMessage =  new Element("Message");  
+					  xmlMessage.setText(mail.getMessage());
+					  xmlMail.addContent(xmlMessage);
+					  
+					  //Adressaten speichern
+					  Element xmlTo =  new Element("To");  
+					  xmlTo.setText(mail.getTo());
+					  xmlMail.addContent(xmlTo); 
+					  
+					  //CC Adressaten speichern
+					  Element xmlCC =  new Element("CC");  
+					  xmlCC.setText(mail.getCc());
+					  xmlMail.addContent(xmlCC); 
+					  
+					  //From speichern
+					  Element xmlFrom =  new Element("From");  
+					  xmlFrom.setText(mail.getFrom());
+					  xmlMail.addContent(xmlFrom); 
+					  
+					  //Attachments hinzufügen
+					  for(File attachment:mail.getAttachments()){
+						  Element xmlAttachement = new Element("Attachment");
+						  xmlAttachement.setText(attachment.getName());
+						  xmlMail.addContent(xmlAttachement); 
+					  }
+					  //Nach Erstellung des XML Nodes hinzufügen zum Parent
+					  xmlFolder.addContent(xmlMail);
+				  }
+			  
+		  
+	  }
 	  try {
 	      //Normal Anzeige mit getPrettyFormat()
 	      XMLOutputter outputFile = new XMLOutputter(Format.getPrettyFormat());
 	     
-	      outputFile.output(doc, new FileOutputStream("Mailbox.xml"));
+	      outputFile.output(doc, new FileOutputStream("Mailbox"+this.getCurrentKonto().getKonto() +".xml"));
 	   }
 	   catch (java.io.IOException e){
 		   System.out.println("Konnte die Konten nicht im XML Format speichern.");
 		   e.printStackTrace();
 	   }
-	  
+		  
+	}
+	/**
+	 * Speichert das ganze Postfach 1:1 vom Server in MailContainers, analog zu den Anzahl Folders, später in ein XML, wird benötigt für erst Initialiseriungen
+	 */
+	public void initializeMailbox(){
+		try {
+			this.updateMailFolders(Folder.READ_ONLY);
+			this.saveMailContainers();
+		} catch (MessagingException e) {
+			System.out.println("Konnte die Mailbox nicht initialisieren");
+			e.printStackTrace();
+		}
   }
   public ArrayList<Folder> getMailFolders() {
-	return mailFolders;
+	return serverMailFolders;
 }
   private String getMessageContent(Message msg) throws IOException, MessagingException{
 	  Object msgContent = msg.getContent();
@@ -321,11 +486,11 @@ public class MailControl {
 	    return "";
   }
   
-  private String handleAttachement(Message message) throws MessagingException, IOException{
+  private ArrayList<String> handleAttachement(Message message) throws MessagingException, IOException{
 	  // suppose 'message' is an object of type Message
-	  String nameGuid = "";
+	  ArrayList<String> nameGuids = new ArrayList<String>();
 	  String contentType = message.getContentType();
-	   
+	  
 	  if (contentType.contains("multipart")) {
 	      // this message may contain attachment
 		  Multipart multiPart = (Multipart) message.getContent();
@@ -337,7 +502,8 @@ public class MailControl {
 		          // code to save attachment...
 		    	// save an attachment from a MimeBodyPart to a file
 		    	//Erstellen des Filenamen plus universally unique identifier, welches als Referenz im XML dient
-		    	  nameGuid = UUID.randomUUID()+"-"+part.getFileName();
+		    	  String nameGuid = UUID.randomUUID()+"-"+part.getFileName();
+		    	  nameGuids.add(nameGuid);
 		    	  String destFilePath = "Attachment/" + nameGuid;
 		    	  
 		    	  
@@ -353,10 +519,11 @@ public class MailControl {
 		    	      output.write(buffer, 0, byteRead);
 		    	  }
 		    	  output.close();
+		    	  
 		      }
 		  }
 	  }
-	  return nameGuid;
+	  return nameGuids;
   }
   private String getFromAddresses(Message msg){
 	  String fromAddress ="";
@@ -385,8 +552,8 @@ private String getToAddresses(Message msg){
 	
 	
 }
-public void setMailFolders(ArrayList<Folder> mailFolders) {
-	this.mailFolders = mailFolders;
+private void setMailFolders(ArrayList<Folder> serverMailFolders) {
+	this.serverMailFolders = serverMailFolders;
 }
 private void safeContainers(Message[] msg,String file) {
 	  speichernInbox.xmlParser(MailControl.fileInbox);

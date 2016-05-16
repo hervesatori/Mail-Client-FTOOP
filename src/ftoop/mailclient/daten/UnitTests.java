@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.mail.NoSuchProviderException;
 
@@ -30,10 +32,13 @@ public class UnitTests extends TestCase{
 		int smtpPort = 3456;
 		String benutzerNameSmtp = "Test Benutzername";
 		String passwortSmtp = "worstPassword";
+		String imapServer = "imap.not.exist";
+		int imapPort = 1234;
 		testControl.newKonto(konto, name, email, pop3Server, pop3Port,
 				   benutzerNamePop, passwortPop, smtpServer, smtpPort,
 				   benutzerNameSmtp,
-				   passwortSmtp);
+				   passwortSmtp,imapServer,
+					  imapPort);
 	
 		String fileName = "kontos_test.xml";
 
@@ -43,7 +48,7 @@ public class UnitTests extends TestCase{
 		
 		assertTrue(true);
 	}
-	public void testLoardEmailKontos(){
+	public void testLoadEmailKontos(){
 		EmailKontoControl testControl = new EmailKontoControl();
 		
 
@@ -59,6 +64,8 @@ public class UnitTests extends TestCase{
 		TestCase.assertEquals("pop3.not.exist", konto.getPop3Server());
 		TestCase.assertEquals(3456, konto.getSmtpPort());
 		TestCase.assertEquals("smtp.not.exist", konto.getSmtpServer());
+		TestCase.assertEquals(1234, konto.getImapPort());
+		TestCase.assertEquals("imap.not.exist", konto.getImapServer());
 	}
 	public void testSendMail(){
 		EmailKontoControl testControl = new EmailKontoControl();		
@@ -66,7 +73,7 @@ public class UnitTests extends TestCase{
 		testControl.loadKonten("kontos.xml");
 		
 		MailControl mailControl = new MailControl(testControl.getKontos().get(1));
-		Mail testMail = new Mail("ftoop.zh@gmail.com", "ftoop.zh@gmail.com", "Most important test subject","this is a spam test mail");
+		Mail testMail = new Mail(null, null, "ftoop.zh@gmail.com",null,null, "ftoop.zh@gmail.com", "Most important test subject","this is a spam test mail", null);
 		
 		try {
 			mailControl.sendMsg(testMail);

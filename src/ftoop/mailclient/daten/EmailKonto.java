@@ -18,11 +18,15 @@ public class EmailKonto {
 	private int smtpPort;
 	private String benutzerNameSmtp;
 	private String passwortSmtp;
+	private String imapServer;
+	private int imapPort;
 	
   public EmailKonto(String konto,String name,String email,String pop3Server,int pop3Port,
 		  String benutzerNamePop,String passwortPop,String smtpServer,int smtpPort,
 		  String benutzerNameSmtp,
-		  String passwortSmtp) {
+		  String passwortSmtp,
+		  String imapServer,
+		  int imapPort) {
     this.konto = konto;
     this.name = name;
     this.email = email;
@@ -34,10 +38,47 @@ public class EmailKonto {
     this.smtpPort = smtpPort;
     this.benutzerNameSmtp = benutzerNameSmtp;
     this.passwortSmtp = passwortSmtp;
+    this.imapServer = imapServer;
+    this.imapPort = imapPort;    
 	  
   }
   
   /**
+ * @return the imapPort
+ */
+public int getImapPort() {
+	return imapPort;
+}
+
+/**
+ * @param imapPort the imapPort to set
+ */
+public void setImapPort(int imapPort) {
+	this.imapPort = imapPort;
+}
+
+/**
+ * @return the imapServer
+ */
+public String getImapServer() {
+	return imapServer;
+}
+
+/**
+ * @param imapServer the imapServer to set
+ */
+public void setImapServer(String imapServer) {
+	this.imapServer = imapServer;
+}
+
+/**
+ * @param smtpPort the smtpPort to set
+ */
+public void setSmtpPort(int smtpPort) {
+	this.smtpPort = smtpPort;
+}
+
+/**
 	 * @return the konto
 	 */
 	public String getKonto() {
