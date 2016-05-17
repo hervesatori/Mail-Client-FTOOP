@@ -46,6 +46,15 @@ public class MailContainer{
 		this.getContainingMails().add(mail);
 		
 	}
+	public boolean existsMail(String mID){
+		boolean exists = false;
+		for(Mail mail:this.getContainingMails()){	
+			  if(mail.getMessageID().equals(mID)){
+				  exists = true;
+			  }
+		}
+		return exists;
+	}
 	public void deleteMailFromContainer(String mID){
 		 for(Mail mail:this.getContainingMails()){
 			  if(mail.getMessageID().equals(mID)){

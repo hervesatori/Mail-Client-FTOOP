@@ -84,5 +84,16 @@ public class UnitTests extends TestCase{
 		}
 		
 	}
+//	public void testLoadXML(){
+//		//**********Programm Initialisierung
+//		//**********Laden der Konti
+//		EmailKontoControl kontoControl = new EmailKontoControl();
+//		
+//		kontoControl.loadKonten("kontos.xml");
+//		
+//		
+//		//********** Verwenden eines Kontos mit MailControl
+//		MailControl mailControl = new MailControl(kontoControl.getKontos().get(1));
+//	}
 
 }

@@ -94,6 +94,7 @@ public class MailControl {
 	  if(this.existsMailboxXML()){
 		  System.out.println("Mailbox "+this.getMailboxName()+" zum Konto "+this.getCurrentKonto().getKonto()+" wurde gefunden");
 		  try {
+			this.loadMailFolders(this.getMailboxName());
 			this.updateMailFolders(Folder.READ_WRITE);
 		} catch (MessagingException e) {
 			System.out.println("Fehler beim Aktualisieren der Mailbox");
@@ -256,7 +257,8 @@ private boolean existsMailboxXML(){
       }
       return strings;
   }
-  public void loadMailFolders(String pathToXML){	  	 
+  public void loadMailFolders(String pathToXML){
+	  System.out.println("Laden des XML "+ this.getMailboxName());
 	  SAXBuilder builder = new SAXBuilder();
 	  File xmlFile = new File(pathToXML);
 
@@ -269,11 +271,11 @@ private boolean existsMailboxXML(){
 		//Jeden Folder im XML durchloopen und 
 		for (Element folder:folders) {
 			//.. für jeden einzelnen Folder einen neuen MailContainer erstellen
-			MailContainer newContainer = new MailContainer(folder.getAttribute("fullName").toString());
+			MailContainer newContainer = new MailContainer(folder.getAttribute("fullName").getValue());
 			//hinzufügen der einzelnen Mails aus dem XML zum Container
 			List<Element> mails = folder.getChildren("Mail");
 			for (Element xmlMail:mails){
-				 //Laden der einzelnen Kontoattributen und hinzufügen zu einem neuen Konto
+				 //Laden der einzelnen Mailattributen und hinzufügen zu einem MailContainer
 				ArrayList<File> attachmentPaths = new ArrayList<File>();
 				for(Element attachment:xmlMail.getChildren("Attachment")){
 					attachmentPaths.add(new File(attachment.getText()));
@@ -290,7 +292,7 @@ private boolean existsMailboxXML(){
 				newContainer.addMailToContainer(mailToAdd);
 			}
 			//MailContainer zum MailControl hinzufügen
-			this.getMailContainers().put(folder.getName(),newContainer);
+			this.getMailContainers().put(newContainer.getFolderFullPath(),newContainer);
 		}
 		 
 	
@@ -315,19 +317,29 @@ private boolean existsMailboxXML(){
   public void updateMailFolders(int readOrWriteFolderModus) throws MessagingException{
 		if(readOrWriteFolderModus == Folder.READ_WRITE || readOrWriteFolderModus == Folder.READ_ONLY){
 			for(Folder folder:this.getMailFolders()){
+				System.out.println("Aktualisieren des Folders "+folder.getFullName());
 				folder.open(readOrWriteFolderModus);
 				//Falls es den Container noch nicht gibt..
-				if(this.getMailContainers().get(folder.getFullName()) == null){
+				String searchKey = folder.getFullName();
+				if(this.getMailContainers().get(searchKey) == null){
 					//Container über Folder Objekt erstellen.
+					System.out.println("Folder "+folder.getFullName()+ " gibt es als MailContainer noch nicht, erstelle ihn." );
 					this.addMailContainer(folder);
 				}
 				MailContainer mc = this.getMailContainers().get(folder.getFullName());
 				// Array Messages wird instanziert	
 				 for(Message message:folder.getMessages()){
 					try {
+						String mID = this.getMessageID(message.getHeader("Message-ID"));
+						boolean exists = mc.existsMail(mID);
+						if(exists){
+							System.out.println("Mail mit ID "+mID + "existiert bereits und wird nicht erneut heruntergeladen");
 
-						Mail mail = this.generateMailFromMessage(message);
-						mc.addMailToContainer(mail);
+						}else{
+							System.out.println("Mail mit ID "+mID + " existiert noch nicht, wird heruntergeladen");
+							Mail mail = this.generateMailFromMessage(message);
+							mc.addMailToContainer(mail);
+						}
 					} catch (IOException e) {
 						System.out.println("Konnte kein Mailobjekt erstellen: ");
 						e.printStackTrace();
@@ -343,8 +355,15 @@ private boolean existsMailboxXML(){
 				
 		}
 	}
+    private String getMessageID(String[] mIDArr){
+    	String mID = "";
+    	for(int i = 0; i <mIDArr.length; i++){
+    		mID += mIDArr[i];
+    	}
+    	return mID;
+    }
 	public Mail generateMailFromMessage(Message msg) throws MessagingException, IOException{
-		String messageID = msg.getHeader("Message-ID")[0];
+		String messageID = this.getMessageID(msg.getHeader("Message-ID"));
 		Date received = msg.getSentDate();
 		String to = this.getToAddresses(msg);
 		String cc = this.getToAddresses(msg);
@@ -481,15 +500,7 @@ private boolean existsMailboxXML(){
 	                  } else if (bodyPart.isMimeType("text/html")){
 	                      content = (String) bodyPart.getContent();
 
-	                  }
-
-	        	  
-	        	  
-	        	  
-	        	  
-	        	  
-	        	  
-//	                  content = (String) bodyPart.getContent();  // the changed code         
+	                  }      
 	            }
 	        }
 	     }
@@ -498,28 +509,28 @@ private boolean existsMailboxXML(){
 	     }
 	  return content;
   }
-  private String getTextFromMessage(Message message) throws Exception {
-	    if (message.isMimeType("text/plain")){
-	        return message.getContent().toString();
-	    }else if (message.isMimeType("multipart/*")) {
-	        String result = "";
-	        MimeMultipart mimeMultipart = (MimeMultipart)message.getContent();
-	        int count = mimeMultipart.getCount();
-	        for (int i = 0; i < count; i ++){
-	            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-	            if (bodyPart.isMimeType("text/plain")){
-	                result = result + "\n" + bodyPart.getContent();
-	                break;  //without break same text appears twice in my tests
-	            } else if (bodyPart.isMimeType("text/html")){
-	                String html = (String) bodyPart.getContent();
-	                result = html;//result + "\n" + Jsoup.parse(html).text();
-
-	            }
-	        }
-	        return result;
-	    }
-	    return "";
-  }
+//  private String getTextFromMessage(Message message) throws Exception {
+//	    if (message.isMimeType("text/plain")){
+//	        return message.getContent().toString();
+//	    }else if (message.isMimeType("multipart/*")) {
+//	        String result = "";
+//	        MimeMultipart mimeMultipart = (MimeMultipart)message.getContent();
+//	        int count = mimeMultipart.getCount();
+//	        for (int i = 0; i < count; i ++){
+//	            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+//	            if (bodyPart.isMimeType("text/plain")){
+//	                result = result + "\n" + bodyPart.getContent();
+//	                break;  //without break same text appears twice in my tests
+//	            } else if (bodyPart.isMimeType("text/html")){
+//	                String html = (String) bodyPart.getContent();
+//	                result = html;//result + "\n" + Jsoup.parse(html).text();
+//
+//	            }
+//	        }
+//	        return result;
+//	    }
+//	    return "";
+//  }
   public void deleteMail(String messageID) throws MessagingException{
 	  for(MailContainer mc:this.getMailContainers().values()){
 		  for(Mail mail:mc.getContainingMails()){
