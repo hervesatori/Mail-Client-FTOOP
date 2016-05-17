@@ -23,6 +23,7 @@ public class MailClient {
 		
 		//********** Verwenden eines Kontos mit MailControl
 		MailControl mailControl = new MailControl(kontoControl.getKontos().get(1));
+		mailControl.saveMailContainers();
 		
 		
 		

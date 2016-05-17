@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.UUID;
 import java.io.*;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +17,7 @@ import java.text.SimpleDateFormat;
 import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.BodyPart;
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -30,6 +33,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.search.MessageIDTerm;
+import javax.mail.search.SearchTerm;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -55,17 +60,22 @@ public class MailControl {
 	private EmailKonto currentKonto;
 	private ArrayList<Folder> serverMailFolders;
 	private HashMap<String, MailContainer> mailContainers;
-//	private ArrayList<MailContainer> mailContainers;
 	private Store store;
-
-	private MailContainer inbox;
-	private MailContainer outbox;
 	private  final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+	private String mailboxName; 
+	private String attachmentPath;
 	
   public MailControl(EmailKonto currentKonto) {
+	  //Initialisieren der Variablen
 	  this.currentKonto = currentKonto;
 	  speichernInbox = new Speichern();
 	  speichernOutbox = new Speichern();
+	  this.serverMailFolders = new ArrayList<Folder>();
+	  this.mailContainers = new HashMap<String, MailContainer>();
+	  this.attachmentPath = "Attachment/";
+	  
+	  //Setzen des Mailboxnamens
+	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
 	  
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
@@ -82,6 +92,7 @@ public class MailControl {
 	  // Überprüfen, ob bereits eine Konto Mailbox XML vorhanden ist und falls nicht,
 	  //erstellen, plus herunterladen aller Mails vom Account. Andernfalls Aktualisieren der Mailbox
 	  if(this.existsMailboxXML()){
+		  System.out.println("Mailbox "+this.getMailboxName()+" zum Konto "+this.getCurrentKonto().getKonto()+" wurde gefunden");
 		  try {
 			this.updateMailFolders(Folder.READ_WRITE);
 		} catch (MessagingException e) {
@@ -90,11 +101,24 @@ public class MailControl {
 		}
 	  }else{
 		  //********** Erstellen der Mailbox
+		  System.out.println("Neu Initialisierung der Mailbox "+this.getMailboxName()+" zum Konto "+this.getCurrentKonto().getKonto()+".");
 		  this.initializeMailbox();
 	  }
 		
   }
   /**
+ * @return the mailboxName
+ */
+private String getMailboxName() {
+	return mailboxName;
+}
+/**
+ * @param mailboxName the mailboxName to set
+ */
+private void setMailboxName(String mailboxName) {
+	this.mailboxName = mailboxName;
+}
+/**
    * Initialisiere ServerMailFolders - Reflektiert die Ordner auf dem Server, mit welchen später auch die direkte Mailabfrage gemacht wird
    */
   private void initializeServerMailFolders(){
@@ -118,7 +142,7 @@ private ArrayList<Folder> getServerMailFolders() {
 }
 private boolean existsMailboxXML(){
 	  boolean exists = false;
-	  File mailboxXML = new File("Mailbox"+this.getCurrentKonto().getKonto()+".xml");
+	  File mailboxXML = new File(this.getMailboxName());
 	  if(mailboxXML.exists() && !mailboxXML.isDirectory()) { 
 		  exists = true;
 	  }	  
@@ -130,67 +154,67 @@ private boolean existsMailboxXML(){
 	public void setCurrentKonto(EmailKonto currentKonto) {
 		this.currentKonto = currentKonto;
 	}
-	/**
-   * 
-   * @throws NoSuchProviderException
-   * 
-   */
-  public void receiveMsg() throws NoSuchProviderException {
-	 
-	  Store store = null;
-	  Folder emailFolder = null;
-	 
-	
-	  //properties wird erstellt
-	  //The Properties class represents a persistent set of properties
-      Properties properties = new Properties();
-
-      properties.put("mail.pop3.socketFactory.class", SSL_FACTORY);
-      properties.put("mail.pop3.socketFactory.fallback", "false");
-      properties.put("mail.pop3.port", Integer.toString(currentKonto.getPop3Port()));
-      properties.put("mail.pop3.socketFactory.port",Integer.toString(currentKonto.getPop3Port()));
-
-      URLName url = new URLName("pop3", currentKonto.getPop3Server(),currentKonto.getPop3Port(), "",
-    		  currentKonto.getBenutzerNamePop(), currentKonto.getPasswortPop());
-      //Objekt Session kapselt die Verbindung an Mail Server
-      Session emailSession = Session.getDefaultInstance(properties);
-     
-      //Objekt Store + Verbindung an POP3 Server
-     
-	try {
-		 store = new POP3SSLStore(emailSession, url);
-		 store.connect();
-
-      //Objekt Folder wird instanziert
-		emailFolder = store.getFolder("INBOX");
-		emailFolder.open(Folder.READ_ONLY);
-	  // Array Messages wird instanziert	
-		 Message[] messages = emailFolder.getMessages();
-	  // Messages werden an Console angezeigt
-		 printMessages(messages);
-	  // Messages werden in File "MailsInbox gespeichert
-		 safeContainers(messages,fileInbox);
-		 
-	} catch (MessagingException e) {
-		
-		e.printStackTrace();
-	}finally {
-		if (emailFolder != null && emailFolder.isOpen()) { 
-	          try {         	  
-	        	  emailFolder.close(false); // false -> Mails die DELETED markiert sind, werden nicht gelöscht
-	          } catch (Exception e) { 
-	              e.printStackTrace(); 
-	            } 
-	    } 
-        try { 
-            if (store != null && store.isConnected()) { 
-                store.close(); 
-            } 
-        } catch (MessagingException e) { 
-            e.printStackTrace(); 
-        } 
-	 }
-    }
+//	/**
+//   * 
+//   * @throws NoSuchProviderException
+//   * 
+//   */
+//  public void receiveMsg() throws NoSuchProviderException {
+//	 
+//	  Store store = null;
+//	  Folder emailFolder = null;
+//	 
+//	
+//	  //properties wird erstellt
+//	  //The Properties class represents a persistent set of properties
+//      Properties properties = new Properties();
+//
+//      properties.put("mail.pop3.socketFactory.class", SSL_FACTORY);
+//      properties.put("mail.pop3.socketFactory.fallback", "false");
+//      properties.put("mail.pop3.port", Integer.toString(currentKonto.getPop3Port()));
+//      properties.put("mail.pop3.socketFactory.port",Integer.toString(currentKonto.getPop3Port()));
+//
+//      URLName url = new URLName("pop3", currentKonto.getPop3Server(),currentKonto.getPop3Port(), "",
+//    		  currentKonto.getBenutzerNamePop(), currentKonto.getPasswortPop());
+//      //Objekt Session kapselt die Verbindung an Mail Server
+//      Session emailSession = Session.getDefaultInstance(properties);
+//     
+//      //Objekt Store + Verbindung an POP3 Server
+//     
+//	try {
+//		 store = new POP3SSLStore(emailSession, url);
+//		 store.connect();
+//
+//      //Objekt Folder wird instanziert
+//		emailFolder = store.getFolder("INBOX");
+//		emailFolder.open(Folder.READ_ONLY);
+//	  // Array Messages wird instanziert	
+//		 Message[] messages = emailFolder.getMessages();
+//	  // Messages werden an Console angezeigt
+//		 printMessages(messages);
+//	  // Messages werden in File "MailsInbox gespeichert
+//		 safeContainers(messages,fileInbox);
+//		 
+//	} catch (MessagingException e) {
+//		
+//		e.printStackTrace();
+//	}finally {
+//		if (emailFolder != null && emailFolder.isOpen()) { 
+//	          try {         	  
+//	        	  emailFolder.close(false); // false -> Mails die DELETED markiert sind, werden nicht gelöscht
+//	          } catch (Exception e) { 
+//	              e.printStackTrace(); 
+//	            } 
+//	    } 
+//        try { 
+//            if (store != null && store.isConnected()) { 
+//                store.close(); 
+//            } 
+//        } catch (MessagingException e) { 
+//            e.printStackTrace(); 
+//        } 
+//	 }
+//    }
   
 	public HashMap<String, MailContainer> getMailContainers() {
 		return mailContainers;
@@ -280,6 +304,9 @@ private boolean existsMailboxXML(){
 	  return this.store; 
 	  
   }
+  private void addMailContainer(Folder folder){
+	  this.getMailContainers().put(folder.getFullName(), new MailContainer(folder.getFullName()));
+  }
   /**
    * 
    * @param readOrWriteFolderModus Zu setzen über Folder.Read_Write oder Folder.Read_Only
@@ -289,10 +316,18 @@ private boolean existsMailboxXML(){
 		if(readOrWriteFolderModus == Folder.READ_WRITE || readOrWriteFolderModus == Folder.READ_ONLY){
 			for(Folder folder:this.getMailFolders()){
 				folder.open(readOrWriteFolderModus);
-			  // Array Messages wird instanziert	
+				//Falls es den Container noch nicht gibt..
+				if(this.getMailContainers().get(folder.getFullName()) == null){
+					//Container über Folder Objekt erstellen.
+					this.addMailContainer(folder);
+				}
+				MailContainer mc = this.getMailContainers().get(folder.getFullName());
+				// Array Messages wird instanziert	
 				 for(Message message:folder.getMessages()){
 					try {
-						this.getMailContainers().get(folder.getName()).addMailToContainer(this.generateMailFromMessage(message));
+
+						Mail mail = this.generateMailFromMessage(message);
+						mc.addMailToContainer(mail);
 					} catch (IOException e) {
 						System.out.println("Konnte kein Mailobjekt erstellen: ");
 						e.printStackTrace();
@@ -320,7 +355,7 @@ private boolean existsMailboxXML(){
 		ArrayList<File>  attachments = new ArrayList<File>();
 		 		  
 	  //Attachments hinzufügen
-	  for(String attachment:this.handleAttachement(msg)){
+	  for(String attachment:this.handleAttachment(msg)){
 		  attachments.add(new File(attachment));
 	  }
 		Mail mail = new Mail(messageID, received, to, cc, bcc, from, subject, message, attachments);
@@ -391,13 +426,13 @@ private boolean existsMailboxXML(){
 					  xmlFolder.addContent(xmlMail);
 				  }
 			  
-		  
+		  root.addContent(xmlFolder);
 	  }
 	  try {
 	      //Normal Anzeige mit getPrettyFormat()
 	      XMLOutputter outputFile = new XMLOutputter(Format.getPrettyFormat());
 	     
-	      outputFile.output(doc, new FileOutputStream("Mailbox"+this.getCurrentKonto().getKonto() +".xml"));
+	      outputFile.output(doc, new FileOutputStream(this.getMailboxName()));
 	   }
 	   catch (java.io.IOException e){
 		   System.out.println("Konnte die Konten nicht im XML Format speichern.");
@@ -419,7 +454,7 @@ private boolean existsMailboxXML(){
   }
   public ArrayList<Folder> getMailFolders() {
 	return serverMailFolders;
-}
+  }
   private String getMessageContent(Message msg) throws IOException, MessagingException{
 	  Object msgContent = msg.getContent();
 	  String content ="";
@@ -485,8 +520,78 @@ private boolean existsMailboxXML(){
 	    }
 	    return "";
   }
-  
-  private ArrayList<String> handleAttachement(Message message) throws MessagingException, IOException{
+  public void deleteMail(String messageID) throws MessagingException{
+	  for(MailContainer mc:this.getMailContainers().values()){
+		  for(Mail mail:mc.getContainingMails()){
+			  if(mail.getMessageID().equals(messageID)){
+				  //Löschen aus dem lokalen Container
+				  mc.getContainingMails().remove(mail);
+				  this.removeAttachment(mail);
+				  //Löschen vom Online Account
+				  
+				  for(Folder f:this.getMailFolders()){
+					  //Überprüfen,dass Folder Connection offen ist und Schreibrechte gesetzt sind
+					  if(!f.isOpen() || f.getMode() != Folder.READ_WRITE){
+						  this.reopenFolderConnection(f, Folder.READ_WRITE);
+					  }
+					  if(f.getFullName().equals(mc.getFolderFullPath())){
+						  SearchTerm st = new MessageIDTerm(messageID);
+						  Message[] msgArr = f.search(st);
+						  //Überprüfung ob über die ID wirklich nur eine Mail gefunden wird
+						  if(msgArr.length==1){
+							  msgArr[0].setFlag(Flags.Flag.DELETED, true);
+						  }else{
+							  if(msgArr.length== 0){
+								  try{
+									  throw new NoSuchElementException();
+								  }catch(NoSuchElementException e){
+									  System.out.println("Konnte die zu löschende Mail nicht finden mit ID "+messageID);
+									  e.printStackTrace();
+								  }
+							  }
+						  }
+					  }
+					  //Damit die Flags effektiv gesetzt und verarbeitet werden, jeweiligen folder schliessen und neu öffnen
+					  this.reopenFolderConnection(f);
+				  }
+
+			  }
+		  }
+	  }
+  }
+  private void reopenFolderConnection(Folder f) throws MessagingException{
+	  int folderWriteMode = Folder.READ_ONLY;
+	  if(f.isOpen()){
+		  folderWriteMode = 	f.getMode();  
+		  f.close(true);
+		  
+	  }
+	  f.open(folderWriteMode);
+  }
+  private void reopenFolderConnection(Folder f, int folderWriteMode) throws MessagingException{
+	  if(f.isOpen()){
+		  f.close(true);
+		  
+	  }
+	  f.open(folderWriteMode);
+  }
+  private void removeAttachment(Mail mail){
+	  for(File attachment:mail.getAttachments()){
+		  try{
+	    		if(attachment.delete()){
+	    			System.out.println("Attachment "+attachment.getName() + " is deleted!");
+	    		}else{
+	    			System.out.println("ATtachment delete operation is failed.");
+	    		}
+	    	   
+	    	}catch(Exception e){
+	    		
+	    		e.printStackTrace();
+	    		
+	    	}
+	  }
+  }
+  private ArrayList<String> handleAttachment(Message message) throws MessagingException, IOException{
 	  // suppose 'message' is an object of type Message
 	  ArrayList<String> nameGuids = new ArrayList<String>();
 	  String contentType = message.getContentType();
@@ -504,7 +609,7 @@ private boolean existsMailboxXML(){
 		    	//Erstellen des Filenamen plus universally unique identifier, welches als Referenz im XML dient
 		    	  String nameGuid = UUID.randomUUID()+"-"+part.getFileName();
 		    	  nameGuids.add(nameGuid);
-		    	  String destFilePath = "Attachment/" + nameGuid;
+		    	  String destFilePath = this.getAttachmentPath() + nameGuid;
 		    	  
 		    	  
 		    	  FileOutputStream output = new FileOutputStream(destFilePath);
@@ -525,7 +630,19 @@ private boolean existsMailboxXML(){
 	  }
 	  return nameGuids;
   }
-  private String getFromAddresses(Message msg){
+  /**
+ * @return the attachmentPath
+ */
+public String getAttachmentPath() {
+	return attachmentPath;
+}
+/**
+ * @param attachmentPath the attachmentPath to set
+ */
+public void setAttachmentPath(String attachmentPath) {
+	this.attachmentPath = attachmentPath;
+}
+private String getFromAddresses(Message msg){
 	  String fromAddress ="";
 		try {
 			for(Address ad:msg.getReplyTo()){
