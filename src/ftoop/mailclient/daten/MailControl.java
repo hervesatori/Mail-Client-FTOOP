@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Flags;
@@ -333,7 +335,7 @@ private boolean existsMailboxXML(){
 						String mID = this.getMessageID(message.getHeader("Message-ID"));
 						boolean exists = mc.existsMail(mID);
 						if(exists){
-							System.out.println("Mail mit ID "+mID + "existiert bereits und wird nicht erneut heruntergeladen");
+							System.out.println("Mail mit ID "+mID + " existiert bereits und wird nicht erneut heruntergeladen");
 
 						}else{
 							System.out.println("Mail mit ID "+mID + " existiert noch nicht, wird heruntergeladen");
@@ -556,7 +558,7 @@ private boolean existsMailboxXML(){
 								  try{
 									  throw new NoSuchElementException();
 								  }catch(NoSuchElementException e){
-									  System.out.println("Konnte die zu löschende Mail nicht finden mit ID "+messageID);
+									  System.out.println("Konnte Online die zu löschende Mail nicht finden mit ID "+messageID);
 									  e.printStackTrace();
 								  }
 							  }
@@ -740,14 +742,45 @@ private void safeContainers(Message[] msg,String file) {
 		 }  
 	  });  
 	  
-	//message wird geschrieben
+	  //message wird geschrieben
 	  Transport transport = session.getTransport("smtp");
 	  try {  
 	   MimeMessage message = new MimeMessage(session);  
 	   message.setFrom(new InternetAddress(mail.getFrom()));
 	   message.addRecipient(Message.RecipientType.TO,new InternetAddress(mail.getTo()));  
 	   message.setSubject(mail.getSubject());  
-	   message.setText(mail.getMessage());  
+	     
+	   
+	   //Falls die Mail noch Attachments beinhalten soll, diese anhängen
+	   if(mail.getAttachments()!= null){
+		   	// Create the message part
+	         BodyPart messageBodyPart = new MimeBodyPart();
+
+	         // Now set the actual message
+	         messageBodyPart.setText(mail.getMessage());
+
+	         // Create a multipar message
+	         Multipart multipart = new MimeMultipart();
+
+	         // Set text message part
+	         multipart.addBodyPart(messageBodyPart);
+
+	         for(File f:mail.getAttachments()){
+		         // Part two is attachment
+		         messageBodyPart = new MimeBodyPart();
+		         String filename = f.getAbsolutePath();
+		         DataSource source = new FileDataSource(filename);
+		         messageBodyPart.setDataHandler(new DataHandler(source));
+		         messageBodyPart.setFileName(filename);
+		         multipart.addBodyPart(messageBodyPart);
+	         }
+
+	         // Send the complete message parts
+	         message.setContent(multipart);
+	   }else{
+		   //Standard Mail und nur den Textinhalt setzen
+		   message.setText(mail.getMessage());
+	   }
 	     
 	   //Message wird gesendet
 //	   transport.connect(currentKonto.getBenutzerNameSmtp(),currentKonto.getPasswortSmtp());
@@ -773,6 +806,14 @@ private void safeContainers(Message[] msg,String file) {
 	   
     }  
 	   
+  }
+  public void closeAllFolderConnections() throws MessagingException{
+	  for(Folder f:this.getMailFolders()){
+		  if(f.isOpen()){
+			  f.close(true);
+		  }
+	  }
+	  this.getKontoStore().close();
   }
 }
   

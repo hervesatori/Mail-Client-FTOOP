@@ -46,46 +46,46 @@ public class Mail {
    }
    public String getMessageID() {
 	return messageID;
-}
+   }
 
-public void setMessageID(String messageID) {
-	this.messageID = messageID;
-}
+	public void setMessageID(String messageID) {
+		this.messageID = messageID;
+	}
 
-public Date getReceived() {
-	return received;
-}
+	public Date getReceived() {
+		return received;
+	}
 
-public void setReceived(Date received) {
-	this.received = received;
-}
+	public void setReceived(Date received) {
+		this.received = received;
+	}
 
-public String getCc() {
-	return cc;
-}
-
-public void setCc(String cc) {
-	this.cc = cc;
-}
-
-public String getBcc() {
-	return bcc;
-}
-
-public void setBcc(String bcc) {
-	this.bcc = bcc;
-}
-
-public ArrayList<File>  getAttachments() {
-	return attachments;
-}
-
-public void setAttachments(ArrayList<File>  attachments) {
-	this.attachments = attachments;
-}
-
-public String getTo() {
-	   return to;
+	public String getCc() {
+		return cc;
+	}
+	
+	public void setCc(String cc) {
+		this.cc = cc;
+	}
+	
+	public String getBcc() {
+		return bcc;
+	}
+	
+	public void setBcc(String bcc) {
+		this.bcc = bcc;
+	}
+	
+	public ArrayList<File>  getAttachments() {
+		return attachments;
+	}
+	
+	public void setAttachments(ArrayList<File>  attachments) {
+		this.attachments = attachments;
+	}
+	
+	public String getTo() {
+		   return to;
    }
    
    public String getFrom() {
