@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 import java.io.*;
@@ -54,11 +55,6 @@ import java.util.HashMap;
  *
  */
 public class MailControl {
-	
-	public static final String fileInbox = "MailsInbox";
-	public static final String fileOutbox = "MailsOutbox";
-	private Speichern speichernInbox;
-	private Speichern speichernOutbox;
 	private EmailKonto currentKonto;
 	private ArrayList<Folder> serverMailFolders;
 	private HashMap<String, MailContainer> mailContainers;
@@ -70,8 +66,6 @@ public class MailControl {
   public MailControl(EmailKonto currentKonto) {
 	  //Initialisieren der Variablen
 	  this.currentKonto = currentKonto;
-	  speichernInbox = new Speichern();
-	  speichernOutbox = new Speichern();
 	  this.serverMailFolders = new ArrayList<Folder>();
 	  this.mailContainers = new HashMap<String, MailContainer>();
 	  this.attachmentPath = "Attachment/";
@@ -604,6 +598,11 @@ private boolean existsMailboxXML(){
 	    	}
 	  }
   }
+  private String removeSpecialCharactersFromFileName(String filename){
+	  Objects.requireNonNull(filename);
+	  String result = filename.replaceAll("[<>:/\\|?*\"]","");
+	  return result;
+  }
   private ArrayList<String> handleAttachment(Message message) throws MessagingException, IOException{
 	  // suppose 'message' is an object of type Message
 	  ArrayList<String> nameGuids = new ArrayList<String>();
@@ -620,10 +619,17 @@ private boolean existsMailboxXML(){
 		          // code to save attachment...
 		    	// save an attachment from a MimeBodyPart to a file
 		    	//Erstellen des Filenamen plus universally unique identifier, welches als Referenz im XML dient
-		    	  String nameGuid = UUID.randomUUID()+"-"+part.getFileName();
+		    	  final String filename = this.removeSpecialCharactersFromFileName(part.getFileName());
+		    	  String nameGuid = UUID.randomUUID()+"-"+filename;
 		    	  nameGuids.add(nameGuid);
 		    	  String destFilePath = this.getAttachmentPath() + nameGuid;
 		    	  
+		    	  //Überpüfen, ob der Attachment Pfad existiert und falls nicht, erstellen der Ordner
+		    	  File atPath = new File(this.getAttachmentPath());
+		    	  if(!atPath.exists()){
+		    		  System.out.println("Ausgabepfad für Attachments fehlte, erstelle diesen: "+atPath.getAbsolutePath());
+		    		  atPath.mkdirs();
+		    	  }
 		    	  
 		    	  FileOutputStream output = new FileOutputStream(destFilePath);
 		    	   
@@ -685,44 +691,8 @@ private String getToAddresses(Message msg){
 private void setMailFolders(ArrayList<Folder> serverMailFolders) {
 	this.serverMailFolders = serverMailFolders;
 }
-private void safeContainers(Message[] msg,String file) {
-	  speichernInbox.xmlParser(MailControl.fileInbox);
-	    try {
 
-		  for (int i = 0, n = msg.length; i < n; i++) {
-			  speichernInbox.setMail();
-			  Message message = msg[i];
-			  speichernInbox.setDate(message.getSentDate());
-			  speichernInbox.setSubject(message.getSubject());
-			  speichernInbox.setFrom(message.getFrom()[0].toString());
-//	          for (String line : inputStreamToStrings(message.getInputStream())) { 
-//
-//	        	  speichernInbox.setMessage(line);
-//
-//	          } 
-			  speichernInbox.setMessage(message.getContent().toString());
-		  }
-	    }catch (Exception e) { 
-	        e.printStackTrace(); 
-	    } 
-	    speichernInbox.speichern(file);
-	  } 
-  private void saveContainers(MimeMessage msg,String file,Date d) {
-	  speichernOutbox.xmlParser(MailControl.fileOutbox);
-		 
-	    try {
-	    	speichernOutbox.setMail();
-			speichernOutbox.setDate(d);
-	    	speichernOutbox.setSubject(msg.getSubject());
-	    	speichernOutbox.setFrom(msg.getFrom()[0].toString());
-
-	    	speichernOutbox.setMessage((String) msg.getContent());
-		  
-	    }catch (Exception e) { 
-	        e.printStackTrace(); 
-	    } 
-	    speichernOutbox.speichern(file);
-	  } 
+  
   
   public void sendMsg(Mail mail) throws NoSuchProviderException {
 	  
@@ -764,15 +734,23 @@ private void safeContainers(Message[] msg,String file) {
 
 	         // Set text message part
 	         multipart.addBodyPart(messageBodyPart);
-
+	         
 	         for(File f:mail.getAttachments()){
 		         // Part two is attachment
-		         messageBodyPart = new MimeBodyPart();
-		         String filename = f.getAbsolutePath();
-		         DataSource source = new FileDataSource(filename);
-		         messageBodyPart.setDataHandler(new DataHandler(source));
-		         messageBodyPart.setFileName(filename);
-		         multipart.addBodyPart(messageBodyPart);
+	        	 try{	        		 
+	        		 if(!f.exists()){
+	        			 throw new FileNotFoundException();
+	        		 }
+			         messageBodyPart = new MimeBodyPart();
+			         DataSource source = new FileDataSource(f.getAbsolutePath());		         
+			         messageBodyPart.setDataHandler(new DataHandler(source));
+			         String filename = f.getName();
+			         messageBodyPart.setFileName(filename);
+			         multipart.addBodyPart(messageBodyPart);
+	        	 }catch(FileNotFoundException e){
+	        		 System.out.println("Konnte das Attachment nicht finden und überspringe dieses.");
+	        		 e.printStackTrace();
+	        	 }
 	         }
 
 	         // Send the complete message parts
@@ -783,14 +761,11 @@ private void safeContainers(Message[] msg,String file) {
 	   }
 	     
 	   //Message wird gesendet
-//	   transport.connect(currentKonto.getBenutzerNameSmtp(),currentKonto.getPasswortSmtp());
 	   System.out.println(currentKonto.getBenutzerNameSmtp() +" " +currentKonto.getPasswortSmtp());
 	   transport.connect();
 	   transport.sendMessage(message, message.getAllRecipients());  
 	  
 	   System.out.println("message sent successfully");
-	   Date d = new Date();
-	   saveContainers(message,fileOutbox,d);
 	   
 	  } catch (MessagingException e) {
 		  throw new RuntimeException(e);
