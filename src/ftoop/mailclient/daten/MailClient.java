@@ -1,5 +1,6 @@
 package ftoop.mailclient.daten;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +11,11 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import ftoop.mailclient.gui.MainView;
 
 public class MailClient {
 	
@@ -23,8 +29,10 @@ public class MailClient {
 		kontoControl.loadKonten("kontos.xml");
 		
 		//********** Verwenden eines Kontos mit MailControl
-		MailControl mailControl = new MailControl(kontoControl.getKontos().get(1));
+		MailControl mailControl = new MailControl(kontoControl.getKontos().get(0));
+		mailControl.mailReceive();
 		mailControl.saveMailContainers();
+		
 //		mailControl.deleteMail(messageID);
 		
 		

@@ -72,7 +72,8 @@ public class MailControl {
 	  
 	  //Setzen des Mailboxnamens
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
-	  
+  }  
+  public void mailReceive(){
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
 	  Properties props = System.getProperties();
@@ -82,9 +83,8 @@ public class MailControl {
 		    this.store = session.getStore("imaps");
 		    store.connect(this.getCurrentKonto().getImapServer(), this.getCurrentKonto().getName(), this.getCurrentKonto().getPasswortPop());
 		    initializeServerMailFolders();
-	  } catch (MessagingException e) {
-		    e.printStackTrace();
-	  }
+	 
+		  
 	  // Überprüfen, ob bereits eine Konto Mailbox XML vorhanden ist und falls nicht,
 	  //erstellen, plus herunterladen aller Mails vom Account. Andernfalls Aktualisieren der Mailbox
 	  if(this.existsMailboxXML()){
@@ -101,12 +101,24 @@ public class MailControl {
 		  System.out.println("Neu Initialisierung der Mailbox "+this.getMailboxName()+" zum Konto "+this.getCurrentKonto().getKonto()+".");
 		  this.initializeMailbox();
 	  }
+	  } catch (MessagingException e) {
+		    e.printStackTrace();
+	  }finally {
+		  try {
+			  if (store != null && store.isConnected()) {  
+		    	store.close();
+			  }
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  }
 		
   }
   /**
  * @return the mailboxName
  */
-private String getMailboxName() {
+public String getMailboxName() {
 	return mailboxName;
 }
 /**
@@ -134,10 +146,10 @@ private void setMailboxName(String mailboxName) {
   /**
  * @return the serverMailFolders
  */
-private ArrayList<Folder> getServerMailFolders() {
+public ArrayList<Folder> getServerMailFolders() {
 	return serverMailFolders;
 }
-private boolean existsMailboxXML(){
+public boolean existsMailboxXML(){
 	  boolean exists = false;
 	  File mailboxXML = new File(this.getMailboxName());
 	  if(mailboxXML.exists() && !mailboxXML.isDirectory()) { 
@@ -676,6 +688,7 @@ private String getFromAddresses(Message msg){
 private String getToAddresses(Message msg){
 	String addresses ="";
 	try {
+		if (msg.getAllRecipients()== null) return addresses;
 		for(Address ad:msg.getAllRecipients()){
 			addresses += ad.toString() +";";
 		}

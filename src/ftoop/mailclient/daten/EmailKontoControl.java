@@ -82,9 +82,9 @@ public class EmailKontoControl {
 		  Element xmlSmtpPort = new Element("SmtpPort");
 		  xmlSmtpPort.setText(Integer.toString(konto.getSmtpPort()));
 		  Element xmlImapServer = new Element("ImapServer");
-		  xmlSmtpServer.setText(konto.getSmtpServer());
+		  xmlImapServer.setText(konto.getImapServer());
 		  Element xmlImapPort = new Element("ImapPort");
-		  xmlSmtpPort.setText(Integer.toString(konto.getSmtpPort()));
+		  xmlImapPort.setText(Integer.toString(konto.getImapPort()));
 		  
 		  //Hinzufügen der Children zum Konto
 		  xmlKonto.addContent(xmlKontoName);
@@ -161,4 +161,8 @@ public class EmailKontoControl {
 	  }
 	  return returnStr;
   }
+public void addKonto(EmailKonto konto) {
+	this.getKontos().add(konto);
+	
+}
 }
