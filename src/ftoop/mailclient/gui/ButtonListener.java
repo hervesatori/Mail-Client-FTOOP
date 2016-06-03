@@ -64,7 +64,8 @@ public class ButtonListener implements ActionListener {
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
-		   	  panelCenter.add(new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten").getPanelUnten(),BorderLayout.CENTER);
+	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
+		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 		      splitPane.setRightComponent(panelCenter);
 		      senden = "weiterleiten";
 	    	  break;
@@ -112,7 +113,8 @@ public class ButtonListener implements ActionListener {
 	    	   try {
 				   Mail mail = FolderSelectionListener.getSelectedMail();
 				   String to = mail.getTo();
-				   mail.setTo(mailWindows.getTxtAn().getText().replaceAll(";",""));
+				   String from = mailWindows.getTxtAn().getText();
+				   mail.setTo(from);
 				   mail.setFrom(to.replaceAll(";",""));
 			//	   mail.setMessage(mailWindows.getMsgPane().getText());
 				   System.out.println(mail.getFrom());
