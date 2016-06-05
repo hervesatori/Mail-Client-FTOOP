@@ -4,8 +4,11 @@ package ftoop.mailclient.gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.mail.Folder;
 import javax.mail.MessagingException;
@@ -164,12 +167,36 @@ public class MainView extends JFrame {
             //Folders werden an Konto hinzugefügt  
 	        //    for(int j = 0; j < mailControlContainer.get(kontoControl.getKontos().get(i).
 	        //    		getName()).getServerMailFolders().size();j++){  
-	        	  Set<String> key = mailControlContainer.get(kontoControl.getKontos().get(i).getName()).getMailContainers().keySet(); 
+	        	 
+	        	  
+	        	  Set<String> keyParent = mailControlContainer.get(kontoControl.getKontos().get(i).getName()).
+	        			  getParentContainer().keySet(); 
+	        	  System.out.println(keyParent.size());
+	        	for(String folderFullPath : keyParent ){
+	            	
+	        		DefaultMutableTreeNode folder = new DefaultMutableTreeNode(folderFullPath);
+	        	    ArrayList<String> str =	mailControlContainer.get(kontoControl.getKontos().get(i).getName()).
+	        	    		getParentContainer().get(folderFullPath);
+	                for(String folder1 : str) {
+	                	DefaultMutableTreeNode folder2 = new DefaultMutableTreeNode(folder1);
+	                	folder.add(folder2);
+	                }
+	               konto.add(folder);
+	        	}   
+	               for(String str2 : mailControlContainer.get(kontoControl.getKontos().get(i).getName()).getFolderWithoutParent()) {
+	            	   DefaultMutableTreeNode folder3 = new DefaultMutableTreeNode(str2);
+	            	   konto.add(folder3);
+	               }
+	        	
+	        	/* Set<String> key = mailControlContainer.get(kontoControl.getKontos().get(i).getName()).getMailContainers().keySet(); 
 	        	  System.out.println(key.size());
 	        	for(String folderFullPath : key ){
 	            	DefaultMutableTreeNode folder = new DefaultMutableTreeNode(folderFullPath);			
 	                konto.add(folder);
-	        	}
+	                System.out.println(folderFullPath);
+	                
+	               
+	        	}*/
 	       //     }
 	            //Konto wird an root hinzugefügt
 	            root.add(konto);  
@@ -253,10 +280,10 @@ public class MainView extends JFrame {
    IllegalAccessException, UnsupportedLookAndFeelException {
    	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
    	
-  	//	init(true);
+  		init(true);
    	
    	
-  //**********erstellen der MailControlContainer
+  /*//**********erstellen der MailControlContainer
 	mailControlContainer = new HashMap<String,MailControl>();
 	   //**********Laden der Konti
 	kontoControl = new EmailKontoControl();
@@ -291,9 +318,9 @@ public class MainView extends JFrame {
         }
      });
  
-  }
+  }*/
 }
 
-
+}
 
 

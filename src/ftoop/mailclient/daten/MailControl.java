@@ -2,12 +2,15 @@ package ftoop.mailclient.daten;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.io.*;
 import java.nio.file.Files;
@@ -38,6 +41,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.search.MessageIDTerm;
 import javax.mail.search.SearchTerm;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -48,6 +53,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import com.sun.mail.pop3.POP3SSLStore;
+
 import java.util.HashMap;
 /**
  * 
@@ -63,6 +69,10 @@ public class MailControl {
 	private String mailboxName; 
 	private String attachmentPath;
 	
+	private ArrayList<String> folderContainer;
+	private HashMap<String, ArrayList<String>> parentContainer;
+	private Set<String> folderWithoutParent;
+	
   public MailControl(EmailKonto currentKonto) {
 	  //Initialisieren der Variablen
 	  this.currentKonto = currentKonto;
@@ -70,9 +80,13 @@ public class MailControl {
 	  this.mailContainers = new HashMap<String, MailContainer>();
 	  this.attachmentPath = "Attachment/";
 	  
+	  this.folderContainer = new ArrayList<String>();
+	  this.parentContainer= new HashMap<String,ArrayList<String>>();
+	  this.folderWithoutParent = new TreeSet<String>();
 	  //Setzen des Mailboxnamens
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
-  }  
+  }
+  
   public void mailReceive(){
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
@@ -132,17 +146,48 @@ private void setMailboxName(String mailboxName) {
    */
   private void initializeServerMailFolders(){
 	  try {
-		    System.out.println("Initialisiere MailControl ServerMailFolders");
-		    for (javax.mail.Folder folder:store.getDefaultFolder().list("*")) {
+		   System.out.println("Initialisiere MailControl ServerMailFolders");
+		   for (javax.mail.Folder folder:store.getDefaultFolder().list("*")) {
 		        if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
 		        	this.getServerMailFolders().add(folder);
-		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount());		            
+		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount());
+//*****Herve CHANGE ******************************************************************************************************    
+		            System.out.println(folder.getParent() + ": " + folder.getMessageCount());	
+		           
+		                
+		      if(folder.getParent().toString()=="") { 
+	        	    System.out.println("KEINE");
+		        	folderWithoutParent.add(folder.getFullName());
+		        }else {
+		          for(Folder fold : folder.getParent().list()) {
+		        	System.out.println(fold.getName());
+		        	    folderContainer.add(fold.getName());
 		        }
-		    }
-		} catch (MessagingException e) {
+		        if(!parentContainer.containsKey(folder.getParent().toString())) {
+		            parentContainer.put(folder.getParent().toString(),folderContainer);
+		        }          
+	          }         
+		    folderContainer = new ArrayList<String>();             
+		   }
+	     }
+		    
+	 } catch (MessagingException e) {
 		    e.printStackTrace();
-		}
+	 }
+	  Set<String> key = parentContainer.keySet(); 
+	  System.out.println(key.size());
+	 for(String folderFullPath : key ){
+        System.out.println(folderFullPath+"      **********");     
+	 }
   }
+  public HashMap<String, ArrayList<String>> getParentContainer() {
+	  return parentContainer;
+  }
+
+  public Set<String> getFolderWithoutParent() {
+	  return folderWithoutParent;
+  }
+ 
   /**
  * @return the serverMailFolders
  */
@@ -707,7 +752,8 @@ private void setMailFolders(ArrayList<Folder> serverMailFolders) {
 
   
   
-  public void sendMsg(Mail mail) throws NoSuchProviderException {
+  @SuppressWarnings("static-access")
+public void sendMsg(Mail mail) throws NoSuchProviderException {
 	  
 	  
 	//Objekt Session wird erstellt  
@@ -781,6 +827,8 @@ private void setMailFolders(ArrayList<Folder> serverMailFolders) {
 	   System.out.println("message sent successfully");
 	   
 	  } catch (MessagingException e) {
+		   JOptionPane err = new JOptionPane();
+		   err.showMessageDialog(null, "E-Mail Adresse falsch", "Fehler", JOptionPane.ERROR_MESSAGE);
 		  throw new RuntimeException(e);
 	    }  finally { 
 

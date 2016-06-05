@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import ftoop.mailclient.daten.Mail;
@@ -18,6 +19,7 @@ public class ButtonListener implements ActionListener {
 	private JPanel panelCenter;
 	private static MailWindows mailWindows;
 	private static String senden;
+	private JTable table;
 //	private MailControl mailControl;
 	
 	public ButtonListener(JSplitPane splitPane,JPanel panelCenter) {
@@ -29,6 +31,7 @@ public class ButtonListener implements ActionListener {
 	
 	
 	  public void actionPerformed(ActionEvent e) {
+		int row;  
 		panelCenter = new JPanel(new BorderLayout(5,5));   
 		String str =e.getActionCommand();
 		switch (str) {
@@ -47,9 +50,13 @@ public class ButtonListener implements ActionListener {
 	          senden = "neue";
 	    	  break;
 	       case "Löschen":
-	    	  
+	    	   table = FolderSelectionListener.getCurrentTable();
+	    	   row = table.getSelectedRow();
 	    	   String msgId = FolderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
 	    	   System.out.println(msgId);
+	    	   if(table.getRowCount() > 0){
+	    	   ((MailTableModel) table.getModel()).removeRow(row);
+	    	   }
 	    	   try {
 	  	    	FolderSelectionListener.getSelectedMailControl().deleteMail(FolderSelectionListener.getSelectedMail().getMessageID());
 			} catch (MessagingException e1) {
@@ -140,15 +147,11 @@ public class ButtonListener implements ActionListener {
 				   // TODO Auto-generated catch block
 			 	   e1.printStackTrace();
 			     }
-		    	  
 		    	  break;
 	    	  
-		 }
-		   
-	   
-	    
-	   
-	   
+		 }	   
+
    }
+   
 		 	
 }

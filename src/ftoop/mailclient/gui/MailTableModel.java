@@ -58,5 +58,13 @@ public class MailTableModel extends AbstractTableModel {
     public String getColumnName(final int columnIndex) {
         return COLUMN_NAMES[columnIndex];
     }
+    
+    public void removeRow(int row)
+    {
+     if(row >= 0 && row < containingMails.size()) {
+    	containingMails.remove(row);
+        fireTableRowsDeleted(row, row);
+     }
+    }
 }
 

@@ -1,11 +1,8 @@
 package ftoop.mailclient.daten;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.mail.Message;
 
 /**
  * 
