@@ -112,9 +112,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
    }
     public void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
     		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
-   	    Point origin = e.getPoint () ;
-        int row = table.rowAtPoint ( origin ) ;
-        Mail mailLokal = containingMails.get(row);
+ //  	    Point origin = e.getPoint () ;
+ //       int row = table.rowAtPoint( origin ) ; 
+        Mail mailLokal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
         mail = mailLokal;
         System.out.println("MAIL:  "+mail.getFrom()+"Menge:  "+mailLokal.getAttachments().size());
         scrollPane = new JScrollPane(table);
@@ -122,9 +122,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
         if(oneClick) {
           panelCenter.add(scrollPane,BorderLayout.NORTH);
         }
-        if(mailLokal.getAttachments().size() > 0) {
+       /* if(mailLokal.getAttachments().size() > 0) {
 			JPanel panelAttachements = new JPanel();
-			 System.out.println("Menge:  "+mailLokal.getAttachments().size());
+			 System.out.println("Menge:  "+mailLokal.getAttachments().size()+mail.getisRead());
 				DefaultListModel<File> modelAttachement = new DefaultListModel<File>();
 				JList<File> listAttachement = new JList<File>(modelAttachement);
 				panelAttachements.add(listAttachement);
@@ -139,12 +139,12 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 				
 	
 
-		} else {
+		} else {*/
         panelCenter.add(new MailWindows(mailLokal,"lesen").getPanelUnten(),BorderLayout.CENTER);
         splitPane.setRightComponent(panelCenter);
         splitPane.revalidate();  
         splitPane.repaint();
-		}
+//		}
     }  
     public static Mail getSelectedMail() {
     	return mail;

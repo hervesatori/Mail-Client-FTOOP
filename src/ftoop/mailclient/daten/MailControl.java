@@ -391,6 +391,7 @@ public boolean existsMailboxXML(){
 						}else{
 							System.out.println("Mail mit ID "+mID + " existiert noch nicht, wird heruntergeladen");
 							Mail mail = this.generateMailFromMessage(message);
+							mail.setNotRead(true);
 							mc.addMailToContainer(mail);
 						}
 					} catch (IOException e) {

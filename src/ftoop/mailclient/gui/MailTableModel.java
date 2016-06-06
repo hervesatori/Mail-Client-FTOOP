@@ -18,7 +18,7 @@ public class MailTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements" };
+	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","not read"};
   
     private final List<Mail> containingMails;
 
@@ -51,6 +51,8 @@ public class MailTableModel extends AbstractTableModel {
             return mail.getReceived();
         else if (columnIndex == 4)
             return mail.getAttachments().size();
+        else if (columnIndex == 5)
+            return mail.getisRead();
 
         throw new IllegalArgumentException("Invalid columIndex " + columnIndex);
     }
@@ -59,8 +61,7 @@ public class MailTableModel extends AbstractTableModel {
         return COLUMN_NAMES[columnIndex];
     }
     
-    public void removeRow(int row)
-    {
+    public void removeRow(int row) {
      if(row >= 0 && row < containingMails.size()) {
     	containingMails.remove(row);
         fireTableRowsDeleted(row, row);
