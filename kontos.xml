@@ -12,4 +12,16 @@
     <ImapServer>imap.gmail.com</ImapServer>
     <ImapPort>995</ImapPort>
   </Konto>
+  <Konto>
+    <Kontoname>Dbo</Kontoname>
+    <Benutzername>ftoop@gmx.ch</Benutzername>
+    <Email>ftoop@gmx.ch</Email>
+    <Passwort>ftoop.zh.1234</Passwort>
+    <PopServer>imap.gmx.net</PopServer>
+    <PopPort>993</PopPort>
+    <SmtpServer>mail.gmx.net</SmtpServer>
+    <SmtpPort>587</SmtpPort>
+    <ImapServer>imap.gmx.net</ImapServer>
+    <ImapPort>993</ImapPort>
+  </Konto>
 </Kontos>
