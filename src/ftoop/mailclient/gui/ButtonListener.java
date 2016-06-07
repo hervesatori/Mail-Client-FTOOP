@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -20,12 +21,14 @@ public class ButtonListener implements ActionListener {
 	private static MailWindows mailWindows;
 	private static String senden;
 	private JTable table;
+	private JButton send;
 //	private MailControl mailControl;
 	
-	public ButtonListener(JSplitPane splitPane,JPanel panelCenter) {
+	public ButtonListener(JSplitPane splitPane,JPanel panelCenter,JButton send) {
 		
 		this.splitPane = splitPane;
 		this.panelCenter = panelCenter;
+		this.send = send;
 		
 	}
 	
@@ -47,6 +50,7 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows.getMsgPane().setContentType("text/plain");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	          splitPane.setRightComponent(panelCenter);
+	          send.setEnabled(true);
 	          senden = "neue";
 	    	  break;
 	       case "Löschen":
@@ -68,12 +72,14 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	    	  splitPane.setRightComponent(panelCenter);
+	    	  send.setEnabled(true);
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
 		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 		      splitPane.setRightComponent(panelCenter);
+		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
 	       case "senden":

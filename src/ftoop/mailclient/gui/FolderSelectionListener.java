@@ -90,14 +90,18 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 			// JTable wird nach Datum sortiert
 			table.setAutoCreateRowSorter(true);
             table.getRowSorter().toggleSortOrder(3);
+            table.setDefaultRenderer(Object.class, new BoldRenderer());
+            table.getRowSorter().toggleSortOrder(3);
 			currentTable = table;
 		     
 		    table.addMouseListener ( new MouseAdapter () {
 		         public void mouseClicked ( MouseEvent e ) {
 		             if  (e.getClickCount () == 1) {
 		            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,table,containingMails);
+		            	 mail.setNotRead(false);
 		             }else if(e.getClickCount () == 2) {
 		            	 clickRefresh(scrollPane,panelCenter,splitPane,false,e,table,containingMails);
+		            	 mail.setNotRead(false);
 		             }
 		         }
 		       });

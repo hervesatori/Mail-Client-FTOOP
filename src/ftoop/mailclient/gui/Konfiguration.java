@@ -55,7 +55,7 @@ public class Konfiguration extends JPanel {
 		 neu = new JButton("Neu");
 		 loeschen = new JButton("Löschen");
 		 speichern = new JButton("Speichern");
-		 speichern.setEnabled(false);
+		
 		 buttonPane.add(neu);
 		 buttonPane.add(loeschen);
 		 buttonPane.add(speichern);
@@ -72,6 +72,7 @@ public class Konfiguration extends JPanel {
 	  		    	listModel.addElement(konto);
 	  		    }
 		    //Listener für JList
+			
 		    list.addListSelectionListener(new ListSelectionListener() {
 		        @Override
 		        public void valueChanged(final ListSelectionEvent e) {
@@ -122,6 +123,9 @@ public class Konfiguration extends JPanel {
 		          int index = list.getSelectedIndex();
 		          kontoControl.removeKonto(index);
 		          kontoControl.saveKonten("kontos.xml");
+		          for(int i =0; i < labels.length; i++) {
+		        	  form.setText(i, "");
+		          }  
 		          System.out.println(index);
 		      //    System.out.println(listModel.getElementAt(index));
 		          status = false;
@@ -141,5 +145,8 @@ public class Konfiguration extends JPanel {
 		this.add(form,BorderLayout.CENTER);
 		 this.add(buttonPane, BorderLayout.SOUTH);
 		return this;
+	}
+	public DefaultListModel<EmailKonto> getListModel()  {
+		return listModel;
 	}
 }

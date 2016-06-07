@@ -76,15 +76,16 @@ public class MainView extends JFrame {
 		final JButton senden = new JButton("senden");
 		final JButton ordnerSynchro = new JButton("Ordner synchronisieren");
 		final JButton konfiguration = new JButton("Konfiguration");
+		senden.setEnabled(false);
 		//ButtonListener****************************************************
-		neueMail.addActionListener(new ButtonListener(splitPane,panelCenter));
-		loeschen.addActionListener(new ButtonListener(splitPane,panelCenter));
-		antworten.addActionListener(new ButtonListener(splitPane,panelCenter));
-		schliessen.addActionListener(new ButtonListener(splitPane,panelCenter));
-		weiterLeiten.addActionListener(new ButtonListener(splitPane,panelCenter));
-		senden.addActionListener(new ButtonListener(splitPane,panelCenter));
-		konfiguration.addActionListener(new ButtonListener(splitPane,panelCenter));
-		ordnerSynchro.addActionListener(new ButtonListener(splitPane,panelCenter));
+		neueMail.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		loeschen.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		antworten.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		schliessen.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		weiterLeiten.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		senden.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		konfiguration.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
+		ordnerSynchro.addActionListener(new ButtonListener(splitPane,panelCenter,senden));
 		//Die Buttons werden an JMenuBar angehängt
 		menuBar.add(neueMail);
 		menuBar.add(loeschen);
