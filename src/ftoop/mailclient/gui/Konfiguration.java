@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -25,7 +26,7 @@ public class Konfiguration extends JPanel {
 	private JPanel buttonPane;
 	private TextForm form;
 	private JButton neu;
-	private JButton loeschen;
+	private JButton konfigLoeschen;
 	private JButton speichern;
 	// Init der Labels
     private final static String[] labels = { "Kontoname","Emailadresse","Benutzername", "Passwort","Pop3 Port" ,
@@ -38,8 +39,16 @@ public class Konfiguration extends JPanel {
 	private JList<EmailKonto> list;
 	private EmailKonto konto;
 	private Boolean status = true;
+	//Buttons Mainview
+	private JButton send;
+	private JButton neue;
+	private JButton antworten;
+	private JButton weiterleiten;
+	private JButton loeschen;
+	private JButton ordnerSync;
 	
-	public Konfiguration()  {
+	public Konfiguration(JButton send,JButton neue,JButton antworten,
+			JButton weiterleiten,JButton loeschen,JButton ordnerSync)  {
 		 
 		 super(new BorderLayout());
 		 listModel = new DefaultListModel<EmailKonto>();
@@ -53,12 +62,19 @@ public class Konfiguration extends JPanel {
 		// Buttons
 		 buttonPane = new JPanel();
 		 neu = new JButton("Neu");
-		 loeschen = new JButton("Löschen");
+		 konfigLoeschen = new JButton("Löschen");
 		 speichern = new JButton("Speichern");
 		
 		 buttonPane.add(neu);
-		 buttonPane.add(loeschen);
+		 buttonPane.add(konfigLoeschen);
 		 buttonPane.add(speichern);
+		 //Button von MainView
+		 this.send = send;
+		 this.neue = neue;
+		 this.antworten = antworten;
+		 this.weiterleiten = weiterleiten;
+		 this.loeschen = loeschen;
+		 this.ordnerSync = ordnerSync;
 		
 	}	 
 		 
@@ -106,19 +122,28 @@ public class Konfiguration extends JPanel {
 		        }
 		    });
 		    speichern.addActionListener(new ActionListener() {
+				@SuppressWarnings("static-access")
 				public void actionPerformed(ActionEvent e) {
 		          EmailKonto  konto = new EmailKonto(form.getText(0),form.getText(2),form.getText(1),form.getText(5),Integer.valueOf(form.getText(4))
 		      			  ,form.getText(2),form.getText(3),form.getText(7),Integer.valueOf(form.getText(6)),form.getText(0),form.getText(0),
 		      			  form.getText(9),Integer.valueOf(form.getText(8)));
+		          if(kontoControl.getKontos().contains(konto)) { 	  
+		        	  JOptionPane err = new JOptionPane();
+		   		      err.showMessageDialog(null, "Konto existiert schon", "Fehler", JOptionPane.ERROR_MESSAGE);
+		          }
 		          kontoControl.addKonto(konto);
 		          kontoControl.saveKonten("kontos.xml");
 		          System.out.println(listModel.getSize()); 
 		         
 		          listModel.addElement(konto);
-		          speichern.setEnabled(false);
+		          if(kontoControl.getKontos().size() > 0) { 	  
+		        	 
+		        	  enableButton();
+		          }
+		          
 				}
 		      });
-		    loeschen.addActionListener(new ActionListener() {
+		    konfigLoeschen.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		          int index = list.getSelectedIndex();
 		          kontoControl.removeKonto(index);
@@ -135,10 +160,33 @@ public class Konfiguration extends JPanel {
 		        	System.out.println("ListModel, Konto.Id "+index+" existiert nicht");
 		          }
 		          status = true;
+		          if(kontoControl.getKontos().size() == 0) { 	  
+		        	  speichern.setEnabled(false);
+		        	  disableButton();
+		          }
+		          
 		        }
 		      });	    
 		    
 	 } 
+	public void disableButton() {
+		konfigLoeschen.setEnabled(false);
+		send.setEnabled(false);
+		neue.setEnabled(false);
+		antworten.setEnabled(false);
+		weiterleiten.setEnabled(false);
+		loeschen.setEnabled(false);
+		ordnerSync.setEnabled(false);
+	}
+	public void enableButton() {
+		konfigLoeschen.setEnabled(true);
+		send.setEnabled(true);
+		neue.setEnabled(true);
+		antworten.setEnabled(true);
+		weiterleiten.setEnabled(true);
+		loeschen.setEnabled(true);
+		ordnerSync.setEnabled(true);
+	}
 	public JPanel getPanelUnten() {
 		initKonfig();
 		this.add(scrollPane, BorderLayout.WEST);

@@ -1,6 +1,7 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,13 +23,24 @@ public class ButtonListener implements ActionListener {
 	private static String senden;
 	private JTable table;
 	private JButton send;
+	private JButton neue;
+	private JButton antworten;
+	private JButton weiterleiten;
+	private JButton loeschen;
+	private JButton ordnerSync;
 //	private MailControl mailControl;
 	
-	public ButtonListener(JSplitPane splitPane,JPanel panelCenter,JButton send) {
+	public ButtonListener(JSplitPane splitPane,JPanel panelCenter,JButton send,JButton neue,JButton antworten,
+			JButton weiterleiten,JButton loeschen,JButton ordnerSync) {
 		
 		this.splitPane = splitPane;
 		this.panelCenter = panelCenter;
 		this.send = send;
+		this.neue = neue;
+		this.antworten = antworten;
+		this.weiterleiten = weiterleiten;
+		this.loeschen = loeschen;
+		this.ordnerSync = ordnerSync;
 		
 	}
 	
@@ -42,7 +54,7 @@ public class ButtonListener implements ActionListener {
 	    	  MainView.init(false);
 	    	  break;
 	       case "Konfiguration":
-	    	  panelCenter.add(new Konfiguration().getPanelUnten(),BorderLayout.NORTH);
+	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
 	          splitPane.setRightComponent(panelCenter);
 	    	  break;
 	       case "Neue E-Mail":
@@ -93,6 +105,7 @@ public class ButtonListener implements ActionListener {
 	    	   panelCenter = new JPanel();
 	    	   splitPane.setRightComponent(panelCenter);
 	    	   splitPane.validate();
+	    	   send.setEnabled(false);
 	       		  break;
 	       default:
 	    	  return;

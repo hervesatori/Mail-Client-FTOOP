@@ -43,6 +43,10 @@ public class EmailKonto {
 	  
   }
   
+  public String toString() {
+	  return this.email;
+  }
+  
   /**
  * @return the imapPort
  */
