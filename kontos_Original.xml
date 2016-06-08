@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Kontos>
+  <Konto>
+    <Kontoname>TestKonto</Kontoname>
+    <Benutzername>Test Benutzername</Benutzername>
+    <Email>dieseadressegibt@es.nicht</Email>
+    <Passwort>worstPassword</Passwort>
+    <PopServer>pop3.not.exist</PopServer>
+    <PopPort>3456</PopPort>
+    <SmtpServer>smtp.not.exist</SmtpServer>
+    <SmtpPort>3456</SmtpPort>
+    <ImapServer>Imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
+  </Konto>
+<Konto>
+    <Kontoname>FTOOP.Zh</Kontoname>
+    <Benutzername>FTOOP.Zh@gmail.com</Benutzername>
+    <Email>FTOOP.Zh@gmail.com</Email>
+    <Passwort>ftoop.zh.1234</Passwort>
+    <PopServer>pop.gmail.com</PopServer>
+    <PopPort>993</PopPort>
+    <SmtpServer>smtp.gmail.com</SmtpServer>
+    <SmtpPort>587</SmtpPort>
+    <ImapServer>imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
+  </Konto>
+
+
+<Konto>
+    <Kontoname>Herve</Kontoname>
+    <Benutzername>hervesatori@gmail.com</Benutzername>
+    <Email>hervesatori@gmail.com</Email>
+    <Passwort>&amp;Data2833162$123456</Passwort>
+    <PopServer>pop.gmail.com</PopServer>
+    <PopPort>993</PopPort>
+    <SmtpServer>smtp.gmail.com</SmtpServer>
+    <SmtpPort>587</SmtpPort>
+    <ImapServer>imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
+  </Konto>
+</Kontos>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MailFolders>
+  <Folder fullName="Entwürfe" />
+  <Folder fullName="Gelöscht" />
+  <Folder fullName="Gesendet" />
+  <Folder fullName="Spamverdacht" />
+  <Folder fullName="OUTBOX" />
+  <Folder fullName="INBOX">
+    <Mail>
+      <MessageID>&lt;trinity-sys-MAILBOX-64d2a7d2-4e0d-42ca-8d37-cb1da368f5f9-1465239250509@msvc-msubmit-portal004&gt;</MessageID>
+      <Date>06/06/2016 20:54:10</Date>
+      <Subject>Wichtige Infos zu Ihrem Tarif: GMX FreeMail</Subject>
+      <Message />
+      <To>ftoop@gmx.ch;</To>
+      <CC>ftoop@gmx.ch;</CC>
+      <From>GMX Kundenmanagement &lt;mailings@gmxnet.de&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;trinity-sys-MAILBOX-e152b07d-e013-4740-9c00-301409855d11-1465239251045@msvc-msubmit-portal004&gt;</MessageID>
+      <Date>06/06/2016 20:54:11</Date>
+      <Subject>Ziehen Sie Ihr altes Postfach zu GMX um!</Subject>
+      <Message />
+      <To>ftoop@gmx.ch;</To>
+      <CC>ftoop@gmx.ch;</CC>
+      <From>GMX Kundenmanagement &lt;mailings@produkt.gmx.net&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;965485823.9619947.1465239652554.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>06/06/2016 21:00:52</Date>
+      <Subject>Test</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div id="yui_3_16_0_ym19_1_1465234240958_5669"&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div id="yui_3_16_0_ym19_1_1465234240958_5670"&gt;&amp;nbsp;&lt;/div&gt;&lt;div class="signature" id="yui_3_16_0_ym19_1_1465234240958_5674"&gt;&lt;div id="yui_3_16_0_ym19_1_1465234240958_5673"&gt;&lt;span style="font-family:times new roman;" id="yui_3_16_0_ym19_1_1465234240958_5672"&gt;&lt;span style="font-family:arial, helvetica, sans-serif;" id="yui_3_16_0_ym19_1_1465234240958_5671"&gt;Freundliche Grüsse&lt;/span&gt;&lt;br style="font-family:arial, helvetica, sans-serif;"&gt;&lt;br style="font-family:arial, helvetica, sans-serif;"&gt;&lt;span style="font-family:arial, helvetica, sans-serif;"&gt;Dominique Borer&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;font size="7"&gt;&lt;font style="background-color:rgb(0, 0, 0);" color="#0000ff" face="times new roman"&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>"ftoop@gmx.ch" &lt;ftoop@gmx.ch&gt;;</To>
+      <CC>"ftoop@gmx.ch" &lt;ftoop@gmx.ch&gt;;</CC>
+      <From>Dominique Borer &lt;dominiqueborer@yahoo.de&gt;;</From>
+    </Mail>
+  </Folder>
+</MailFolders>

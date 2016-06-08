@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MailFolders>
+  <Folder fullName="[Gmail]/Alle Nachrichten">
+    <Mail>
+      <MessageID>&lt;2038236852.885397.1465318196222.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 18:49:56</Date>
+      <Subject>Test mail</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_33944"&gt;this is a test&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;152550282.920238.1465319168578.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:06:08</Date>
+      <Subject>FTOOP</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;Test 2 ftoop&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;2144943874.890313.1465319782242.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:16:22</Date>
+      <Subject>Test3 Ftoop</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_36488"&gt;Test3Test3 FtoopTest3 Ftoop&lt;/div&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_36510" dir="ltr"&gt; Ftoop&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1104645895.932609.1465320154262.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:22:34</Date>
+      <Subject>TEST4</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_37716"&gt;test4&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;942064905.995682.1465323022092.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:10:22</Date>
+      <Subject>TEST TEST TEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_39116"&gt;TEST TEST TEST&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;108703016.952864.1465323113322.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:11:53</Date>
+      <Subject>Test date</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;test date&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1901602525.997611.1465323270351.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:14:30</Date>
+      <Subject>Test not read nicht gelesen</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_41101" dir="ltr"&gt;nicht gelesen&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;575719f2.90851c0a.d3694.54da@mx.google.com&gt;</MessageID>
+      <Date>07/06/2016 21:01:06</Date>
+      <Subject>TEST TEST TEST</Subject>
+      <Message>&lt;html&gt;&#xD;
+  &lt;head&gt;&#xD;
+    &#xD;
+  &lt;/head&gt;&#xD;
+  &lt;body&gt;&#xD;
+    &lt;div style="background-color: #fff"&gt;&#xD;
+      &lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_39116"&gt;&#xD;
+        TEST TEST TEST&lt;br&gt;&#xD;
+      &lt;/div&gt;&#xD;
+    &lt;/div&gt;&#xD;
+  &lt;/body&gt;&#xD;
+&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</To>
+      <CC>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</CC>
+      <From>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1417220553.111641.1465335278387.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:34:38</Date>
+      <Subject>TEST XXX</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;TESTRRRRRRRRRR&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1339880829.122066.1465335395148.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:36:35</Date>
+      <Subject>DESTEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;GTE&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1891634907.1032090.1465405472483.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>08/06/2016 19:04:32</Date>
+      <Subject>TEST x.c</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465404038574_3596"&gt;TEST x.c&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+  </Folder>
+  <Folder fullName="[Gmail]/Papierkorb" />
+  <Folder fullName="[Gmail]/Wichtig">
+    <Mail>
+      <MessageID>&lt;2038236852.885397.1465318196222.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 18:49:56</Date>
+      <Subject>Test mail</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_33944"&gt;this is a test&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;152550282.920238.1465319168578.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:06:08</Date>
+      <Subject>FTOOP</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;Test 2 ftoop&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;2144943874.890313.1465319782242.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:16:22</Date>
+      <Subject>Test3 Ftoop</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_36488"&gt;Test3Test3 FtoopTest3 Ftoop&lt;/div&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_36510" dir="ltr"&gt; Ftoop&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1104645895.932609.1465320154262.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:22:34</Date>
+      <Subject>TEST4</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_37716"&gt;test4&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;942064905.995682.1465323022092.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:10:22</Date>
+      <Subject>TEST TEST TEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_39116"&gt;TEST TEST TEST&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;108703016.952864.1465323113322.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:11:53</Date>
+      <Subject>Test date</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;test date&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1901602525.997611.1465323270351.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:14:30</Date>
+      <Subject>Test not read nicht gelesen</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_41101" dir="ltr"&gt;nicht gelesen&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1417220553.111641.1465335278387.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:34:38</Date>
+      <Subject>TEST XXX</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;TESTRRRRRRRRRR&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1339880829.122066.1465335395148.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:36:35</Date>
+      <Subject>DESTEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;GTE&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1891634907.1032090.1465405472483.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>08/06/2016 19:04:32</Date>
+      <Subject>TEST x.c</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465404038574_3596"&gt;TEST x.c&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+  </Folder>
+  <Folder fullName="Label1/Sublabel1" />
+  <Folder fullName="[Gmail]/Gesendet">
+    <Mail>
+      <MessageID>&lt;575719f2.90851c0a.d3694.54da@mx.google.com&gt;</MessageID>
+      <Date>07/06/2016 21:01:06</Date>
+      <Subject>TEST TEST TEST</Subject>
+      <Message>&lt;html&gt;&#xD;
+  &lt;head&gt;&#xD;
+    &#xD;
+  &lt;/head&gt;&#xD;
+  &lt;body&gt;&#xD;
+    &lt;div style="background-color: #fff"&gt;&#xD;
+      &lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_39116"&gt;&#xD;
+        TEST TEST TEST&lt;br&gt;&#xD;
+      &lt;/div&gt;&#xD;
+    &lt;/div&gt;&#xD;
+  &lt;/body&gt;&#xD;
+&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</To>
+      <CC>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</CC>
+      <From>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</From>
+    </Mail>
+  </Folder>
+  <Folder fullName="[Gmail]/Markiert" />
+  <Folder fullName="[Gmail]/Entwürfe" />
+  <Folder fullName="[Gmail]/Spam" />
+  <Folder fullName="INBOX">
+    <Mail>
+      <MessageID>&lt;2038236852.885397.1465318196222.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 18:49:56</Date>
+      <Subject>Test mail</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_33944"&gt;this is a test&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;152550282.920238.1465319168578.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:06:08</Date>
+      <Subject>FTOOP</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;Test 2 ftoop&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;2144943874.890313.1465319782242.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:16:22</Date>
+      <Subject>Test3 Ftoop</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_36488"&gt;Test3Test3 FtoopTest3 Ftoop&lt;/div&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_36510" dir="ltr"&gt; Ftoop&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1104645895.932609.1465320154262.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 19:22:34</Date>
+      <Subject>TEST4</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_37716"&gt;test4&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;942064905.995682.1465323022092.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:10:22</Date>
+      <Subject>TEST TEST TEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465115225601_39116"&gt;TEST TEST TEST&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;108703016.952864.1465323113322.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:11:53</Date>
+      <Subject>Test date</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;test date&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1901602525.997611.1465323270351.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 20:14:30</Date>
+      <Subject>Test not read nicht gelesen</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div id="yui_3_16_0_ym19_1_1465115225601_41101" dir="ltr"&gt;nicht gelesen&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1417220553.111641.1465335278387.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:34:38</Date>
+      <Subject>TEST XXX</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr"&gt;TESTRRRRRRRRRR&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1339880829.122066.1465335395148.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>07/06/2016 23:36:35</Date>
+      <Subject>DESTEST</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;GTE&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+    <Mail>
+      <MessageID>&lt;1891634907.1032090.1465405472483.JavaMail.yahoo@mail.yahoo.com&gt;</MessageID>
+      <Date>08/06/2016 19:04:32</Date>
+      <Subject>TEST x.c</Subject>
+      <Message>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="color:#000; background-color:#fff; font-family:HelveticaNeue, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-size:13px"&gt;&lt;div dir="ltr" id="yui_3_16_0_ym19_1_1465404038574_3596"&gt;TEST x.c&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Message>
+      <To>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</To>
+      <CC>Satori Herve &lt;ftoop.zh@gmail.com&gt;;</CC>
+      <From>Satori Herve &lt;satori_herve@yahoo.fr&gt;;</From>
+    </Mail>
+  </Folder>
+</MailFolders>
