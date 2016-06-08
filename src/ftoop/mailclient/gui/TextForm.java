@@ -18,7 +18,8 @@ public class TextForm extends JPanel {
 	
 	
 	private static final long serialVersionUID = 1L;
-private JTextField[] fields;
+    private JTextField[] fields;
+
 
   // Create a form with the specified labels, tooltips, and sizes.
   public TextForm(String[] labels, int[] widths, String[] tips) {
@@ -51,6 +52,17 @@ private JTextField[] fields;
   }
   public void setText(int i,String field) {
 	  fields[i].setText(field);
+  }
+  public void disableField() {
+	  for(int i = 0; i < fields.length; i++) {
+		  fields[i].setEnabled(false);
+	}
+	  
+  }
+  public void enableField() {
+	  for(int i = 0; i < fields.length; i++) {
+		  fields[i].setEnabled(true);
+	}
   }
 
 }	

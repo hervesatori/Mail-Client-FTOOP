@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Kontos />
+<Kontos>
+  <Konto>
+    <Kontoname>FTOOP</Kontoname>
+    <Benutzername>FTOOP.Zh@gmail.com</Benutzername>
+    <Email>FTOOP.Zh@gmail.com</Email>
+    <Passwort>ftoop.zh.1234</Passwort>
+    <PopServer>uu</PopServer>
+    <PopPort>200</PopPort>
+    <SmtpServer>smtp.gmail.com</SmtpServer>
+    <SmtpPort>587</SmtpPort>
+    <ImapServer>imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
+  </Konto>
+</Kontos>

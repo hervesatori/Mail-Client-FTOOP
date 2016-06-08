@@ -46,6 +46,7 @@ public class Konfiguration extends JPanel {
 	private JButton weiterleiten;
 	private JButton loeschen;
 	private JButton ordnerSync;
+	private boolean neuAktiv = false;
 	
 	public Konfiguration(JButton send,JButton neue,JButton antworten,
 			JButton weiterleiten,JButton loeschen,JButton ordnerSync)  {
@@ -63,7 +64,9 @@ public class Konfiguration extends JPanel {
 		 buttonPane = new JPanel();
 		 neu = new JButton("Neu");
 		 konfigLoeschen = new JButton("Löschen");
+		 konfigLoeschen.setEnabled(false);
 		 speichern = new JButton("Speichern");
+		 speichern.setEnabled(false);
 		
 		 buttonPane.add(neu);
 		 buttonPane.add(konfigLoeschen);
@@ -78,6 +81,7 @@ public class Konfiguration extends JPanel {
 		
 	}	 
 		 
+	@SuppressWarnings("static-access")
 	public void initKonfig() {	 
 			//**********Laden der Konti
 			EmailKontoControl kontoControl = new EmailKontoControl();
@@ -87,7 +91,15 @@ public class Konfiguration extends JPanel {
 			 for(EmailKonto konto : kontoControl.getKontos()) {
 	  		    	listModel.addElement(konto);
 	  		    }
+			 form.disableField();
 		    //Listener für JList
+			 if(kontoControl.getKontos().size() == 0) { 	 
+				 speichern.setEnabled(false);
+				 konfigLoeschen.setEnabled(false);
+				 JOptionPane warn = new JOptionPane();
+				 warn.showMessageDialog(null, "Bitte Button Neu drücken um ein neues Konto hinzufügen",
+						 "Achtung", JOptionPane.WARNING_MESSAGE);
+			 }
 			
 		    list.addListSelectionListener(new ListSelectionListener() {
 		        @Override
@@ -107,6 +119,9 @@ public class Konfiguration extends JPanel {
 		              for(int i =0;i<fieldsGet.length;i++) {
 		            	  form.setText(i, fieldsGet[i]);
 		              } 
+		              form.enableField();
+		              konfigLoeschen.setEnabled(true);
+		              speichern.setEnabled(true);
 		            } 
 		        }
 		    });
@@ -117,29 +132,63 @@ public class Konfiguration extends JPanel {
 		        public void actionPerformed(ActionEvent e) {
 		    	  for(int i =0; i < labels.length; i++) {
 		        	  form.setText(i, "");
+		        	 
 		          }  
+		    	  form.enableField();
 		    	  speichern.setEnabled(true);
+		    	  neuAktiv = true;
 		        }
 		    });
 		    speichern.addActionListener(new ActionListener() {
 				@SuppressWarnings("static-access")
 				public void actionPerformed(ActionEvent e) {
-		          EmailKonto  konto = new EmailKonto(form.getText(0),form.getText(2),form.getText(1),form.getText(5),Integer.valueOf(form.getText(4))
+					int pop, smtp, imap;;
+				 try {
+					    pop = Integer.valueOf(form.getText(4));
+						smtp = Integer.valueOf(form.getText(6));
+						imap = Integer.valueOf(form.getText(8));
+				
+				   if(neuAktiv) {	
+					  EmailKonto konto = new EmailKonto(form.getText(0),form.getText(2),form.getText(1),form.getText(5),Integer.valueOf(form.getText(4))
 		      			  ,form.getText(2),form.getText(3),form.getText(7),Integer.valueOf(form.getText(6)),form.getText(0),form.getText(0),
 		      			  form.getText(9),Integer.valueOf(form.getText(8)));
-		          if(kontoControl.getKontos().contains(konto)) { 	  
+					  kontoControl.addKonto(konto);
+					  listModel.addElement(konto);
+				   }else {
+					  konto = list.getSelectedValue();
+					  konto.setKonto(form.getText(0));
+					  konto.setEmail(form.getText(1));
+					  konto.setBenutzerNamePop(form.getText(2));
+					  konto.setPasswortPop(form.getText(3));
+					  konto.setPop3Port(pop);
+					  konto.setPop3Server(form.getText(5));
+					  konto.setSmtpPort(smtp);
+					  konto.setSmtpServer(form.getText(7));
+					  konto.setImapPort(imap);
+					  konto.setImapServer(form.getText(9));		 
+				   }
+		        /*  //Test ob der Konto schon vorhanden ist
+		          for(int i = 0; i<kontoControl.getKontos().size(); i++) {
+		            if(kontoControl.getKontos().get(i).getEmail().equals(konto.getEmail())) { 	  
 		        	  JOptionPane err = new JOptionPane();
 		   		      err.showMessageDialog(null, "Konto existiert schon", "Fehler", JOptionPane.ERROR_MESSAGE);
-		          }
-		          kontoControl.addKonto(konto);
+		   		      return;
+		            }
+		          }*/
+		         
 		          kontoControl.saveKonten("kontos.xml");
 		          System.out.println(listModel.getSize()); 
-		         
-		          listModel.addElement(konto);
+		          neuAktiv = false;
+		          
 		          if(kontoControl.getKontos().size() > 0) { 	  
 		        	 
 		        	  enableButton();
 		          }
+			   } catch (NumberFormatException nfe){
+					 JOptionPane err = new JOptionPane();
+		   		      err.showMessageDialog(null, "Port.Nr sind falsch", "Fehler", JOptionPane.ERROR_MESSAGE);
+		   		      return;
+			   } 
 		          
 				}
 		      });
@@ -163,6 +212,7 @@ public class Konfiguration extends JPanel {
 		          if(kontoControl.getKontos().size() == 0) { 	  
 		        	  speichern.setEnabled(false);
 		        	  disableButton();
+		        	  form.disableField();
 		          }
 		          
 		        }
