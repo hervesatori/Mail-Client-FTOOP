@@ -343,6 +343,7 @@ public boolean existsMailboxXML(){
 					e.printStackTrace();
 				}
 				Mail mailToAdd = new Mail(xmlMail.getChildText("MessageID"),date, xmlMail.getChildText("To"), xmlMail.getChildText("CC"),xmlMail.getChildText("BCC"), xmlMail.getChildText("From"), xmlMail.getChildText("Subject"), xmlMail.getChildText("Message"), attachmentPaths);
+				mailToAdd.setNotRead(false);
 				newContainer.addMailToContainer(mailToAdd);
 			}
 			//MailContainer zum MailControl hinzufügen
@@ -388,10 +389,12 @@ public boolean existsMailboxXML(){
 						boolean exists = mc.existsMail(mID);
 						if(exists){
 							System.out.println("Mail mit ID "+mID + " existiert bereits und wird nicht erneut heruntergeladen");
+							
 
 						}else{
 							System.out.println("Mail mit ID "+mID + " existiert noch nicht, wird heruntergeladen");
 							Mail mail = this.generateMailFromMessage(message);
+							mail.setNotRead(true);
 							mc.addMailToContainer(mail);
 						}
 					} catch (IOException e) {

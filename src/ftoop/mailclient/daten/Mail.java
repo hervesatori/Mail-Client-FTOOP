@@ -19,6 +19,7 @@ public class Mail {
 	 private String subject;
 	 private String message;
 	 private ArrayList<File> attachments; 
+	 private Boolean isRead;
 	/**
 	 *  
 	 * @param messageID
@@ -113,6 +114,12 @@ public class Mail {
    public void setMessage(String message) {
 	   this.message = message;
    }
-	
+   
+	public void setNotRead(Boolean isRead) {
+		this.isRead = isRead;
+	}
+	public Boolean getisRead() {
+		return isRead;
+	}
 
 }

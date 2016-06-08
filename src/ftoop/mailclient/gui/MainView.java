@@ -2,6 +2,7 @@ package ftoop.mailclient.gui;
 
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -50,6 +51,14 @@ public class MainView extends JFrame {
 	protected static final String betreff = "Betreff";
 	protected static final String datum = "Datum";
 	private static JFrame fr;
+	private JButton neueMail;
+	private JButton loeschen;
+	private JButton antworten;
+	private JButton weiterLeiten;
+	private JButton schliessen;
+	private JButton senden;
+	private JButton ordnerSynchro;
+	private JButton konfiguration;
 	/**
 	 * Create the frame.
 	 * @param string 
@@ -68,23 +77,35 @@ public class MainView extends JFrame {
 	
 	private JMenuBar createMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
-		final JButton neueMail = new JButton("Neue E-Mail");
-		final JButton loeschen = new JButton("Löschen");
-		final JButton antworten = new JButton("Antworten");
-		final JButton weiterLeiten = new JButton("Weiterleiten");
-		final JButton schliessen = new JButton("schliessen");
-		final JButton senden = new JButton("senden");
-		final JButton ordnerSynchro = new JButton("Ordner synchronisieren");
-		final JButton konfiguration = new JButton("Konfiguration");
+	    neueMail = new JButton("Neue E-Mail");
+		loeschen = new JButton("Löschen");
+	    antworten = new JButton("Antworten");
+	    weiterLeiten = new JButton("Weiterleiten");
+	    schliessen = new JButton("schliessen");
+		senden = new JButton("senden");
+	    ordnerSynchro = new JButton("Ordner synchronisieren");
+	    konfiguration = new JButton("Konfiguration");
+		senden.setEnabled(false);
+		if(kontoControl.getKontos().size() <= 0) {
+			buttonDisable();
+		}
 		//ButtonListener****************************************************
-		neueMail.addActionListener(new ButtonListener(splitPane,panelCenter));
-		loeschen.addActionListener(new ButtonListener(splitPane,panelCenter));
-		antworten.addActionListener(new ButtonListener(splitPane,panelCenter));
-		schliessen.addActionListener(new ButtonListener(splitPane,panelCenter));
-		weiterLeiten.addActionListener(new ButtonListener(splitPane,panelCenter));
-		senden.addActionListener(new ButtonListener(splitPane,panelCenter));
-		konfiguration.addActionListener(new ButtonListener(splitPane,panelCenter));
-		ordnerSynchro.addActionListener(new ButtonListener(splitPane,panelCenter));
+		neueMail.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		loeschen.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		antworten.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		schliessen.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		weiterLeiten.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		senden.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		konfiguration.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
+		ordnerSynchro.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+				weiterLeiten,loeschen,ordnerSynchro));
 		//Die Buttons werden an JMenuBar angehängt
 		menuBar.add(neueMail);
 		menuBar.add(loeschen);
@@ -117,6 +138,13 @@ public class MainView extends JFrame {
 	        splitPane.setRightComponent(panelCenter);
 	        return splitPane;
 	  }
+	 public void buttonDisable() {
+		    neueMail.setEnabled(false);
+			loeschen.setEnabled(false);
+			antworten.setEnabled(false);
+			weiterLeiten.setEnabled(false);
+			ordnerSynchro.setEnabled(false);
+	 }
 	 /* public static JPanel createPanelMail(Mail mail) {
 		  // Definition der Panels
 		  final JPanel panelUnten = new JPanel(new BorderLayout(5,5));

@@ -28,9 +28,16 @@ public class ButtonListener implements ActionListener {
 	private static MailWindows mailWindows;
 	private static String senden;
 	private JTable table;
+	private JButton send;
+	private JButton neue;
+	private JButton antworten;
+	private JButton weiterleiten;
+	private JButton loeschen;
+	private JButton ordnerSync;
 //	private MailControl mailControl;
 	
-	public ButtonListener(JSplitPane splitPane,JPanel panelCenter) {
+	public ButtonListener(JSplitPane splitPane,JPanel panelCenter,JButton send,JButton neue,JButton antworten,
+			JButton weiterleiten,JButton loeschen,JButton ordnerSync) {
 		
 		this.splitPane = splitPane;
 		this.panelCenter = panelCenter;
@@ -47,7 +54,7 @@ public class ButtonListener implements ActionListener {
 	    	  MainView.init(false);
 	    	  break;
 	       case "Konfiguration":
-	    	  panelCenter.add(new Konfiguration().getPanelUnten(),BorderLayout.NORTH);
+	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
 	          splitPane.setRightComponent(panelCenter);
 	    	  break;
 	       case "Neue E-Mail":
@@ -111,6 +118,7 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	    	  splitPane.setRightComponent(panelCenter);
+	    	  send.setEnabled(true);
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
@@ -130,6 +138,7 @@ public class ButtonListener implements ActionListener {
 	    	   panelCenter = new JPanel();
 	    	   splitPane.setRightComponent(panelCenter);
 	    	   splitPane.validate();
+	    	   send.setEnabled(false);
 	       		  break;
 	       default:
 	    	  return;

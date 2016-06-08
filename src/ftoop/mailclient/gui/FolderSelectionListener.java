@@ -1,12 +1,14 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
 import ftoop.mailclient.daten.Mail;
@@ -53,14 +56,14 @@ public final class FolderSelectionListener implements TreeSelectionListener {
         
         System.out.println("Path: " + treePath + " / Object: " + pathComponent.toString() + " / Type: " + type+"///////"+pathComponent);
         
-        	  obj= treePath.getPath();
-          System.out.println(mailControlContainer.get(obj[1].toString()).toString());  
-            System.out.println(obj[1].toString());
+        obj= treePath.getPath();
+        System.out.println(mailControlContainer.get(obj[1].toString()).toString());  
+        System.out.println(obj[1].toString());
         HashMap<String,MailContainer> mailcontainers = mailControlContainer.get(obj[1].toString()).getMailContainers();
         
-         if ( mailcontainers.get(pathComponent.toString())!=null){
-             System.out.println("NOT NULL");
-         }
+//         if ( mailcontainers.get(pathComponent.toString())!=null){
+//             System.out.println("NOT NULL");
+//         }
      /* // Get keys.
      	Set<String> keys = mailcontainers.keySet();
 
@@ -90,14 +93,19 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 			// JTable wird nach Datum sortiert
 			table.setAutoCreateRowSorter(true);
             table.getRowSorter().toggleSortOrder(3);
+//            table.setDefaultRenderer(Object.class, new BoldRenderer());
+            table.getRowSorter().toggleSortOrder(3);
+            table.getColumnModel().getColumn(3).setCellRenderer(new DateRenderer());
 			currentTable = table;
 		     
 		    table.addMouseListener ( new MouseAdapter () {
 		         public void mouseClicked ( MouseEvent e ) {
 		             if  (e.getClickCount () == 1) {
 		            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,table,containingMails);
+		            	 mail.setNotRead(false);
 		             }else if(e.getClickCount () == 2) {
 		            	 clickRefresh(scrollPane,panelCenter,splitPane,false,e,table,containingMails);
+		            	 mail.setNotRead(false);
 		             }
 		         }
 		       });
@@ -112,9 +120,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
    }
     public void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
     		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
-   	    Point origin = e.getPoint () ;
-        int row = table.rowAtPoint ( origin ) ;
-        Mail mailLokal = containingMails.get(row);
+ //  	    Point origin = e.getPoint () ;
+ //       int row = table.rowAtPoint( origin ) ; 
+        Mail mailLokal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
         mail = mailLokal;
         System.out.println("MAIL:  "+mail.getFrom()+"Menge:  "+mailLokal.getAttachments().size());
         scrollPane = new JScrollPane(table);
@@ -122,9 +130,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
         if(oneClick) {
           panelCenter.add(scrollPane,BorderLayout.NORTH);
         }
-        if(mailLokal.getAttachments().size() > 0) {
+       /* if(mailLokal.getAttachments().size() > 0) {
 			JPanel panelAttachements = new JPanel();
-			 System.out.println("Menge:  "+mailLokal.getAttachments().size());
+			 System.out.println("Menge:  "+mailLokal.getAttachments().size()+mail.getisRead());
 				DefaultListModel<File> modelAttachement = new DefaultListModel<File>();
 				JList<File> listAttachement = new JList<File>(modelAttachement);
 				panelAttachements.add(listAttachement);
@@ -139,12 +147,12 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 				
 	
 
-		} else {
+		} else {*/
         panelCenter.add(new MailWindows(mailLokal,"lesen").getPanelUnten(),BorderLayout.CENTER);
         splitPane.setRightComponent(panelCenter);
         splitPane.revalidate();  
         splitPane.repaint();
-		}
+//		}
     }  
     public static Mail getSelectedMail() {
     	return mail;
@@ -155,7 +163,20 @@ public final class FolderSelectionListener implements TreeSelectionListener {
     public static JTable getCurrentTable() {
 	   return currentTable;
     }
-// *******************************************    panelCenter.add(MainView.createPanelMail(mail),BorderLayout.CENTER);
-   
+    static class DateRenderer extends DefaultTableCellRenderer {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5941895543470503982L;
+		DateFormat formatter;
+        public DateRenderer() { super(); }
+
+        public void setValue(Object value) {
+            if (formatter==null) {
+                formatter = DateFormat.getDateInstance();
+            }
+            setText((value == null) ? "" : formatter.format(value));
+        }
+    }
 }
 
