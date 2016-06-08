@@ -18,7 +18,7 @@ public class MailTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","nicht gelesen"};
+	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","Ungelesen"};
   
     private final List<Mail> containingMails;
 

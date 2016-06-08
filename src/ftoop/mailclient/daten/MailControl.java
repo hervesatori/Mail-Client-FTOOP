@@ -3,6 +3,7 @@ package ftoop.mailclient.daten;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -589,10 +590,13 @@ public boolean existsMailboxXML(){
 //  }
   public void deleteMail(String messageID) throws MessagingException{
 	  for(MailContainer mc:this.getMailContainers().values()){
-		  for(Mail mail:mc.getContainingMails()){
+		  Iterator mcIterator = mc.getContainingMails().iterator();
+		  while(mcIterator.hasNext()){
+			  Mail mail = (Mail) mcIterator.next();
 			  if(mail.getMessageID().equals(messageID)){
 				  //Löschen aus dem lokalen Container
-				  mc.getContainingMails().remove(mail);
+				  mcIterator.remove();
+				  //Löschen des physikalischen Attachments, falls vorhanden
 				  this.removeAttachment(mail);
 				  //Löschen vom Online Account
 				  
@@ -608,13 +612,8 @@ public boolean existsMailboxXML(){
 						  if(msgArr.length==1){
 							  msgArr[0].setFlag(Flags.Flag.DELETED, true);
 						  }else{
-							  if(msgArr.length== 0){
-								  try{
-									  throw new NoSuchElementException();
-								  }catch(NoSuchElementException e){
-									  System.out.println("Konnte Online die zu löschende Mail nicht finden mit ID "+messageID);
-									  e.printStackTrace();
-								  }
+							  if(msgArr.length== 0){								  
+								throw new NoSuchElementException("Konnte Online die zu löschende Mail nicht finden mit ID "+messageID);				
 							  }
 						  }
 					  }

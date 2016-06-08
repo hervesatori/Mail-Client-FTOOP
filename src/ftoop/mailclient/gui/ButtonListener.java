@@ -1,17 +1,23 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
-
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.NoSuchElementException;
 
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 import ftoop.mailclient.daten.Mail;
 
@@ -41,7 +47,6 @@ public class ButtonListener implements ActionListener {
 		this.weiterleiten = weiterleiten;
 		this.loeschen = loeschen;
 		this.ordnerSync = ordnerSync;
-		
 	}
 	
 	
@@ -62,7 +67,6 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows.getMsgPane().setContentType("text/plain");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	          splitPane.setRightComponent(panelCenter);
-	          send.setEnabled(true);
 	          senden = "neue";
 	    	  break;
 	       case "Löschen":
@@ -78,6 +82,41 @@ public class ButtonListener implements ActionListener {
 			} catch (MessagingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (NoSuchElementException e2){
+				String message = e2.getMessage();
+				String header = "Fehler";
+				JFrame frame = new JFrame();
+				frame.setSize(300,125);
+				frame.setLayout(new GridBagLayout());
+				GridBagConstraints constraints = new GridBagConstraints();
+				constraints.gridx = 0;
+				constraints.gridy = 0;
+				constraints.weightx = 1.0f;
+				constraints.weighty = 1.0f;
+				constraints.insets = new Insets(5, 5, 5, 5);
+				constraints.fill = GridBagConstraints.BOTH;
+				JLabel headingLabel = new JLabel(header);
+				headingLabel.setOpaque(false);
+				frame.add(headingLabel, constraints);
+				constraints.gridx++;
+				constraints.weightx = 0f;
+				constraints.weighty = 0f;
+				constraints.fill = GridBagConstraints.NONE;
+				constraints.anchor = GridBagConstraints.NORTH;
+				JButton cloesButton = new JButton("X");
+				cloesButton.setMargin(new Insets(1, 4, 1, 4));
+				cloesButton.setFocusable(false);
+				frame.add(cloesButton, constraints);
+				constraints.gridx = 0;
+				constraints.gridy++;
+				constraints.weightx = 1.0f;
+				constraints.weighty = 1.0f;
+				constraints.insets = new Insets(5, 5, 5, 5);
+				constraints.fill = GridBagConstraints.BOTH;
+				JLabel messageLabel = new JLabel("<HtMl>"+message);
+				frame.add(messageLabel, constraints);
+				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				frame.setVisible(true);
 			}
 	    	  break;
 	       case "Antworten":
@@ -91,7 +130,6 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
 		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 		      splitPane.setRightComponent(panelCenter);
-		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
 	       case "senden":
