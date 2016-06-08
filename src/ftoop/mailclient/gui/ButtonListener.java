@@ -67,6 +67,7 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows.getMsgPane().setContentType("text/plain");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	          splitPane.setRightComponent(panelCenter);
+	          send.setEnabled(true);
 	          senden = "neue";
 	    	  break;
 	       case "Löschen":
@@ -130,6 +131,7 @@ public class ButtonListener implements ActionListener {
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
 		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 		      splitPane.setRightComponent(panelCenter);
+		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
 	       case "senden":

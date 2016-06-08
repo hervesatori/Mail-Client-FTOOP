@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Kontos>
   <Konto>
-    <Kontoname>FTOOP</Kontoname>
-    <Benutzername>FTOOP.Zh@gmail.com</Benutzername>
-    <Email>FTOOP.Zh@gmail.com</Email>
-    <Passwort>ftoop.zh.1234</Passwort>
-    <PopServer>uu</PopServer>
-    <PopPort>200</PopPort>
-    <SmtpServer>smtp.gmail.com</SmtpServer>
-    <SmtpPort>587</SmtpPort>
-    <ImapServer>imap.gmail.com</ImapServer>
-    <ImapPort>995</ImapPort>
-  </Konto>
-  <Konto>
-    <Kontoname>Dbo</Kontoname>
+    <Kontoname>FTOOP GMX</Kontoname>
     <Benutzername>ftoop@gmx.ch</Benutzername>
     <Email>ftoop@gmx.ch</Email>
     <Passwort>ftoop.zh.1234</Passwort>
-    <PopServer>imap.gmx.net</PopServer>
-    <PopPort>55</PopPort>
-    <SmtpServer>mail.gmx.net</SmtpServer>
+    <PopServer>pop</PopServer>
+    <PopPort>996</PopPort>
+    <SmtpServer>smtp.gmx.net</SmtpServer>
     <SmtpPort>587</SmtpPort>
     <ImapServer>imap.gmx.net</ImapServer>
     <ImapPort>993</ImapPort>
