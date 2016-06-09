@@ -84,11 +84,10 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 			// JTable wird nach Datum sortiert
 			table.setAutoCreateRowSorter(true);
             table.getRowSorter().toggleSortOrder(3);
-//            table.setDefaultRenderer(Object.class, new BoldRenderer());
+            table.setDefaultRenderer(Object.class, new BoldRenderer());
             table.getRowSorter().toggleSortOrder(3);
-            table.getColumnModel().getColumn(3).setCellRenderer(new DateRenderer());
-			currentTable = table;
-		     
+ //         table.getColumnModel().getColumn(3).setCellRenderer(new DateRenderer());
+			currentTable = table;   
 		    table.addMouseListener ( new MouseAdapter () {
 		         public void mouseClicked ( MouseEvent e ) {
 		             if  (e.getClickCount () == 1) {

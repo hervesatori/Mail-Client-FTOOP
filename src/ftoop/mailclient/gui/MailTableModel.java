@@ -1,5 +1,7 @@
 package ftoop.mailclient.gui;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class MailTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex){
         final Mail mail = containingMails.get(rowIndex);
+        Format sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
         if (columnIndex == 0)
             return mail.getFrom();
         else if (columnIndex == 1)
@@ -48,7 +51,7 @@ public class MailTableModel extends AbstractTableModel {
         else if (columnIndex == 2)
             return mail.getSubject();
         else if (columnIndex == 3)
-            return mail.getReceived();
+            return sdf.format(mail.getReceived());
         else if (columnIndex == 4)
             return mail.getAttachments().size();
         else if (columnIndex == 5)
