@@ -59,6 +59,7 @@ public class MainView extends JFrame {
 	private JButton senden;
 	private JButton ordnerSynchro;
 	private JButton konfiguration;
+	
 	/**
 	 * Create the frame.
 	 * @param string 
@@ -232,6 +233,7 @@ public class MainView extends JFrame {
 	    }   
 	       return root;
 	  }
+	 
 	  public static void init(Boolean start){
 		
 		  JFrame frameWait = new JFrame();

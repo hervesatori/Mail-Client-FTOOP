@@ -1,6 +1,7 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -47,6 +48,7 @@ public class Konfiguration extends JPanel {
 	private JButton loeschen;
 	private JButton ordnerSync;
 	private boolean neuAktiv = false;
+
 	
 	public Konfiguration(JButton send,JButton neue,JButton antworten,
 			JButton weiterleiten,JButton loeschen,JButton ordnerSync)  {
@@ -241,7 +243,7 @@ public class Konfiguration extends JPanel {
 		initKonfig();
 		this.add(scrollPane, BorderLayout.WEST);
 		this.add(form,BorderLayout.CENTER);
-		 this.add(buttonPane, BorderLayout.SOUTH);
+		this.add(buttonPane, BorderLayout.SOUTH);
 		return this;
 	}
 	public DefaultListModel<EmailKonto> getListModel()  {

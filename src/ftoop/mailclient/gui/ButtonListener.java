@@ -60,7 +60,9 @@ public class ButtonListener implements ActionListener {
 	    	  break;
 	       case "Konfiguration":
 	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
+	    	  int pos = splitPane.getDividerLocation();
 	          splitPane.setRightComponent(panelCenter);
+	  		  splitPane.setDividerLocation(pos);
 	    	  break;
 	       case "Neue E-Mail":
 	    	  mailWindows = new MailWindows(null,"neueMail");

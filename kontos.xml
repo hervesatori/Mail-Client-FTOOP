@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Kontos>
-  <Konto>
-    <Kontoname>FTOOP GMX</Kontoname>
-    <Benutzername>ftoop@gmx.ch</Benutzername>
-    <Email>ftoop@gmx.ch</Email>
+<Konto>
+    <Kontoname>FTOOP.Zh</Kontoname>
+    <Benutzername>FTOOP.Zh@gmail.com</Benutzername>
+    <Email>FTOOP.Zh@gmail.com</Email>
     <Passwort>ftoop.zh.1234</Passwort>
-    <PopServer>pop</PopServer>
-    <PopPort>996</PopPort>
-    <SmtpServer>smtp.gmx.net</SmtpServer>
+    <PopServer>pop.gmail.com</PopServer>
+    <PopPort>993</PopPort>
+    <SmtpServer>smtp.gmail.com</SmtpServer>
     <SmtpPort>587</SmtpPort>
-    <ImapServer>imap.gmx.net</ImapServer>
-    <ImapPort>993</ImapPort>
+    <ImapServer>imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
+  </Konto>
+<Konto>
+    <Kontoname>Herve</Kontoname>
+    <Benutzername>hervesatori@gmail.com</Benutzername>
+    <Email>hervesatori@gmail.com</Email>
+    <Passwort>&amp;Data2833162$123456</Passwort>
+    <PopServer>pop.gmail.com</PopServer>
+    <PopPort>993</PopPort>
+    <SmtpServer>smtp.gmail.com</SmtpServer>
+    <SmtpPort>587</SmtpPort>
+    <ImapServer>imap.gmail.com</ImapServer>
+    <ImapPort>995</ImapPort>
   </Konto>
 </Kontos>

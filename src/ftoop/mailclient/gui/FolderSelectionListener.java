@@ -139,7 +139,11 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 
 		} else {*/
         panelCenter.add(new MailWindows(mailLokal,"lesen").getPanelUnten(),BorderLayout.CENTER);
+        // sog. Resizing mit splitpane und Divider
+        int pos = splitPane.getDividerLocation();
         splitPane.setRightComponent(panelCenter);
+		splitPane.setDividerLocation(pos);
+       
         splitPane.revalidate();  
         splitPane.repaint();
 //		}
