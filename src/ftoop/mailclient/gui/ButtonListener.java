@@ -129,21 +129,21 @@ public class ButtonListener implements ActionListener {
 	       case "Antworten":
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-	    	  splitPane.setRightComponent(panelCenter);
+	    	 resizing();
 	    	  send.setEnabled(true);
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
 		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-		      splitPane.setRightComponent(panelCenter);
+		      resizing();
 		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
 	       case "senden":
 	    	  sendenMail(senden); 	
 	    	  panelCenter.add(new JTextArea("MAIL  sent successfully"));
-	    	  splitPane.setRightComponent(panelCenter);
+	    	  resizing();
 	    	  splitPane.validate();
 	   	     
 		      break;
