@@ -60,9 +60,7 @@ public class ButtonListener implements ActionListener {
 	    	  break;
 	       case "Konfiguration":
 	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
-	    	  int pos = splitPane.getDividerLocation();
-	          splitPane.setRightComponent(panelCenter);
-	  		  splitPane.setDividerLocation(pos);
+	    	  resizing();
 	    	  break;
 	       case "Neue E-Mail":
 	    	  mailWindows = new MailWindows(null,"neueMail");
@@ -145,7 +143,7 @@ public class ButtonListener implements ActionListener {
 		      break;
 	       case "schliessen":
 	    	   panelCenter = new JPanel();
-	    	   splitPane.setRightComponent(panelCenter);
+	    	   resizing();
 	    	   splitPane.validate();
 	    	   send.setEnabled(false);
 	       		  break;
@@ -153,6 +151,12 @@ public class ButtonListener implements ActionListener {
 	    	  return;
 	     }
 	  }
+	  
+   public void resizing() {
+	   int pos = splitPane.getDividerLocation();
+       splitPane.setRightComponent(panelCenter);
+		  splitPane.setDividerLocation(pos);
+   }
 	
    public void sendenMail(String aktion) {
 	  
