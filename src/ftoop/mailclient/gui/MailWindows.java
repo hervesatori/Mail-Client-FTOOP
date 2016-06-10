@@ -3,7 +3,9 @@ package ftoop.mailclient.gui;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -128,8 +130,12 @@ public class MailWindows extends JPanel {
 }
 
 	public JPanel getPanelUnten() {
-		  
-		  scrollEditor = new JScrollPane(msgPane);		  
+		  //Hole Monitorresolution
+			int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+			int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+		  scrollEditor = new JScrollPane(msgPane);	
+		  //Setze Preffered Size auf 60 % des aktuellen Monitors
+		  scrollEditor.getViewport().setPreferredSize(new Dimension((int) (Math.round(width*0.6)),(int) (Math.round(height*0.6))));
 		  createEditorLabel();
 		 
 		  this.add(labelPane,BorderLayout.NORTH);

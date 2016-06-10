@@ -62,13 +62,19 @@ public class ButtonListener implements ActionListener {
 	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
 	    	  resizing();
 	    	  break;
-	       case "Neue E-Mail":
+	       case "Neue E-Mail":	    	  
 	    	  mailWindows = new MailWindows(null,"neueMail");
 	    	  mailWindows.getMsgPane().setContentType("text/plain");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
 	          splitPane.setRightComponent(panelCenter);
 	          send.setEnabled(true);
 	          senden = "neue";
+	          JFrame newMailFrame = new JFrame();
+	          newMailFrame.add(panelCenter);
+	          newMailFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	          newMailFrame.setTitle("Neue E-Mail senden");
+	          newMailFrame.pack();
+	          newMailFrame.setVisible(true);
 	    	  break;
 	       case "Löschen":
 	    	   table = FolderSelectionListener.getCurrentTable();

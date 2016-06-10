@@ -830,7 +830,7 @@ public void sendMsg(Mail mail) throws NoSuchProviderException {
 	   
 	  } catch (MessagingException e) {
 		   JOptionPane err = new JOptionPane();
-		   err.showMessageDialog(null, "E-Mail Adresse falsch", "Fehler", JOptionPane.ERROR_MESSAGE);
+		   err.showMessageDialog(null, "Keine gültige E-Mail Adresse", "Fehler", JOptionPane.ERROR_MESSAGE);
 		  throw new RuntimeException(e);
 	    }  finally { 
 

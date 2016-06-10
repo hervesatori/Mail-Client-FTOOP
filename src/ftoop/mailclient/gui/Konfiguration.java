@@ -188,7 +188,7 @@ public class Konfiguration extends JPanel {
 		          }
 			   } catch (NumberFormatException nfe){
 					 JOptionPane err = new JOptionPane();
-		   		      err.showMessageDialog(null, "Port.Nr sind falsch", "Fehler", JOptionPane.ERROR_MESSAGE);
+		   		      err.showMessageDialog(null, "Als Port Nummer sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		   		      return;
 			   } 
 		          
