@@ -42,6 +42,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.search.MessageIDTerm;
 import javax.mail.search.SearchTerm;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -54,6 +56,8 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import com.sun.mail.pop3.POP3SSLStore;
+
+import ftoop.mailclient.gui.MainView;
 
 import java.util.HashMap;
 /**
@@ -88,7 +92,8 @@ public class MailControl {
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
   }
   
-  public void mailReceive(){
+  @SuppressWarnings("static-access")
+public void mailReceive(){
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
 	  Properties props = System.getProperties();
@@ -118,6 +123,7 @@ public class MailControl {
 	  }
 	  } catch (MessagingException e) {
 		    e.printStackTrace();
+	         JOptionPane.showMessageDialog(null, "AUTHENTICATIONFAILED", "Fehler", JOptionPane.ERROR_MESSAGE);
 	  }finally {
 		  try {
 			  if (store != null && store.isConnected()) {  

@@ -3,15 +3,11 @@ package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
-import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -51,14 +47,16 @@ public class MainView extends JFrame {
 	protected static final String betreff = "Betreff";
 	protected static final String datum = "Datum";
 	private static JFrame fr;
-	private JButton neueMail;
-	private JButton loeschen;
-	private JButton antworten;
-	private JButton weiterLeiten;
+	private static JTree currentTree;
+	private static JButton neueMail;
+	private static JButton loeschen;
+	private static JButton antworten;
+	private static JButton weiterLeiten;
 	private JButton schliessen;
 	private JButton senden;
 	private JButton ordnerSynchro;
 	private JButton konfiguration;
+	
 	
 	/**
 	 * Create the frame.
@@ -73,7 +71,9 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout(5,5));
 		this.getContentPane().add(createCenterPanel(),BorderLayout.CENTER);
 		this.getContentPane().add(createMenuBar(),BorderLayout.NORTH);
-	    fr = this.getFrame();
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
+	    fr = MainView.getFrame();
 	}
 	
 	private JMenuBar createMenuBar() {
@@ -87,6 +87,10 @@ public class MainView extends JFrame {
 	    ordnerSynchro = new JButton("Ordner synchronisieren");
 	    konfiguration = new JButton("Konfiguration");
 		senden.setEnabled(false);
+		neueMail.setEnabled(false);
+		antworten.setEnabled(false);
+		weiterLeiten.setEnabled(false);
+		loeschen.setEnabled(false);
 		if(kontoControl.getKontos().size() <= 0) {
 			buttonDisable();
 		}
@@ -131,6 +135,8 @@ public class MainView extends JFrame {
 	        final DefaultMutableTreeNode rootNode = buildTree();
 	        final TreeModel treeModel = new DefaultTreeModel(rootNode);
 	        final JTree tree = new JTree(treeModel);
+	        //Zuweisung der currentTree
+	        currentTree = tree;
 	        tree.setRootVisible(false); 
 	        tree.expandRow(0);
 	        //  Treelistener
@@ -145,6 +151,15 @@ public class MainView extends JFrame {
 			antworten.setEnabled(false);
 			weiterLeiten.setEnabled(false);
 			ordnerSynchro.setEnabled(false);
+	 }
+	 public static void setButtonNeueOn() {
+		   neueMail.setEnabled(true);
+		
+	 }
+	 public static void setButtonLoeschenAntWeiterOn() {
+		    antworten.setEnabled(true);
+			weiterLeiten.setEnabled(true);
+			loeschen.setEnabled(true);
 	 }
 	 /* public static JPanel createPanelMail(Mail mail) {
 		  // Definition der Panels
@@ -238,10 +253,10 @@ public class MainView extends JFrame {
 		
 		  JFrame frameWait = new JFrame();
 		  frameWait.setLayout(new BorderLayout());
-		  frameWait .setSize(800,70);
+		  frameWait .setSize(800,50);
 		  frameWait .setLocationRelativeTo(null);
 		  frameWait.setUndecorated(true); 
-		//  frameWait.setAlwaysOnTop(true);
+		  frameWait.setAlwaysOnTop(true);
 		  JProgressBar bar = new JProgressBar();
 		  bar.setIndeterminate(true);
 		  bar.setStringPainted(true);
@@ -296,9 +311,16 @@ public class MainView extends JFrame {
 		  
 	  }
 	  
-   public JFrame getFrame() {
-	   return this;
+   public static JFrame getFrame() {
+	   return fr;
    }
+   public static EmailKontoControl getKontoControl() {	   
+	   return kontoControl;
+   }
+   public static JTree getCurrentTree() {
+	   return currentTree;
+   }
+  
    /**
     * Launch the application.
     * @throws UnsupportedLookAndFeelException 

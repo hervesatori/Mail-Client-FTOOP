@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -31,12 +33,14 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 	private static Mail mail;
 	private static MailControl mailControl;
 	private static JTable currentTable;
+
 	
 	
 	public FolderSelectionListener(HashMap<String,MailControl> mailControlContainer,JSplitPane splitPane,JPanel panelCenter) {
 		this.mailControlContainer = mailControlContainer;
 		this.splitPane = splitPane;
 		this.panelCenter = panelCenter;	
+		
 	}
     @Override
     public void valueChanged(final TreeSelectionEvent event) {
@@ -44,24 +48,16 @@ public final class FolderSelectionListener implements TreeSelectionListener {
         final TreePath treePath = event.getPath();
         final Object pathComponent = treePath.getLastPathComponent();
         final String type = pathComponent.getClass().getSimpleName();
-        
+        //Button neue mail wird aktiviert
+        MainView.setButtonNeueOn();
         System.out.println("Path: " + treePath + " / Object: " + pathComponent.toString() + " / Type: " + type+"///////"+pathComponent);
-        
+        //return a array of path
         obj= treePath.getPath();
         System.out.println(mailControlContainer.get(obj[1].toString()).toString());  
         System.out.println(obj[1].toString());
         HashMap<String,MailContainer> mailcontainers = mailControlContainer.get(obj[1].toString()).getMailContainers();
         
-//         if ( mailcontainers.get(pathComponent.toString())!=null){
-//             System.out.println("NOT NULL");
-//         }
-     /* // Get keys.
-     	Set<String> keys = mailcontainers.keySet();
-
-     	// Loop over String keys.
-     	for (String key : keys) {
-     	    System.out.println(key);
-     	}*/
+        // Ordnerbehandlung, "/" wird getrennt
         String tempStr = treePath.toString().replaceAll("\\s","");
         String currentPath;
         String[]anpassen = tempStr.split(",");
@@ -90,6 +86,7 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 			currentTable = table;   
 		    table.addMouseListener ( new MouseAdapter () {
 		         public void mouseClicked ( MouseEvent e ) {
+		        	 MainView.setButtonLoeschenAntWeiterOn();
 		             if  (e.getClickCount () == 1) {
 		            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,table,containingMails);
 		            	 mail.setNotRead(false);
@@ -120,24 +117,6 @@ public final class FolderSelectionListener implements TreeSelectionListener {
         if(oneClick) {
           panelCenter.add(scrollPane,BorderLayout.NORTH);
         }
-       /* if(mailLokal.getAttachments().size() > 0) {
-			JPanel panelAttachements = new JPanel();
-			 System.out.println("Menge:  "+mailLokal.getAttachments().size()+mail.getisRead());
-				DefaultListModel<File> modelAttachement = new DefaultListModel<File>();
-				JList<File> listAttachement = new JList<File>(modelAttachement);
-				panelAttachements.add(listAttachement);
-				for(int i = 0; i< mailLokal.getAttachments().size();i++) {
-					modelAttachement.addElement(mailLokal.getAttachments().get(i));
-				}
-				
-				panelCenter.add(panelAttachements,BorderLayout.CENTER);
-		        splitPane.setRightComponent(panelCenter);
-		        splitPane.revalidate();  
-		        splitPane.repaint();
-				
-	
-
-		} else {*/
         panelCenter.add(new MailWindows(mailLokal,"lesen").getPanelUnten(),BorderLayout.CENTER);
         // sog. Resizing mit splitpane und Divider
         int pos = splitPane.getDividerLocation();
@@ -157,10 +136,10 @@ public final class FolderSelectionListener implements TreeSelectionListener {
     public static JTable getCurrentTable() {
 	   return currentTable;
     }
-    static class DateRenderer extends DefaultTableCellRenderer {
-        /**
+   /* static class DateRenderer extends DefaultTableCellRenderer {
+        *//**
 		 * 
-		 */
+		 *//*
 		private static final long serialVersionUID = 5941895543470503982L;
 		DateFormat formatter;
         public DateRenderer() { super(); }
@@ -171,6 +150,6 @@ public final class FolderSelectionListener implements TreeSelectionListener {
             }
             setText((value == null) ? "" : formatter.format(value));
         }
-    }
+    }*/
 }
 

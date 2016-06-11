@@ -1,3 +1,5 @@
+
+
 package ftoop.mailclient.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -6,6 +8,7 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class TextForm extends JPanel {
@@ -18,11 +21,10 @@ public class TextForm extends JPanel {
 	
 	
 	private static final long serialVersionUID = 1L;
-    private JTextField[] fields;
-
+private JTextField[] fields;
 
   // Create a form with the specified labels, tooltips, and sizes.
-  public TextForm(String[] labels, int[] widths, String[] tips) {
+  public TextForm(String[] labels, int[] widths, String[] tips,String[] type) {
     super(new BorderLayout(5,5));
     JPanel labelPanel = new JPanel(new GridLayout(labels.length, 1));
     JPanel fieldPanel = new JPanel(new GridLayout(labels.length, 1));
@@ -32,7 +34,12 @@ public class TextForm extends JPanel {
     fields = new JTextField[labels.length];
 
     for (int i = 0; i < labels.length; i++) {
+      if(type[i].equals("pass"))	{
+    	  fields[i] = new JPasswordField();
+    	  ((JPasswordField) fields[i]).setEchoChar('*');
+      } else {
       fields[i] = new JTextField();
+      }
       if (i < tips.length && i < widths.length) {
         fields[i].setToolTipText(tips[i]);
         fields[i].setColumns(widths[i]);
@@ -50,9 +57,17 @@ public class TextForm extends JPanel {
   public String getText(int i) {
     return (fields[i].getText());
   }
+  
+  public JTextField getField(int i) {
+	  return fields[i];
+  }
+  
   public void setText(int i,String field) {
 	  fields[i].setText(field);
   }
+
+	
+ 
   public void disableField() {
 	  for(int i = 0; i < fields.length; i++) {
 		  fields[i].setEnabled(false);
@@ -64,8 +79,5 @@ public class TextForm extends JPanel {
 		  fields[i].setEnabled(true);
 	}
   }
-
-}	
- 
-
   
+}

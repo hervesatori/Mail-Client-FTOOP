@@ -1,19 +1,25 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 
 import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
@@ -36,6 +42,8 @@ public class Konfiguration extends JPanel {
     private final int[] widths = { 70,70,70,70,70,70,70,70,70,70 };
     private final static String[] descs = { "Kontoname","Emailadresse","Benutzername", "Passwort","Pop3 Port" ,
     		"Pop3 Server","SMTP Port","SMTP Server","IMAP Port","IMAP Server"};
+    private final static String[] type ={ "kein","kein","kein", "pass","kein" ,
+		"kein","kein","kein","kein","kein"};
 	private DefaultListModel<EmailKonto> listModel;
 	private JList<EmailKonto> list;
 	private EmailKonto konto;
@@ -60,7 +68,7 @@ public class Konfiguration extends JPanel {
 		 scrollPane = new JScrollPane(list);
 		
 		 // Formulär wird instanziert
-		 form = new TextForm(labels, widths, descs);
+		 form = new TextForm(labels, widths, descs,type);
 		
 		// Buttons
 		 buttonPane = new JPanel();
@@ -124,6 +132,7 @@ public class Konfiguration extends JPanel {
 		              form.enableField();
 		              konfigLoeschen.setEnabled(true);
 		              speichern.setEnabled(true);
+		             
 		            } 
 		        }
 		    });
@@ -132,13 +141,14 @@ public class Konfiguration extends JPanel {
 		    //Buttons Listener NEU  LOESCHEN SPEICHERN
 		    neu.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
+		        	form.enableField();
 		    	  for(int i =0; i < labels.length; i++) {
 		        	  form.setText(i, "");
 		        	 
 		          }  
-		    	  form.enableField();
+		    	  
 		    	  speichern.setEnabled(true);
-		    	  neuAktiv = true;
+		    	  neuAktiv = true;  	  
 		        }
 		    });
 		    speichern.addActionListener(new ActionListener() {
@@ -146,28 +156,30 @@ public class Konfiguration extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					int pop, smtp, imap;;
 				 try {
-					    pop = Integer.valueOf(form.getText(4));
+					 
+					    pop =  Integer.valueOf(form.getText(4));
 						smtp = Integer.valueOf(form.getText(6));
 						imap = Integer.valueOf(form.getText(8));
 				
 				   if(neuAktiv) {	
-					  EmailKonto konto = new EmailKonto(form.getText(0),form.getText(2),form.getText(1),form.getText(5),Integer.valueOf(form.getText(4))
-		      			  ,form.getText(2),form.getText(3),form.getText(7),Integer.valueOf(form.getText(6)),form.getText(0),form.getText(0),
-		      			  form.getText(9),Integer.valueOf(form.getText(8)));
+					  EmailKonto konto = new EmailKonto((String) form.getText(0),(
+							  String) form.getText(2),(String) form.getText(1),(String) form.getText(5),pop
+		      			  ,(String) form.getText(2),(String) form.getText(3),(String) form.getText(7),
+		      			  smtp,(String) form.getText(0),(String) form.getText(0),(String) form.getText(9),imap);
 					  kontoControl.addKonto(konto);
 					  listModel.addElement(konto);
 				   }else {
 					  konto = list.getSelectedValue();
-					  konto.setKonto(form.getText(0));
-					  konto.setEmail(form.getText(1));
-					  konto.setBenutzerNamePop(form.getText(2));
-					  konto.setPasswortPop(form.getText(3));
+					  konto.setKonto((String) form.getText(0));
+					  konto.setEmail((String) form.getText(1));
+					  konto.setBenutzerNamePop((String) form.getText(2));
+					  konto.setPasswortPop((String) form.getText(3));
 					  konto.setPop3Port(pop);
-					  konto.setPop3Server(form.getText(5));
+					  konto.setPop3Server((String) form.getText(5));
 					  konto.setSmtpPort(smtp);
-					  konto.setSmtpServer(form.getText(7));
+					  konto.setSmtpServer((String) form.getText(7));
 					  konto.setImapPort(imap);
-					  konto.setImapServer(form.getText(9));		 
+					  konto.setImapServer((String) form.getText(9));		 
 				   }
 		        /*  //Test ob der Konto schon vorhanden ist
 		          for(int i = 0; i<kontoControl.getKontos().size(); i++) {
@@ -186,6 +198,9 @@ public class Konfiguration extends JPanel {
 		        	 
 		        	  enableButton();
 		          }
+		          //Ordner synchronisieren
+		          MainView.init(false);
+		          
 			   } catch (NumberFormatException nfe){
 					 JOptionPane err = new JOptionPane();
 		   		      err.showMessageDialog(null, "Als Port Nummer sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -196,21 +211,38 @@ public class Konfiguration extends JPanel {
 		      });
 		    konfigLoeschen.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
+		        	   // Rezising von splitpane / panelcenter
+			          ButtonListener.resizing();
 		          int index = list.getSelectedIndex();
-		          kontoControl.removeKonto(index);
-		          kontoControl.saveKonten("kontos.xml");
-		          for(int i =0; i < labels.length; i++) {
-		        	  form.setText(i, "");
-		          }  
 		          System.out.println(index);
 		      //    System.out.println(listModel.getElementAt(index));
 		          status = false;
 		          if(index >= 0 && index < listModel.size()) { 
-		          	listModel.removeElement(listModel.getElementAt(index));
+		         // Jtree (Folder) wird gelöscht
+		          	  Object root =  	MainView.getCurrentTree().getModel().getRoot();
+			    	  DefaultTreeModel treeModel = (DefaultTreeModel) MainView.getCurrentTree().getModel();
+			    	  for(int i = 0; i < treeModel.getChildCount(root);i++) {
+			    		  if(treeModel.getChild(root, i).toString().equals(kontoControl.getKontos().get(index).getEmail())) {
+			    			  treeModel.removeNodeFromParent((MutableTreeNode) treeModel.getChild(root, i));
+			    		  }
+			    	  }   	  
+		        	  kontoControl.removeKonto(index);
+			          kontoControl.saveKonten("kontos.xml");
+			      
+			          for(int i =0; i < labels.length; i++) {
+			        	  form.setText(i, "");
+			          }  
+			       // ModelList wird gelöscht
+		          	  listModel.removeElement(listModel.getElementAt(index));
+		          	  ButtonListener.resizing();
+		         
 		          }else {
-		        	System.out.println("ListModel, Konto.Id "+index+" existiert nicht");
+		        	  System.out.println("ListModel, Konto.Id "+index+" existiert nicht");
 		          }
 		          status = true;
+		       
+		          
+		          //button deaktiviert + textfelder
 		          if(kontoControl.getKontos().size() == 0) { 	  
 		        	  speichern.setEnabled(false);
 		        	  disableButton();
@@ -218,9 +250,29 @@ public class Konfiguration extends JPanel {
 		          }
 		          
 		        }
-		      });	    
+		      });	 
+		    
+		// Port dürfen NUR int sein !!
+		    KeyListener keyListener= new KeyAdapter() {
+		        public void keyTyped(KeyEvent e) {
+		          char c = e.getKeyChar();
+		          if (!((c >= '0') && (c <= '9') ||
+		             (c == KeyEvent.VK_BACK_SPACE) ||
+		             (c == KeyEvent.VK_DELETE))) {
+		            getToolkit().beep();
+		            e.consume();
+		          }
+		        }
+		      };
+		      form.getField(4).addKeyListener(keyListener);
+		      form.getField(6).addKeyListener(keyListener);
+		      form.getField(8).addKeyListener(keyListener);
+		      
+		     
 		    
 	 } 
+	
+	
 	public void disableButton() {
 		konfigLoeschen.setEnabled(false);
 		send.setEnabled(false);
@@ -246,6 +298,7 @@ public class Konfiguration extends JPanel {
 		this.add(buttonPane, BorderLayout.SOUTH);
 		return this;
 	}
+	
 	public DefaultListModel<EmailKonto> getListModel()  {
 		return listModel;
 	}

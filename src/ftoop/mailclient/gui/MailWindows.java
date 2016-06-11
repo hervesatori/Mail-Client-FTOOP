@@ -2,6 +2,7 @@ package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -38,6 +39,7 @@ public class MailWindows extends JPanel {
 	protected  JLabel labelBetreff;
 	protected  JLabel labelDate;
 	protected JTextField txtAn;
+	protected JTextField txtVon;
 	protected JTextField txtDate;
 
 	protected JTextField txtBetreff;
@@ -52,6 +54,7 @@ public class MailWindows extends JPanel {
 		  
 		  txtBetreff = new JTextField();
 		  txtAn = new JTextField();
+		  txtVon = new JTextField();
 		  txtDate = new JTextField();
 		  labelPane = new JPanel();
 		  labelPane.setLayout(new BoxLayout(labelPane,BoxLayout.Y_AXIS));
@@ -114,14 +117,27 @@ public class MailWindows extends JPanel {
 		  labelPane.add(txtDate);
 		  break;
 	   case "neueMail":
-		  labelPane.setLayout(new GridLayout(3,2,7,7));
+		  String from; 
+		  labelPane.setLayout(new GridLayout(4,2,7,7));
 		  msgPane.setEditable(true);
 		  labelAn = new JLabel(an);
+		  labelVon = new JLabel(von);
+		  //Test ob CurrentKonto nicht null ist
+		  if(FolderSelectionListener.getSelectedMailControl()== null 
+				  && MainView.getKontoControl().getKontos().get(0) != null) {
+			  from = MainView.getKontoControl().getKontos().get(0).getEmail();
+		  } else {
+			  from = FolderSelectionListener.getSelectedMailControl().getCurrentKonto().getEmail();
+		  }
+		  txtVon.setText(from);
+		  txtVon.setEnabled(false);
 		  labelBetreff = new JLabel(betreff);
 		  labelPane.add(labelAn);
 		  labelPane.add(txtAn);
+		  labelPane.add(new JLabel(" "));
 	      labelPane.add(new JLabel(" "));
-	      labelPane.add(new JLabel(" "));
+		  labelPane.add(labelVon);
+		  labelPane.add(txtVon);
 		  labelPane.add(labelBetreff);
 		  labelPane.add(txtBetreff);
 		  break;

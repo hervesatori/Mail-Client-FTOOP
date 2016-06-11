@@ -17,14 +17,15 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
 import ftoop.mailclient.daten.Mail;
 
 public class ButtonListener implements ActionListener {
 	
-	private JSplitPane splitPane;
-	private JPanel panelCenter;
+	private static JSplitPane splitPane;
+	private static JPanel panelCenter;
 	private static MailWindows mailWindows;
 	private static String senden;
 	private JTable table;
@@ -34,19 +35,21 @@ public class ButtonListener implements ActionListener {
 	private JButton weiterleiten;
 	private JButton loeschen;
 	private JButton ordnerSync;
+	private static JFrame newMailFrame;
 //	private MailControl mailControl;
 	
-	public ButtonListener(JSplitPane splitPane,JPanel panelCenter,JButton send,JButton neue,JButton antworten,
+	public ButtonListener(JSplitPane splitPaneBis,JPanel panelCenterBis,JButton send,JButton neue,JButton antworten,
 			JButton weiterleiten,JButton loeschen,JButton ordnerSync) {
 		
-		this.splitPane = splitPane;
-		this.panelCenter = panelCenter;
+		splitPane = splitPaneBis;
+		panelCenter = panelCenterBis;
 		this.send = send;
 		this.neue = neue;
 		this.antworten = antworten;
 		this.weiterleiten = weiterleiten;
 		this.loeschen = loeschen;
 		this.ordnerSync = ordnerSync;
+		
 	}
 	
 	
@@ -59,33 +62,38 @@ public class ButtonListener implements ActionListener {
 	    	  MainView.init(false);
 	    	  break;
 	       case "Konfiguration":
-	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,ordnerSync).getPanelUnten(),BorderLayout.NORTH);
+	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,
+	    			  ordnerSync).getPanelUnten(),BorderLayout.NORTH);
 	    	  resizing();
 	    	  break;
 	       case "Neue E-Mail":	    	  
 	    	  mailWindows = new MailWindows(null,"neueMail");
 	    	  mailWindows.getMsgPane().setContentType("text/plain");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-	          splitPane.setRightComponent(panelCenter);
 	          send.setEnabled(true);
 	          senden = "neue";
-	          JFrame newMailFrame = new JFrame();
-	          newMailFrame.add(panelCenter);
-	          newMailFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	          newMailFrame.setTitle("Neue E-Mail senden");
-	          newMailFrame.pack();
-	          newMailFrame.setVisible(true);
+	          newMailFrame = new NewMailFrame("Neue E-Mail senden",panelCenter);
 	    	  break;
 	       case "Löschen":
 	    	   table = FolderSelectionListener.getCurrentTable();
-	    	   row = table.getSelectedRow();
+	    	//   row = table.getSelectedRow();
+	    	  row =  table.convertRowIndexToModel(table.getSelectedRow());
 	    	   String msgId = FolderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
 	    	   System.out.println(msgId);
 	    	   if(table.getRowCount() > 0){
 	    	   ((MailTableModel) table.getModel()).removeRow(row);
 	    	   }
-	    	   try {
-	  	    	FolderSelectionListener.getSelectedMailControl().deleteMail(FolderSelectionListener.getSelectedMail().getMessageID());
+	   //Thread work um mail zu löschen 	
+	       SwingWorker<Void,Void> workerLoeschen = new SwingWorker<Void,Void>() {
+	    			      @Override
+	    			      protected Void doInBackground()
+	    			      {
+	    			      	
+	  	    try {
+	    			   
+	    			
+	  	    	   FolderSelectionListener.getSelectedMailControl().deleteMail(FolderSelectionListener.getSelectedMail().getMessageID());
+	  	    	
 			} catch (MessagingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -125,24 +133,31 @@ public class ButtonListener implements ActionListener {
 				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				frame.setVisible(true);
 			}
+	        return null;
+	    			      }
+	    			   
+	    			 
+	    			  };
+	    			  workerLoeschen.execute();
 	    	  break;
 	       case "Antworten":
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten");
 	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-	    	 resizing();
+	    	  newMailFrame = new NewMailFrame("E-Mail antworten",panelCenter);
 	    	  send.setEnabled(true);
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
 	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
 		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-		      resizing();
+		   	  newMailFrame = new NewMailFrame("E-Mail weiterleiten",panelCenter);
 		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
 	       case "senden":
 	    	  sendenMail(senden); 	
 	    	  panelCenter.add(new JTextArea("MAIL  sent successfully"));
+	    	  newMailFrame.dispose();;
 	    	  resizing();
 	    	  splitPane.validate();
 	   	     
@@ -152,13 +167,16 @@ public class ButtonListener implements ActionListener {
 	    	   resizing();
 	    	   splitPane.validate();
 	    	   send.setEnabled(false);
-	       		  break;
+	    	   loeschen.setEnabled(false);
+	    	   weiterleiten.setEnabled(false);
+	    	   antworten.setEnabled(false);
+	       	   break;
 	       default:
 	    	  return;
 	     }
 	  }
 	  
-   public void resizing() {
+   public static void resizing() {
 	   int pos = splitPane.getDividerLocation();
        splitPane.setRightComponent(panelCenter);
 		  splitPane.setDividerLocation(pos);
