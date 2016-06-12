@@ -39,14 +39,14 @@ public class MainView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static EmailKontoControl kontoControl;
 	private static HashMap<String,MailControl> mailControlContainer;
-	private JPanel panelCenter;
-	private JSplitPane splitPane;
+	private static JPanel panelCenter;
+	private static JSplitPane splitPane;
 	// Labeltitel für Mails werden definiert
 	protected static final String von = "Von";
 	protected static final String an = "An";
 	protected static final String betreff = "Betreff";
 	protected static final String datum = "Datum";
-	private static JFrame fr;
+	private static JFrame fr;									//  zum löschen !!!!!
 	private static JTree currentTree;
 	private static JButton neueMail;
 	private static JButton loeschen;
@@ -56,7 +56,7 @@ public class MainView extends JFrame {
 	private JButton senden;
 	private JButton ordnerSynchro;
 	private JButton konfiguration;
-	
+	private static JFrame frame;
 	
 	/**
 	 * Create the frame.
@@ -73,7 +73,7 @@ public class MainView extends JFrame {
 		this.getContentPane().add(createMenuBar(),BorderLayout.NORTH);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-	    fr = MainView.getFrame();
+	   
 	}
 	
 	private JMenuBar createMenuBar() {
@@ -124,7 +124,7 @@ public class MainView extends JFrame {
 		menuBar.add(konfiguration);
 		return menuBar;
 	}
-	 private JComponent createCenterPanel() {
+	 private static JComponent createCenterPanel() {
 		 	//Init der panelCenter
 		 	panelCenter = new JPanel();
 		 	panelCenter.add(new JTextArea("MAIL CLIENT"));
@@ -200,7 +200,7 @@ public class MainView extends JFrame {
 	  }*/
 	 
 	 
-	  private DefaultMutableTreeNode buildTree(){ 
+	  private static DefaultMutableTreeNode buildTree(){ 
 	    // Root wird erstellt
 	        final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Racine");
 	    if(kontoControl.getKontos()!=null && mailControlContainer!=null) {
@@ -250,7 +250,10 @@ public class MainView extends JFrame {
 	  }
 	 
 	  public static void init(Boolean start){
-		
+		  
+		  fr = MainView.getFrame();
+		  
+		  
 		  JFrame frameWait = new JFrame();
 		  frameWait.setLayout(new BorderLayout());
 		  frameWait .setSize(800,50);
@@ -295,11 +298,12 @@ public class MainView extends JFrame {
 		      @Override
 		      protected void done() {
 		    	  if(start) {
-		      		JFrame frame = new MainView("Mail Client");
+		      		frame = new MainView("Mail Client");
+		      		setFrame(frame);
 		      		frame.setVisible(true);
 		    	  }else {
-		    		 fr.dispose();
-		    		 JFrame frame = new MainView("Mail Client");
+		    		 frame.dispose(); 
+		    		 frame = new MainView("Mail Client");
 			      	 frame.setVisible(true);
 		    	  }
 		          frameWait.dispose();
@@ -310,9 +314,13 @@ public class MainView extends JFrame {
 
 		  
 	  }
-	  
+   // Return aktuell frame	  
    public static JFrame getFrame() {
 	   return fr;
+   }
+   // Set the frame
+   public static void setFrame(JFrame frame) {
+	   fr = frame;
    }
    public static EmailKontoControl getKontoControl() {	   
 	   return kontoControl;

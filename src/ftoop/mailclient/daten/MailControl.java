@@ -123,7 +123,12 @@ public void mailReceive(){
 	  }
 	  } catch (MessagingException e) {
 		    e.printStackTrace();
-	         JOptionPane.showMessageDialog(null, "AUTHENTICATIONFAILED", "Fehler", JOptionPane.ERROR_MESSAGE);
+	        JOptionPane option = new JOptionPane("AUTHENTICATIONFAILED", JOptionPane.ERROR_MESSAGE);
+	         JDialog dialog = option.createDialog("Message Dialog");
+	         dialog.setAlwaysOnTop(true); //<-- this line
+	         dialog.setModal(true);
+	         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	         dialog.setVisible(true);
 	  }finally {
 		  try {
 			  if (store != null && store.isConnected()) {  

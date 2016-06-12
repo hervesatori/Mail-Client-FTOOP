@@ -219,7 +219,7 @@ public class Konfiguration extends JPanel {
 		          status = false;
 		          if(index >= 0 && index < listModel.size()) { 
 		         // Jtree (Folder) wird gelöscht
-		          	  Object root =  	MainView.getCurrentTree().getModel().getRoot();
+		          	  Object root = MainView.getCurrentTree().getModel().getRoot();
 			    	  DefaultTreeModel treeModel = (DefaultTreeModel) MainView.getCurrentTree().getModel();
 			    	  for(int i = 0; i < treeModel.getChildCount(root);i++) {
 			    		  if(treeModel.getChild(root, i).toString().equals(kontoControl.getKontos().get(index).getEmail())) {
