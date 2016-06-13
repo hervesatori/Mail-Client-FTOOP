@@ -22,8 +22,8 @@ public class BoldRenderer extends DefaultTableCellRenderer {
             int row, int column) {
         Component cellComponent = super.getTableCellRendererComponent(
                 tblData, value, isSelected, hasFocus, row, column);
-
-        if (tblData.getValueAt(row, 5).equals(true)) {
+        //Falls Mail ungelesen ist -> Mail.isRead == false
+        if (tblData.getValueAt(row, 5).equals(false)) {
             cellComponent.setFont(cellComponent.getFont().deriveFont(
                     Font.BOLD));
         } else {

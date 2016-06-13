@@ -115,7 +115,7 @@ public class Mail {
 	   this.message = message;
    }
    
-	public void setNotRead(Boolean isRead) {
+	public void setIsRead(Boolean isRead) {
 		this.isRead = isRead;
 	}
 	public Boolean getisRead() {

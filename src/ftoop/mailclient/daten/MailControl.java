@@ -354,7 +354,7 @@ public boolean existsMailboxXML(){
 					e.printStackTrace();
 				}
 				Mail mailToAdd = new Mail(xmlMail.getChildText("MessageID"),date, xmlMail.getChildText("To"), xmlMail.getChildText("CC"),xmlMail.getChildText("BCC"), xmlMail.getChildText("From"), xmlMail.getChildText("Subject"), xmlMail.getChildText("Message"), attachmentPaths);
-				mailToAdd.setNotRead(false);
+				mailToAdd.setIsRead(true);
 				newContainer.addMailToContainer(mailToAdd);
 			}
 			//MailContainer zum MailControl hinzufügen
@@ -405,7 +405,7 @@ public boolean existsMailboxXML(){
 						}else{
 							System.out.println("Mail mit ID "+mID + " existiert noch nicht, wird heruntergeladen");
 							Mail mail = this.generateMailFromMessage(message);
-							mail.setNotRead(true);
+							mail.setIsRead(false);
 							mc.addMailToContainer(mail);
 						}
 					} catch (IOException e) {
@@ -765,7 +765,6 @@ private void setMailFolders(ArrayList<Folder> serverMailFolders) {
 
   
   
-  @SuppressWarnings("static-access")
 public void sendMsg(Mail mail) throws NoSuchProviderException {
 	  
 	  

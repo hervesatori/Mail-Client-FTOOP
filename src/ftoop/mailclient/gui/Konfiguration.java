@@ -56,10 +56,11 @@ public class Konfiguration extends JPanel {
 	private JButton loeschen;
 	private JButton ordnerSync;
 	private boolean neuAktiv = false;
+	private MainView mailClient;
 
 	
 	public Konfiguration(JButton send,JButton neue,JButton antworten,
-			JButton weiterleiten,JButton loeschen,JButton ordnerSync)  {
+			JButton weiterleiten,JButton loeschen,JButton ordnerSync, MainView mailClient)  {
 		 
 		 super(new BorderLayout());
 		 listModel = new DefaultListModel<EmailKonto>();
@@ -88,6 +89,7 @@ public class Konfiguration extends JPanel {
 		 this.weiterleiten = weiterleiten;
 		 this.loeschen = loeschen;
 		 this.ordnerSync = ordnerSync;
+		 this.mailClient = mailClient;
 		
 	}	 
 		 
@@ -152,7 +154,6 @@ public class Konfiguration extends JPanel {
 		        }
 		    });
 		    speichern.addActionListener(new ActionListener() {
-				@SuppressWarnings("static-access")
 				public void actionPerformed(ActionEvent e) {
 					int pop, smtp, imap;;
 				 try {
@@ -198,8 +199,8 @@ public class Konfiguration extends JPanel {
 		        	 
 		        	  enableButton();
 		          }
-		          //Ordner synchronisieren
-		          MainView.init(false);
+//		          //Ordner synchronisieren
+//		          MainView.init(false);
 		          
 			   } catch (NumberFormatException nfe){
 					 JOptionPane err = new JOptionPane();
@@ -212,15 +213,15 @@ public class Konfiguration extends JPanel {
 		    konfigLoeschen.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		        	   // Rezising von splitpane / panelcenter
-			          ButtonListener.resizing();
+//			          ButtonListener.resizing();
 		          int index = list.getSelectedIndex();
 		          System.out.println(index);
 		      //    System.out.println(listModel.getElementAt(index));
 		          status = false;
 		          if(index >= 0 && index < listModel.size()) { 
 		         // Jtree (Folder) wird gelöscht
-		          	  Object root = MainView.getCurrentTree().getModel().getRoot();
-			    	  DefaultTreeModel treeModel = (DefaultTreeModel) MainView.getCurrentTree().getModel();
+		          	  Object root = Konfiguration.this.mailClient.getCurrentTree().getModel().getRoot();
+			    	  DefaultTreeModel treeModel = (DefaultTreeModel) Konfiguration.this.mailClient.getCurrentTree().getModel();
 			    	  for(int i = 0; i < treeModel.getChildCount(root);i++) {
 			    		  if(treeModel.getChild(root, i).toString().equals(kontoControl.getKontos().get(index).getEmail())) {
 			    			  treeModel.removeNodeFromParent((MutableTreeNode) treeModel.getChild(root, i));
@@ -234,7 +235,7 @@ public class Konfiguration extends JPanel {
 			          }  
 			       // ModelList wird gelöscht
 		          	  listModel.removeElement(listModel.getElementAt(index));
-		          	  ButtonListener.resizing();
+//		          	  ButtonListener.resizing();
 		         
 		          }else {
 		        	  System.out.println("ListModel, Konto.Id "+index+" existiert nicht");

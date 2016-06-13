@@ -2,61 +2,74 @@ package ftoop.mailclient.gui;
 
 
 import java.awt.BorderLayout;
-
-import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
-import javax.mail.MessagingException;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 import ftoop.mailclient.daten.EmailKontoControl;
+import ftoop.mailclient.daten.Mail;
+import ftoop.mailclient.daten.MailButtonListenerTool;
+import ftoop.mailclient.daten.MailContainer;
 import ftoop.mailclient.daten.MailControl;
 
 
 
-public class MainView extends JFrame {
+public final class MainView extends JFrame{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private static EmailKontoControl kontoControl;
-	private static HashMap<String,MailControl> mailControlContainer;
-	private static JPanel panelCenter;
-	private static JSplitPane splitPane;
+	private static final long serialVersionUID = -8066584911865251505L;
+	/**
+	 * 
+	 */
+	private EmailKontoControl kontoControl;
+	private HashMap<String,MailControl> mailControlContainer;
+//	private JPanel panelCenter;
+	private JSplitPane splitPane;
 	// Labeltitel für Mails werden definiert
-	protected static final String von = "Von";
-	protected static final String an = "An";
-	protected static final String betreff = "Betreff";
-	protected static final String datum = "Datum";
-	private static JFrame fr;									//  zum löschen !!!!!
-	private static JTree currentTree;
-	private static JButton neueMail;
-	private static JButton loeschen;
-	private static JButton antworten;
-	private static JButton weiterLeiten;
+	protected String von = "Von";
+	protected String an = "An";
+	protected String betreff = "Betreff";
+	protected String datum = "Datum";
+	private JFrame fr;									//  zum löschen !!!!!
+	private JTree currentTree;
+	private JButton neueMail;
+	private JButton loeschen;
+	private JButton antworten;
+	private JButton weiterLeiten;
 	private JButton schliessen;
-	private JButton senden;
 	private JButton ordnerSynchro;
 	private JButton konfiguration;
-	private static JFrame frame;
+	private JFrame frame;
+	private MailWorker mailWorker;
+	private DefaultMutableTreeNode rootNode;
+	private DefaultTreeModel mailTreeModel;	
+	private ButtonListener buttonListener;
+	private FolderSelectionListener folderSelectionListener;
 	
 	/**
 	 * Create the frame.
@@ -65,14 +78,9 @@ public class MainView extends JFrame {
 	public MainView(String name) {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle(name);
-		this.setSize(1100,700);
-		this.setLocationRelativeTo(null);
-		this.setLayout(new BorderLayout(5,5));
-		this.getContentPane().add(createCenterPanel(),BorderLayout.CENTER);
-		this.getContentPane().add(createMenuBar(),BorderLayout.NORTH);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.initGUI(name);
 		
+		this.init(true);
 	   
 	}
 	
@@ -83,64 +91,75 @@ public class MainView extends JFrame {
 	    antworten = new JButton("Antworten");
 	    weiterLeiten = new JButton("Weiterleiten");
 	    schliessen = new JButton("schliessen");
-		senden = new JButton("senden");
 	    ordnerSynchro = new JButton("Ordner synchronisieren");
 	    konfiguration = new JButton("Konfiguration");
-		senden.setEnabled(false);
 		neueMail.setEnabled(false);
 		antworten.setEnabled(false);
 		weiterLeiten.setEnabled(false);
 		loeschen.setEnabled(false);
-		if(kontoControl.getKontos().size() <= 0) {
-			buttonDisable();
-		}
+		buttonDisable();
+//		if(kontoControl.getKontos().size() <= 0) {
+//			buttonDisable();
+//		}
+		
+		
 		//ButtonListener****************************************************
-		neueMail.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		loeschen.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		antworten.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		schliessen.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		weiterLeiten.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		senden.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		konfiguration.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
-		ordnerSynchro.addActionListener(new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
-				weiterLeiten,loeschen,ordnerSynchro));
+//		this.buttonListener = new ButtonListener(splitPane,panelCenter,senden,neueMail,antworten,
+//				weiterLeiten,loeschen,ordnerSynchro,this, this.folderSelectionListener);
+		
+		neueMail.addActionListener(MailButtonListenerTool.getNewMailActionListener(this.folderSelectionListener));
+		loeschen.addActionListener(MailButtonListenerTool.getDeleteMailActionListener(this.folderSelectionListener));
+		antworten.addActionListener(MailButtonListenerTool.getRespondToMailActionListener(this.folderSelectionListener));
+		weiterLeiten.addActionListener(MailButtonListenerTool.getForwardToMailActionListener(this.folderSelectionListener));
+		schliessen.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					//Ersetze das Panel in der Mitte durch ein leeres und zeige somit ein Schliessen an
+//		    	   panelCenter = new JPanel();
+//		    	   int pos = splitPane.getDividerLocation();
+		           splitPane.setRightComponent(new JPanel());
+//	    		   splitPane.setDividerLocation(pos);
+		    	   splitPane.validate();
+		    	   
+		    	   loeschen.setEnabled(false);
+		    	   weiterLeiten.setEnabled(false);
+		    	   antworten.setEnabled(false);
+			}
+			
+		});
+//		senden.addActionListener(this.buttonListener);
+//		konfiguration.addActionListener(this.buttonListener);
+//		ordnerSynchro.addActionListener(this.buttonListener);
 		//Die Buttons werden an JMenuBar angehängt
 		menuBar.add(neueMail);
 		menuBar.add(loeschen);
 		menuBar.add(antworten);
 		menuBar.add(weiterLeiten);
 		menuBar.add(schliessen);
-		//2 Buttons werden jetzt Rechtsbüntig plaziert
+		//2 Buttons werden jetzt Rechtsbündig plaziert
 		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(senden);
 		menuBar.add(ordnerSynchro);
 		menuBar.add(konfiguration);
 		return menuBar;
 	}
-	 private static JComponent createCenterPanel() {
+	 private JComponent createCenterPanel() {
 		 	//Init der panelCenter
-		 	panelCenter = new JPanel();
+		 	JPanel panelCenter = new JPanel();
 		 	panelCenter.add(new JTextArea("MAIL CLIENT"));
 	        splitPane = new JSplitPane();
 	        splitPane.setDividerLocation(180);
 	        //JTREE  ****************************************
 	        // Root wird via Method buildTree erzeugt
-	        final DefaultMutableTreeNode rootNode = buildTree();
-	        final TreeModel treeModel = new DefaultTreeModel(rootNode);
-	        final JTree tree = new JTree(treeModel);
-	        //Zuweisung der currentTree
+	        this.rootNode = new DefaultMutableTreeNode("Racine");
+	        this.mailTreeModel = new DefaultTreeModel(rootNode);
+	        final JTree tree = new JTree(mailTreeModel);
+	        //Zuweisung an currentTree
 	        currentTree = tree;
 	        tree.setRootVisible(false); 
 	        tree.expandRow(0);
-	        //  Treelistener
-	        tree.addTreeSelectionListener(new FolderSelectionListener(mailControlContainer,splitPane,panelCenter));
+	        //Initialisierung des FolderSelection Listener(Treelistener)
+	        this.folderSelectionListener = new FolderSelectionListener(splitPane,panelCenter, this);
+	        tree.addTreeSelectionListener(folderSelectionListener);
 	        splitPane.setLeftComponent(new JScrollPane(tree));
 	        splitPane.setRightComponent(panelCenter);
 	        return splitPane;
@@ -152,67 +171,121 @@ public class MainView extends JFrame {
 			weiterLeiten.setEnabled(false);
 			ordnerSynchro.setEnabled(false);
 	 }
-	 public static void setButtonNeueOn() {
+	 public void setButtonNeueOn() {
 		   neueMail.setEnabled(true);
 		
 	 }
-	 public static void setButtonLoeschenAntWeiterOn() {
+	 public void setButtonLoeschenAntWeiterOn() {
 		    antworten.setEnabled(true);
 			weiterLeiten.setEnabled(true);
 			loeschen.setEnabled(true);
 	 }
-	 /* public static JPanel createPanelMail(Mail mail) {
-		  // Definition der Panels
-		  final JPanel panelUnten = new JPanel(new BorderLayout(5,5));
-		  final JPanel labelPane = new JPanel();
-		  labelPane.setLayout(new BoxLayout(labelPane,BoxLayout.Y_AXIS));
-		  labelPane.setBorder(
-	                BorderFactory.createCompoundBorder(
-	                                BorderFactory.createTitledBorder("E-Mail Header"),
-	                                BorderFactory.createEmptyBorder(5,5,5,5)));
-		  labelPane.setBackground(new Color(255,255,204));
-		  //*****************************************************************
-		  // Definition der JEditorPane um die Mail anzuzeigen mit JScrollPane 
-		  JEditorPane msgPane= new JEditorPane();
-		  msgPane.setEditable(false);
-		  msgPane.setContentType("text/html");
-		  msgPane.setText(mail.getMessage());
-		  JScrollPane scrollEditor = new JScrollPane(msgPane);
-		  //*****************************************************************
-		  //Label Von, An, Betreff und Datum werden definiert
-		  final JLabel labelVon = new JLabel(von+": "+mail.getFrom());
-		  final JLabel labelAn = new JLabel (an+": "+mail.getTo());
-		  final JLabel labelBetreff = new JLabel(betreff+": "+mail.getSubject());
-		  final JLabel labelDate = new JLabel(datum+": "+mail.getReceived());
-		  //die JLabels an labelPane hinzugefügt
-		  labelPane.add(labelVon);
-		  labelPane.add(new JLabel(" "));
-		  labelPane.add(labelAn);
-		  labelPane.add(new JLabel(" "));
-		  labelPane.add(labelBetreff);
-		  labelPane.add(new JLabel(" "));
-		  labelPane.add(labelDate);
-		  //labelPane und msgPane werden an panelUnten hinzugefügt
-		  panelUnten.add(labelPane,BorderLayout.NORTH);
-		  panelUnten.add(scrollEditor,BorderLayout.CENTER);
-		  //*****************************************************************
-		  return panelUnten;  
-	  }*/
-	 
-	 
-	  private static DefaultMutableTreeNode buildTree(){ 
-	    // Root wird erstellt
-	        final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Racine");
-	    if(kontoControl.getKontos()!=null && mailControlContainer!=null) {
-            System.out.println(kontoControl.getKontos().size());
+    private void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
+	    		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
+	 //  	    Point origin = e.getPoint () ;
+	 //       int row = table.rowAtPoint( origin ) ; 
+	        Mail mailLocal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
+	        mailLocal.setIsRead(true);
+	        System.out.println("MAIL:  "+mailLocal.getFrom()+"Menge:  "+mailLocal.getAttachments().size());
+	        scrollPane = new JScrollPane(table);
+	        panelCenter = new JPanel(new BorderLayout(5,5));
+//	        final MailWindows readingMailWindow = new MailWindows(mailLocal,"lesen", this);
+
+	        //Zeige im MainGui die Mail unterhalb der Selektion an
+	        panelCenter.add(scrollPane,BorderLayout.NORTH);
+	        panelCenter.add(new MailPane(mailLocal,MailPane.MailWindowType.READ,this.folderSelectionListener.getSelectedMailControl()),BorderLayout.CENTER);
+	        // sog. Resizing mit splitpane und Divider
+	        int pos = splitPane.getDividerLocation();
+	        splitPane.setRightComponent(panelCenter);
+			splitPane.setDividerLocation(pos);
+//	        splitPane.revalidate();  
+//	        splitPane.repaint();
+	        if(!oneClick) {
+	        	//Doppelklick, somit öffne die Mail in einem separaten Fenster
+	        	final MailPane mw = new MailPane(mailLocal,MailPane.MailWindowType.READ, this.folderSelectionListener.getSelectedMailControl());
+				final PopupMailFrame readingFrame = new PopupMailFrame(mailLocal.getFrom(), mw,PopupMailFrame.READING_MAIL_FRAME );
+	        	
+	        }
+    }  
+	 public void setMailSelection(TreePath treePath){
+	    	Object[] obj = null;
+	        final Object pathComponent = treePath.getLastPathComponent();
+	        final String type = pathComponent.getClass().getSimpleName();
+	        //Button neue mail wird aktiviert
+	        this.setButtonNeueOn();
+	        System.out.println("Path: " + treePath + " / Object: " + pathComponent.toString() + " / Type: " + type+"///////"+pathComponent);
+	        //return a array of path
+	        obj= treePath.getPath();
+	        System.out.println(mailControlContainer.get(obj[1].toString()).toString());  
+	        System.out.println(obj[1].toString());
+	        HashMap<String,MailContainer> mailcontainers = mailControlContainer.get(obj[1].toString()).getMailContainers();
+	        
+	        // Ordnerbehandlung, "/" wird getrennt
+	        String tempStr = treePath.toString().replaceAll("\\s","");
+	        String currentPath;
+	        String[]anpassen = tempStr.split(",");
+	        int lange = anpassen.length;
+	        if(lange>3) {
+	        	currentPath = anpassen[lange-2]+"/"+pathComponent.toString();
+	        	
+	        }else {
+	        	currentPath = pathComponent.toString();
+	        }
+	        System.out.println(currentPath);
+	     	if(mailcontainers.get(currentPath)!=null) {
+	            //  Init von List containingsMails (Alle Mails von einen Ordner)
+	     		//  TableModel wird auch instanziert
+	            List<Mail> containingMails = mailControlContainer.get(obj[1].toString()).getMailContainers()
+	        		  .get(currentPath).getContainingMails();
+//	            final MailControl mailControl = mailControlContainer.get(obj[1].toString());
+		        final MailTableModel tableModel = new MailTableModel(containingMails);
+				final JTable table = new JTable(tableModel);
+				// JTable wird nach Datum sortiert
+				table.setAutoCreateRowSorter(true);
+	            table.getRowSorter().toggleSortOrder(3);
+	            table.setDefaultRenderer(Object.class, new BoldRenderer());
+	            table.getRowSorter().toggleSortOrder(3);
+	            
+		        //JTABLE wird via ein jScrollPane abgebildet
+		        // ***********************************************
+		    	JScrollPane scrollPane = new JScrollPane(table);
+		    	JPanel panelCenter = new JPanel(new GridLayout(2,1,5,5));
+	     		panelCenter.add(scrollPane);
+	     		
+	     		
+//			     Setze beim Splitpane den Divider auf die letzte Position, da durch den Tausch des Panels das Splitpane neu gepackt wird.
+		        final int pos = splitPane.getDividerLocation();
+	     		splitPane.setRightComponent(panelCenter);
+				splitPane.setDividerLocation(pos);
+				
+			    table.addMouseListener ( new MouseAdapter () {
+			         public void mouseClicked ( MouseEvent e ) {
+			        	 setButtonLoeschenAntWeiterOn();
+			             if  (e.getClickCount () == 1) {
+			            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,table,containingMails);			            	
+			             }else if(e.getClickCount () == 2) {
+			            	 clickRefresh(scrollPane,panelCenter,splitPane,false,e,table,containingMails);
+			             }
+			         }
+			       });
+
+	     	}        
+	 }
+	 /**
+	  * buildTree wird verwendet um links in der Gui den Mailkontobaum anzuzeigen
+	  */
+	  public synchronized void buildTree(){ 
+		System.out.println("Builde MailTree");
+	    this.rootNode.removeAllChildren();
+	    if(this.kontoControl.getKontos()!=null && this.mailControlContainer!=null) {
+            System.out.println("Anzahl Kontis zum Tree hinzuzufügen: "+ kontoControl.getKontos().size());
 			//Kontos werden an Root hinzugefügt
 	         for(int i = 0; i < kontoControl.getKontos().size(); i++){
-	        	  DefaultMutableTreeNode konto = new DefaultMutableTreeNode(kontoControl.getKontos().get(i).getName());  	
+	        	final String kontoName= kontoControl.getKontos().get(i).getName();
+	     		System.out.println("Füge Konto "+ kontoName  + " hinzu.");
+	        	  DefaultMutableTreeNode konto = new DefaultMutableTreeNode(kontoName);  	
             //Folders werden an Konto hinzugefügt  
-	        //    for(int j = 0; j < mailControlContainer.get(kontoControl.getKontos().get(i).
-	        //    		getName()).getServerMailFolders().size();j++){  
-	        	 
-	        	  
+  
 	        	  Set<String> keyParent = mailControlContainer.get(kontoControl.getKontos().get(i).getName()).
 	        			  getParentContainer().keySet(); 
 	        	  System.out.println(keyParent.size());
@@ -232,100 +305,58 @@ public class MainView extends JFrame {
 	            	   konto.add(folder3);
 	               }
 	        	
-	        	/* Set<String> key = mailControlContainer.get(kontoControl.getKontos().get(i).getName()).getMailContainers().keySet(); 
-	        	  System.out.println(key.size());
-	        	for(String folderFullPath : key ){
-	            	DefaultMutableTreeNode folder = new DefaultMutableTreeNode(folderFullPath);			
-	                konto.add(folder);
-	                System.out.println(folderFullPath);
-	                
-	               
-	        	}*/
-	       //     }
-	            //Konto wird an root hinzugefügt
-	            root.add(konto);  
+	            this.rootNode.add(konto); 
 	         }
-	    }   
-	       return root;
+	    }
+	    this.mailTreeModel.reload(this.rootNode);
 	  }
-	 
-	  public static void init(Boolean start){
+	  public void synchronizeFolders(){
 		  
-		  fr = MainView.getFrame();
-		  
-		  
-		  JFrame frameWait = new JFrame();
-		  frameWait.setLayout(new BorderLayout());
-		  frameWait .setSize(800,50);
-		  frameWait .setLocationRelativeTo(null);
-		  frameWait.setUndecorated(true); 
-		  frameWait.setAlwaysOnTop(true);
-		  JProgressBar bar = new JProgressBar();
-		  bar.setIndeterminate(true);
-		  bar.setStringPainted(true);
-		  bar.setFont(new Font("Arial",Font.BOLD,20));
-		  bar.setString("Bitte warten, die Kontos und Folders werden synchronisiert");
-		  frameWait.add(bar,BorderLayout.CENTER);
-		  SwingWorker<Void,Void> worker = new SwingWorker<Void,Void>() {
-		      @Override
-		      protected Void doInBackground()
-		      {
-		      	  //**********erstellen der MailControlContainer
-		  		   mailControlContainer = new HashMap<String,MailControl>();
-		  		   //**********Laden der Konti
-		  			kontoControl = new EmailKontoControl();
-		  			kontoControl.loadKonten("kontos.xml");
-		  		        //Konti werden gesucht
-		  		        for(int i = 0; i < kontoControl.getKontos().size(); i++){
-		  		        	//********** Verwenden eines Kontos mit MailControl 
-		  	               MailControl mailControl = new MailControl(kontoControl.getKontos().get(i));
-		  	               mailControl.mailReceive();
-		  	               mailControl.saveMailContainers();
-		  	//System.out.println(kontoControl.getKontos().get(i).getName());
-		  	               mailControlContainer.put(kontoControl.getKontos().get(i).getName(),mailControl);
-		  	               //********** Schliessen aller offenen Verbindungen
-		  	               try {
-		  	            	   mailControl.closeAllFolderConnections();
-		  	               } catch (MessagingException e) {
-		  	            	   System.out.println("Fehler beim Schliessen der offenen Verbindungen");
-		  	            	   e.printStackTrace();
-		  	               }
-		  		        }
-	  		        
-		          return null;
-		      }
-		   
-		      @Override
-		      protected void done() {
-		    	  if(start) {
-		      		frame = new MainView("Mail Client");
-		      		setFrame(frame);
-		      		frame.setVisible(true);
-		    	  }else {
-		    		 frame.dispose(); 
-		    		 frame = new MainView("Mail Client");
-			      	 frame.setVisible(true);
-		    	  }
-		          frameWait.dispose();
-		      }
-		  };
-		  worker.execute();
-		  frameWait.setVisible(true); 
+	  }
+	  private void initGUI(String name){
+			this.setTitle(name);
+			this.setSize(1100,700);
+			this.setLocationRelativeTo(null);
+			this.setLayout(new BorderLayout(5,5));
+			this.getContentPane().add(createCenterPanel(),BorderLayout.CENTER);
+			this.getContentPane().add(createMenuBar(),BorderLayout.NORTH);
+			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	  }
 
+	  private void init(Boolean start){
+		  
+		  fr = this.getFrame();
+		  
+      	  //**********erstellen der MailControlContainer
+  		  mailControlContainer = new HashMap<String,MailControl>();
+  		  //**********Laden der Konti
+  		  kontoControl = new EmailKontoControl();
+  		  kontoControl.loadKonten("kontos.xml");
+  		  this.mailWorker = new MailWorker(kontoControl,mailControlContainer, this );
+  			
+		  this.mailWorker.execute(); 
+		  this.setVisible(true);
 		  
 	  }
-   // Return aktuell frame	  
-   public static JFrame getFrame() {
+   /**
+	 * @return the mailControlContainer
+	 */
+	protected HashMap<String, MailControl> getMailControlContainer() {
+		return mailControlContainer;
+	}
+
+// Return aktuell frame	  
+   public JFrame getFrame() {
 	   return fr;
    }
    // Set the frame
-   public static void setFrame(JFrame frame) {
+   public void setFrame(JFrame frame) {
 	   fr = frame;
    }
-   public static EmailKontoControl getKontoControl() {	   
+   public EmailKontoControl getKontoControl() {	   
 	   return kontoControl;
    }
-   public static JTree getCurrentTree() {
+   public JTree getCurrentTree() {
 	   return currentTree;
    }
   
@@ -340,45 +371,15 @@ public class MainView extends JFrame {
    IllegalAccessException, UnsupportedLookAndFeelException {
    	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
    	
-  		init(true);
+  		
    	
-   	
-  /*//**********erstellen der MailControlContainer
-	mailControlContainer = new HashMap<String,MailControl>();
-	   //**********Laden der Konti
-	kontoControl = new EmailKontoControl();
-	kontoControl.loadKonten("kontos.xml");
-	//Konti werden gesucht
-	for(int i = 0; i < kontoControl.getKontos().size(); i++){
-	//********** Verwenden eines Kontos mit MailControl 
-        MailControl mailControl = new MailControl(kontoControl.getKontos().get(i));
-        // Überprüfen, ob bereits eine Konto Mailbox XML vorhanden ist und falls nicht,
-        //erstellen, plus herunterladen aller Mails vom Account. Andernfalls Aktualisieren der Mailbox
-        if(mailControl.existsMailboxXML()){
-         		 System.out.println("Mailbox "+mailControl.getMailboxName()+" zum Konto "+mailControl.getCurrentKonto().getKonto()+" wurde gefunden");
-         		
-         		 mailControl.loadMailFolders(mailControl.getMailboxName());
-         		
-         }else{
-         		  //********** Erstellen der Mailbox
-         		 System.out.println("Neu Initialisierung der Mailbox "+mailControl.getMailboxName()+" zum Konto "+mailControl.getCurrentKonto().getKonto()+".");
-         		 mailControl.initializeMailbox();
-         }
-         	
-                 mailControlContainer.put(kontoControl.getKontos().get(i).getName(),mailControl);
-            
-	}
-	 EventQueue.invokeLater(new Runnable()
-     {
-        public void run()
-        {
-           JFrame frame = new MainView("Mail Client");
-           frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-           frame.setVisible(true);
-        }
-     });
- 
-  }*/
+  		SwingUtilities.invokeLater(new Runnable() {
+  	      @Override
+  	      public void run() {
+  	        @SuppressWarnings("unused")
+			final MainView mailClient = new MainView("FTOOP MailClient");
+  	      }
+  	    });
 }
 
 }

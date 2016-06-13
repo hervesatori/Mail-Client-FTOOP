@@ -24,9 +24,11 @@ import ftoop.mailclient.daten.Mail;
 
 public class ButtonListener implements ActionListener {
 	
-	private static JSplitPane splitPane;
-	private static JPanel panelCenter;
-	private static MailWindows mailWindows;
+	public final static String SENDEN = "senden";
+	private JSplitPane splitPane;
+	private JPanel panelCenter;
+	private MailPane mailWindows;
+	private MainView mailClient;
 	private static String senden;
 	private JTable table;
 	private JButton send;
@@ -35,11 +37,12 @@ public class ButtonListener implements ActionListener {
 	private JButton weiterleiten;
 	private JButton loeschen;
 	private JButton ordnerSync;
-	private static JFrame newMailFrame;
+	private JFrame newMailFrame;
+	private final FolderSelectionListener folderSelectionListener;
 //	private MailControl mailControl;
 	
 	public ButtonListener(JSplitPane splitPaneBis,JPanel panelCenterBis,JButton send,JButton neue,JButton antworten,
-			JButton weiterleiten,JButton loeschen,JButton ordnerSync) {
+			JButton weiterleiten,JButton loeschen,JButton ordnerSync, MainView mailClient, FolderSelectionListener fSL) {
 		
 		splitPane = splitPaneBis;
 		panelCenter = panelCenterBis;
@@ -49,6 +52,8 @@ public class ButtonListener implements ActionListener {
 		this.weiterleiten = weiterleiten;
 		this.loeschen = loeschen;
 		this.ordnerSync = ordnerSync;
+		this.mailClient = mailClient;
+		this.folderSelectionListener = fSL;
 		
 	}
 	
@@ -59,31 +64,31 @@ public class ButtonListener implements ActionListener {
 		String str =e.getActionCommand();
 		switch (str) {
 	       case "Ordner synchronisieren":
-	    	  MainView.init(false);
+	    	   mailClient.synchronizeFolders();
 	    	  break;
 	       case "Konfiguration":
 	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,
-	    			  ordnerSync).getPanelUnten(),BorderLayout.NORTH);
-	    	  resizing();
+	    			  ordnerSync, this.mailClient).getPanelUnten(),BorderLayout.NORTH);
+//	    	  resizing();
 	    	  break;
 	       case "Neue E-Mail":	    	  
-	    	  mailWindows = new MailWindows(null,"neueMail");
-	    	  mailWindows.getMsgPane().setContentType("text/plain");
-	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
+//	    	  mailWindows = new MailWindows(null,"neueMail", this.mailClient );
+//	    	  mailWindows.getMsgPane().setContentType("text/plain");
+	    	  panelCenter.add(mailWindows,BorderLayout.CENTER);
 	          send.setEnabled(true);
 	          senden = "neue";
-	          newMailFrame = new NewMailFrame("Neue E-Mail senden",panelCenter);
+//	          newMailFrame = new PopupMailFrame("Neue E-Mail senden",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, this);
 	    	  break;
 	       case "Löschen":
-	    	   table = FolderSelectionListener.getCurrentTable();
+	    	   table = this.folderSelectionListener.getCurrentTable();
 	    	//   row = table.getSelectedRow();
 	    	  row =  table.convertRowIndexToModel(table.getSelectedRow());
-	    	   String msgId = FolderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
+	    	   String msgId = this.folderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
 	    	   System.out.println(msgId);
 	    	   if(table.getRowCount() > 0){
 	    	   ((MailTableModel) table.getModel()).removeRow(row);
 	    	   }
-	   //Thread work um mail zu löschen 	
+    	   //Thread work um mail zu löschen 	
 	       SwingWorker<Void,Void> workerLoeschen = new SwingWorker<Void,Void>() {
 	    			      @Override
 	    			      protected Void doInBackground()
@@ -92,7 +97,7 @@ public class ButtonListener implements ActionListener {
 	  	    try {
 	    			   
 	    			
-	  	    	   FolderSelectionListener.getSelectedMailControl().deleteMail(FolderSelectionListener.getSelectedMail().getMessageID());
+	  	    	folderSelectionListener.getSelectedMailControl().deleteMail(folderSelectionListener.getSelectedMail().getMessageID());
 	  	    	
 			} catch (MessagingException e1) {
 				// TODO Auto-generated catch block
@@ -141,30 +146,30 @@ public class ButtonListener implements ActionListener {
 	    			  workerLoeschen.execute();
 	    	  break;
 	       case "Antworten":
-	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten");
-	    	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-	    	  newMailFrame = new NewMailFrame("E-Mail antworten",panelCenter);
+//	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"antworten", this.mailClient);
+//	    	  panelCenter.add(mailWindows,BorderLayout.CENTER);
+//	    	  newMailFrame = new PopupMailFrame("E-Mail antworten",panelCenter);
 	    	  send.setEnabled(true);
 	    	  senden = "antworten";
 	    	  break;
 	       case "Weiterleiten":
-	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten");
-		   	  panelCenter.add(mailWindows.getPanelUnten(),BorderLayout.CENTER);
-		   	  newMailFrame = new NewMailFrame("E-Mail weiterleiten",panelCenter);
+//	    	  mailWindows = new MailWindows(FolderSelectionListener.getSelectedMail(),"weiterleiten", this.mailClient);
+		   	  panelCenter.add(mailWindows,BorderLayout.CENTER);
+//		   	  newMailFrame = new PopupMailFrame("E-Mail weiterleiten",panelCenter);
 		      send.setEnabled(true);
 		      senden = "weiterleiten";
 	    	  break;
-	       case "senden":
-	    	  sendenMail(senden); 	
+	       case SENDEN:
+	    	  sendeMail(senden); 	
 	    	  panelCenter.add(new JTextArea("MAIL  sent successfully"));
 	    	  newMailFrame.dispose();;
-	    	  resizing();
+//	    	  resizing();
 	    	  splitPane.validate();
 	   	     
 		      break;
 	       case "schliessen":
 	    	   panelCenter = new JPanel();
-	    	   resizing();
+//	    	   resizing();
 	    	   splitPane.validate();
 	    	   send.setEnabled(false);
 	    	   loeschen.setEnabled(false);
@@ -176,28 +181,28 @@ public class ButtonListener implements ActionListener {
 	     }
 	  }
 	  
-   public static void resizing() {
-	   int pos = splitPane.getDividerLocation();
-       splitPane.setRightComponent(panelCenter);
-		  splitPane.setDividerLocation(pos);
-   }
-	
-   public void sendenMail(String aktion) {
+//   public static void resizing() {
+//	   int pos = splitPane.getDividerLocation();
+//       splitPane.setRightComponent(panelCenter);
+//		  splitPane.setDividerLocation(pos);
+//   }
+//	
+   public void sendeMail(String aktion) {
 	  
 		 switch (aktion) {
 	       case "antworten":
-	    	 if(FolderSelectionListener.getSelectedMail()!=null && FolderSelectionListener.getSelectedMailControl()!=null) {
+	    	 if(this.folderSelectionListener.getSelectedMail()!=null && this.folderSelectionListener.getSelectedMailControl()!=null) {
 	    	   try {
-				   Mail mail = FolderSelectionListener.getSelectedMail();
+				   Mail mail = this.folderSelectionListener.getSelectedMail();
 				   String from = mail.getFrom();
 				   String to = mail.getTo();
 				   mail.setTo(from.replaceAll(";",""));
 				   mail.setFrom(to.replaceAll(";",""));
-				   mail.setMessage(mailWindows.getMsgPane().getText());
+				   mail.setMessage(mailWindows.getMessageText());
 			//	   mail.setMessage(mailWindows.getMsgPane().getText());
 				   System.out.println(mail.getFrom());
-				   System.out.println(mailWindows.getMsgPane().getText());
-				   FolderSelectionListener.getSelectedMailControl().sendMsg(mail);
+				   System.out.println(mailWindows.getMessageText());
+				   this.folderSelectionListener.getSelectedMailControl().sendMsg(mail);
 			   } catch (NoSuchProviderException e1) {
 				   // TODO Auto-generated catch block
 			 	   e1.printStackTrace();
@@ -205,17 +210,17 @@ public class ButtonListener implements ActionListener {
 	    	 }
 	    	   break;
 	       case "weiterleiten":
-	    	 if(FolderSelectionListener.getSelectedMail()!=null && FolderSelectionListener.getSelectedMailControl()!=null) {
+	    	 if(this.folderSelectionListener.getSelectedMail()!=null && this.folderSelectionListener.getSelectedMailControl()!=null) {
 	    	   try {
-				   Mail mail = FolderSelectionListener.getSelectedMail();
+				   Mail mail = this.folderSelectionListener.getSelectedMail();
 				   String to = mail.getTo();
-				   String from = mailWindows.getTxtAn().getText();
+				   String from = mailWindows.getAn();
 				   mail.setTo(from);
 				   mail.setFrom(to.replaceAll(";",""));
 			//	   mail.setMessage(mailWindows.getMsgPane().getText());
 				   System.out.println(mail.getFrom());
-				   System.out.println(mailWindows.getMsgPane().getText());
-				   FolderSelectionListener.getSelectedMailControl().sendMsg(mail);
+				   System.out.println(mailWindows.getMessageText());
+				   this.folderSelectionListener.getSelectedMailControl().sendMsg(mail);
 			   } catch (NoSuchProviderException e1) {
 				   // TODO Auto-generated catch block
 			 	   e1.printStackTrace();
@@ -224,14 +229,14 @@ public class ButtonListener implements ActionListener {
 		    	  break;
 	       case "neue":
 	    	   try {
-	    		   System.out.println(mailWindows.getTxtAn().getText());
-				   String to = mailWindows.getTxtAn().getText();
-				   String from = FolderSelectionListener.getSelectedMailControl().getCurrentKonto().getEmail().replaceAll(";","");
-				   String subject = mailWindows.getTxtBetreff().getText();
-				  System.out.println(mailWindows.getMsgPane().getText());
-				   String msg = mailWindows.getMsgPane().getText();
+	    		   System.out.println(mailWindows.getAn());
+				   String to = mailWindows.getAn();
+				   String from = this.folderSelectionListener.getSelectedMailControl().getCurrentKonto().getEmail().replaceAll(";","");
+				   String subject = mailWindows.getBetreff();
+				  System.out.println(mailWindows.getMessageText());
+				   String msg = mailWindows.getMessageText();
 				   Mail mail = new Mail(null, null, to, null, null, from, subject,msg, null);
-				   FolderSelectionListener.getSelectedMailControl().sendMsg(mail);
+				   this.folderSelectionListener.getSelectedMailControl().sendMsg(mail);
 			   } catch (NoSuchProviderException e1) {
 				   // TODO Auto-generated catch block
 			 	   e1.printStackTrace();
