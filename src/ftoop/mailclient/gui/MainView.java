@@ -128,7 +128,7 @@ public final class MainView extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JPanel panelCenter = new Konfiguration();
+				JPanel panelCenter = new ConfigurationPanel();
 				MainView.this.replaceRightComponentWithNewPanel(panelCenter);
 
 			}

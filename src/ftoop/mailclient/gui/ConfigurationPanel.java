@@ -1,18 +1,21 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,17 +25,18 @@ import javax.swing.tree.MutableTreeNode;
 import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
 
-public class Konfiguration extends JPanel {
+public class ConfigurationPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
 	private JPanel buttonPane;
-	private TextForm form;
+//	private TextForm form;
 	private JButton neu;
 	private JButton konfigLoeschen;
 	private JButton speichern;
+	private ConfigurationFieldsPanel configFieldPanel;
 	// Init der Labels
     private final static String[] labels = { "Kontoname","Emailadresse","Benutzername", "Passwort","Pop3 Port" ,
     		"Pop3 Server","SMTP Port","SMTP Server","IMAP Port","IMAP Server"};
@@ -50,8 +54,8 @@ public class Konfiguration extends JPanel {
 	private MainView mailClient;
 
 	
-	public Konfiguration()  {
-		super(new BorderLayout());
+	public ConfigurationPanel()  {
+		this.setLayout(new BorderLayout());
 		initPanelGUI();
 		loadMailKontoConfig();
 	}	 
@@ -65,7 +69,8 @@ public class Konfiguration extends JPanel {
 			 for(EmailKonto konto : kontoControl.getKontos()) {
 	  		    	listModel.addElement(konto);
 	  		    }
-			 form.disableField();
+//			 form.disableField();
+			 this.configFieldPanel.setEnabled(false);
 		    //Listener für JList
 			 if(kontoControl.getKontos().size() == 0) { 	 
 				 speichern.setEnabled(false);
@@ -81,19 +86,22 @@ public class Konfiguration extends JPanel {
 		        	
 		            if (!e.getValueIsAdjusting() && status == true) {
 		              //Selected Konto wird bearbeitet
+		            	
 		            	System.out.println(kontoControl.getKontos().get(list.getSelectedIndex()));
 		              konto = kontoControl.getKontos().get(list.getSelectedIndex());
 		             int index = list.getSelectedIndex(); 
+		              ConfigurationPanel.this.configFieldPanel.setFieldTexts(konto);
 		              System.out.println(konto.getBenutzerNamePop()+index);
 		              String[] fieldsGet = { konto.getKonto(), konto.getEmail(), konto.getBenutzerNamePop(), 
 		            		  konto.getPasswortPop(),String.valueOf(konto.getPop3Port()),
 		                		konto.getPop3Server(),String.valueOf(konto.getSmtpPort()),
 		                		konto.getSmtpServer(),String.valueOf(konto.getImapPort()),konto.getImapServer()};
 		                
-		              for(int i =0;i<fieldsGet.length;i++) {
-		            	  form.setText(i, fieldsGet[i]);
-		              } 
-		              form.enableField();
+//		              for(int i =0;i<fieldsGet.length;i++) {
+//		            	  form.setText(i, fieldsGet[i]);
+//		              } 
+		              ConfigurationPanel.this.configFieldPanel.setEnabled(true);
+//		              form.enableField();
 		              konfigLoeschen.setEnabled(true);
 		              speichern.setEnabled(true);
 		             
@@ -105,9 +113,10 @@ public class Konfiguration extends JPanel {
 		    //Buttons Listener NEU  LOESCHEN SPEICHERN
 		    neu.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	form.enableField();
+//		        	form.enableField();
+		        	ConfigurationPanel.this.configFieldPanel.setEnabled(true);
 		    	  for(int i =0; i < labels.length; i++) {
-		        	  form.setText(i, "");
+//		        	  form.setText(i, "");
 		        	 
 		          }  
 		    	  
@@ -120,29 +129,30 @@ public class Konfiguration extends JPanel {
 					int pop, smtp, imap;;
 				 try {
 					 
-					    pop =  Integer.valueOf(form.getText(4));
-						smtp = Integer.valueOf(form.getText(6));
-						imap = Integer.valueOf(form.getText(8));
+//					    pop =  Integer.valueOf(form.getText(4));
+//						smtp = Integer.valueOf(form.getText(6));
+//						imap = Integer.valueOf(form.getText(8));
 				
 				   if(neuAktiv) {	
-					  EmailKonto konto = new EmailKonto((String) form.getText(0),(
-							  String) form.getText(2),(String) form.getText(1),(String) form.getText(5),pop
-		      			  ,(String) form.getText(2),(String) form.getText(3),(String) form.getText(7),
-		      			  smtp,(String) form.getText(0),(String) form.getText(0),(String) form.getText(9),imap);
-					  kontoControl.addKonto(konto);
+//					  EmailKonto konto = new EmailKonto((String) form.getText(0),(
+//							  String) form.getText(2),(String) form.getText(1),(String) form.getText(5),pop
+//		      			  ,(String) form.getText(2),(String) form.getText(3),(String) form.getText(7),
+//		      			  smtp,(String) form.getText(0),(String) form.getText(0),(String) form.getText(9),imap);
+					   EmailKonto newKontoToAdd = ConfigurationPanel.this.configFieldPanel.getFieldTexts();
+					  kontoControl.addKonto(newKontoToAdd);
 					  listModel.addElement(konto);
 				   }else {
-					  konto = list.getSelectedValue();
-					  konto.setKonto((String) form.getText(0));
-					  konto.setEmail((String) form.getText(1));
-					  konto.setBenutzerNamePop((String) form.getText(2));
-					  konto.setPasswortPop((String) form.getText(3));
-					  konto.setPop3Port(pop);
-					  konto.setPop3Server((String) form.getText(5));
-					  konto.setSmtpPort(smtp);
-					  konto.setSmtpServer((String) form.getText(7));
-					  konto.setImapPort(imap);
-					  konto.setImapServer((String) form.getText(9));		 
+//					  konto = list.getSelectedValue();
+//					  konto.setKonto((String) form.getText(0));
+//					  konto.setEmail((String) form.getText(1));
+//					  konto.setBenutzerNamePop((String) form.getText(2));
+//					  konto.setPasswortPop((String) form.getText(3));
+//					  konto.setPop3Port(pop);
+//					  konto.setPop3Server((String) form.getText(5));
+//					  konto.setSmtpPort(smtp);
+//					  konto.setSmtpServer((String) form.getText(7));
+//					  konto.setImapPort(imap);
+//					  konto.setImapServer((String) form.getText(9));		 
 				   }
 		        /*  //Test ob der Konto schon vorhanden ist
 		          for(int i = 0; i<kontoControl.getKontos().size(); i++) {
@@ -181,8 +191,8 @@ public class Konfiguration extends JPanel {
 		          status = false;
 		          if(index >= 0 && index < listModel.size()) { 
 		         // Jtree (Folder) wird gelöscht
-		          	  Object root = Konfiguration.this.mailClient.getCurrentTree().getModel().getRoot();
-			    	  DefaultTreeModel treeModel = (DefaultTreeModel) Konfiguration.this.mailClient.getCurrentTree().getModel();
+		          	  Object root = ConfigurationPanel.this.mailClient.getCurrentTree().getModel().getRoot();
+			    	  DefaultTreeModel treeModel = (DefaultTreeModel) ConfigurationPanel.this.mailClient.getCurrentTree().getModel();
 			    	  for(int i = 0; i < treeModel.getChildCount(root);i++) {
 			    		  if(treeModel.getChild(root, i).toString().equals(kontoControl.getKontos().get(index).getEmail())) {
 			    			  treeModel.removeNodeFromParent((MutableTreeNode) treeModel.getChild(root, i));
@@ -192,7 +202,7 @@ public class Konfiguration extends JPanel {
 			          kontoControl.saveKonten("kontos.xml");
 			      
 			          for(int i =0; i < labels.length; i++) {
-			        	  form.setText(i, "");
+//			        	  form.setText(i, "");
 			          }  
 			       // ModelList wird gelöscht
 		          	  listModel.removeElement(listModel.getElementAt(index));
@@ -208,7 +218,8 @@ public class Konfiguration extends JPanel {
 		          if(kontoControl.getKontos().size() == 0) { 	  
 		        	  speichern.setEnabled(false);
 		        	  disableButton();
-		        	  form.disableField();
+//		        	  form.disableField();
+		        	  ConfigurationPanel.this.configFieldPanel.setEnabled(true);
 		          }
 		          
 		        }
@@ -226,19 +237,20 @@ public class Konfiguration extends JPanel {
 		          }
 		        }
 		      };
-		      form.getField(4).addKeyListener(keyListener);
-		      form.getField(6).addKeyListener(keyListener);
-		      form.getField(8).addKeyListener(keyListener);
+//		      form.getField(4).addKeyListener(keyListener);
+//		      form.getField(6).addKeyListener(keyListener);
+//		      form.getField(8).addKeyListener(keyListener);
 	 } 
 	
-	private void initPanelGUI(){		 
+	private void initPanelGUI(){	
+		 JSplitPane splitPane = new JSplitPane(); 	
 		 listModel = new DefaultListModel<EmailKonto>();
 		 list = new JList<EmailKonto>(listModel);
 		 list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		 scrollPane = new JScrollPane(list);
 		
-		 // Formulär wird instanziert
-		 form = new TextForm(labels, widths, descs,type);
+		 // Formular wird instanziert
+//		 form = new TextForm(labels, widths, descs,type);
 		
 		 // Buttons
 		 buttonPane = new JPanel();
@@ -251,10 +263,17 @@ public class Konfiguration extends JPanel {
 		 buttonPane.add(neu);
 		 buttonPane.add(konfigLoeschen);
 		 buttonPane.add(speichern);
-		this.add(scrollPane, BorderLayout.WEST);
-		this.add(form,BorderLayout.CENTER);
-		this.add(buttonPane, BorderLayout.SOUTH);
+		
+		 splitPane.setLeftComponent(scrollPane);
+		 this.configFieldPanel = new ConfigurationFieldsPanel();
+		 splitPane.setRightComponent(configFieldPanel);
+//		this.add(scrollPane, BorderLayout.WEST);
+		this.add(splitPane,BorderLayout.CENTER);
+		this.add(buttonPane, BorderLayout.NORTH);		
+		int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+		splitPane.setDividerLocation((int)(width*0.4));
 	}
+//	public void setSplitPaneDividerLocation(Double)
 	public void disableButton() {
 		konfigLoeschen.setEnabled(false);
 //		send.setEnabled(false);
