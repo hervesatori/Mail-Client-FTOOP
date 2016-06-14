@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -64,11 +65,9 @@ public final class MainView extends JFrame{
 	private JButton schliessen;
 	private JButton ordnerSynchro;
 	private JButton konfiguration;
-	private JFrame frame;
 	private MailWorker mailWorker;
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel mailTreeModel;	
-	private ButtonListener buttonListener;
 	private FolderSelectionListener folderSelectionListener;
 	
 	/**
@@ -115,10 +114,7 @@ public final class MainView extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					//Ersetze das Panel in der Mitte durch ein leeres und zeige somit ein Schliessen an
-//		    	   panelCenter = new JPanel();
-//		    	   int pos = splitPane.getDividerLocation();
 		           splitPane.setRightComponent(new JPanel());
-//	    		   splitPane.setDividerLocation(pos);
 		    	   splitPane.validate();
 		    	   
 		    	   loeschen.setEnabled(false);
@@ -128,8 +124,26 @@ public final class MainView extends JFrame{
 			
 		});
 //		senden.addActionListener(this.buttonListener);
-//		konfiguration.addActionListener(this.buttonListener);
-//		ordnerSynchro.addActionListener(this.buttonListener);
+		konfiguration.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JPanel panelCenter = new Konfiguration();
+				MainView.this.replaceRightComponentWithNewPanel(panelCenter);
+
+			}
+			
+		});
+		ordnerSynchro.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!startFolderSynchronization()){
+					JOptionPane.showMessageDialog(MainView.this, "Ordner Synchronization läuft bereits.");
+				}
+			}
+			
+		});
 		//Die Buttons werden an JMenuBar angehängt
 		menuBar.add(neueMail);
 		menuBar.add(loeschen);
@@ -141,6 +155,24 @@ public final class MainView extends JFrame{
 		menuBar.add(ordnerSynchro);
 		menuBar.add(konfiguration);
 		return menuBar;
+	}
+	/**
+	 * 
+	 * @return Returns false, if MailWorker (Synchronization) is already running, true for successfully Start
+	 */
+	private boolean startFolderSynchronization(){
+		
+		//überprüfe ob doBackground fertig ist oder cancelled
+		if(mailWorker == null || mailWorker.isDone() == true ||mailWorker.isCancelled()){
+			//Mailworker ist fertig und starte nochmals neu
+	  		  this.mailWorker = new MailWorker(kontoControl,mailControlContainer, this );	  			
+			  this.mailWorker.execute(); 
+			  return true;
+		}else{
+			//Prozess ist noch am laufen
+			return false;
+		}
+		
 	}
 	 private JComponent createCenterPanel() {
 		 	//Init der panelCenter
@@ -187,6 +219,10 @@ public final class MainView extends JFrame{
 	        Mail mailLocal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
 	        mailLocal.setIsRead(true);
 	        System.out.println("MAIL:  "+mailLocal.getFrom()+"Menge:  "+mailLocal.getAttachments().size());
+	        
+	        
+	        
+	        
 	        scrollPane = new JScrollPane(table);
 	        panelCenter = new JPanel(new BorderLayout(5,5));
 //	        final MailWindows readingMailWindow = new MailWindows(mailLocal,"lesen", this);
@@ -194,10 +230,12 @@ public final class MainView extends JFrame{
 	        //Zeige im MainGui die Mail unterhalb der Selektion an
 	        panelCenter.add(scrollPane,BorderLayout.NORTH);
 	        panelCenter.add(new MailPane(mailLocal,MailPane.MailWindowType.READ,this.folderSelectionListener.getSelectedMailControl()),BorderLayout.CENTER);
+	        this.replaceRightComponentWithNewPanel(panelCenter);
+	        
 	        // sog. Resizing mit splitpane und Divider
-	        int pos = splitPane.getDividerLocation();
-	        splitPane.setRightComponent(panelCenter);
-			splitPane.setDividerLocation(pos);
+//	        int pos = splitPane.getDividerLocation();
+//	        splitPane.setRightComponent(panelCenter);
+//			splitPane.setDividerLocation(pos);
 //	        splitPane.revalidate();  
 //	        splitPane.repaint();
 	        if(!oneClick) {
@@ -207,6 +245,12 @@ public final class MainView extends JFrame{
 	        	
 	        }
     }  
+    private void replaceRightComponentWithNewPanel(JPanel newPanel){
+        // sog. Resizing mit splitpane und Divider
+        int pos = splitPane.getDividerLocation();
+        splitPane.setRightComponent(newPanel);
+		splitPane.setDividerLocation(pos);
+    }
 	 public void setMailSelection(TreePath treePath){
 	    	Object[] obj = null;
 	        final Object pathComponent = treePath.getLastPathComponent();
@@ -307,6 +351,8 @@ public final class MainView extends JFrame{
 	        	
 	            this.rootNode.add(konto); 
 	         }
+	         //Falls es nun mindestens ein Konto hat, den OrdnerSynchro Button aktivieren
+	         this.ordnerSynchro.setEnabled(true);
 	    }
 	    this.mailTreeModel.reload(this.rootNode);
 	  }
@@ -332,9 +378,8 @@ public final class MainView extends JFrame{
   		  //**********Laden der Konti
   		  kontoControl = new EmailKontoControl();
   		  kontoControl.loadKonten("kontos.xml");
-  		  this.mailWorker = new MailWorker(kontoControl,mailControlContainer, this );
-  			
-		  this.mailWorker.execute(); 
+  		  this.startFolderSynchronization();
+  		  
 		  this.setVisible(true);
 		  
 	  }

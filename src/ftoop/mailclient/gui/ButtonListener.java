@@ -67,8 +67,7 @@ public class ButtonListener implements ActionListener {
 	    	   mailClient.synchronizeFolders();
 	    	  break;
 	       case "Konfiguration":
-	    	  panelCenter.add(new Konfiguration(send,neue,antworten,weiterleiten,loeschen,
-	    			  ordnerSync, this.mailClient).getPanelUnten(),BorderLayout.NORTH);
+	    	  panelCenter.add(new Konfiguration(),BorderLayout.NORTH);
 //	    	  resizing();
 	    	  break;
 	       case "Neue E-Mail":	    	  

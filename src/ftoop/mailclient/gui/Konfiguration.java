@@ -12,9 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -48,53 +46,17 @@ public class Konfiguration extends JPanel {
 	private JList<EmailKonto> list;
 	private EmailKonto konto;
 	private Boolean status = true;
-	//Buttons Mainview
-	private JButton send;
-	private JButton neue;
-	private JButton antworten;
-	private JButton weiterleiten;
-	private JButton loeschen;
-	private JButton ordnerSync;
 	private boolean neuAktiv = false;
 	private MainView mailClient;
 
 	
-	public Konfiguration(JButton send,JButton neue,JButton antworten,
-			JButton weiterleiten,JButton loeschen,JButton ordnerSync, MainView mailClient)  {
-		 
-		 super(new BorderLayout());
-		 listModel = new DefaultListModel<EmailKonto>();
-		 list = new JList<EmailKonto>(listModel);
-		 list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		 scrollPane = new JScrollPane(list);
-		
-		 // Formulär wird instanziert
-		 form = new TextForm(labels, widths, descs,type);
-		
-		// Buttons
-		 buttonPane = new JPanel();
-		 neu = new JButton("Neu");
-		 konfigLoeschen = new JButton("Löschen");
-		 konfigLoeschen.setEnabled(false);
-		 speichern = new JButton("Speichern");
-		 speichern.setEnabled(false);
-		
-		 buttonPane.add(neu);
-		 buttonPane.add(konfigLoeschen);
-		 buttonPane.add(speichern);
-		 //Button von MainView
-		 this.send = send;
-		 this.neue = neue;
-		 this.antworten = antworten;
-		 this.weiterleiten = weiterleiten;
-		 this.loeschen = loeschen;
-		 this.ordnerSync = ordnerSync;
-		 this.mailClient = mailClient;
-		
+	public Konfiguration()  {
+		super(new BorderLayout());
+		initPanelGUI();
+		loadMailKontoConfig();
 	}	 
 		 
-	@SuppressWarnings("static-access")
-	public void initKonfig() {	 
+	public void loadMailKontoConfig() {	 
 			//**********Laden der Konti
 			EmailKontoControl kontoControl = new EmailKontoControl();
 			kontoControl.loadKonten("kontos.xml");
@@ -108,8 +70,8 @@ public class Konfiguration extends JPanel {
 			 if(kontoControl.getKontos().size() == 0) { 	 
 				 speichern.setEnabled(false);
 				 konfigLoeschen.setEnabled(false);
-				 JOptionPane warn = new JOptionPane();
-				 warn.showMessageDialog(null, "Bitte Button Neu drücken um ein neues Konto hinzufügen",
+				 
+				 JOptionPane.showMessageDialog(this, "Bitte Button Neu drücken um ein neues Konto hinzufügen",
 						 "Achtung", JOptionPane.WARNING_MESSAGE);
 			 }
 			
@@ -203,8 +165,7 @@ public class Konfiguration extends JPanel {
 //		          MainView.init(false);
 		          
 			   } catch (NumberFormatException nfe){
-					 JOptionPane err = new JOptionPane();
-		   		      err.showMessageDialog(null, "Als Port Nummer sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+					 JOptionPane.showMessageDialog(null, "Als Port Nummer sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		   		      return;
 			   } 
 		          
@@ -268,37 +229,51 @@ public class Konfiguration extends JPanel {
 		      form.getField(4).addKeyListener(keyListener);
 		      form.getField(6).addKeyListener(keyListener);
 		      form.getField(8).addKeyListener(keyListener);
-		      
-		     
-		    
 	 } 
 	
-	
-	public void disableButton() {
-		konfigLoeschen.setEnabled(false);
-		send.setEnabled(false);
-		neue.setEnabled(false);
-		antworten.setEnabled(false);
-		weiterleiten.setEnabled(false);
-		loeschen.setEnabled(false);
-		ordnerSync.setEnabled(false);
-	}
-	public void enableButton() {
-		konfigLoeschen.setEnabled(true);
-		send.setEnabled(true);
-		neue.setEnabled(true);
-		antworten.setEnabled(true);
-		weiterleiten.setEnabled(true);
-		loeschen.setEnabled(true);
-		ordnerSync.setEnabled(true);
-	}
-	public JPanel getPanelUnten() {
-		initKonfig();
+	private void initPanelGUI(){		 
+		 listModel = new DefaultListModel<EmailKonto>();
+		 list = new JList<EmailKonto>(listModel);
+		 list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		 scrollPane = new JScrollPane(list);
+		
+		 // Formulär wird instanziert
+		 form = new TextForm(labels, widths, descs,type);
+		
+		 // Buttons
+		 buttonPane = new JPanel();
+		 neu = new JButton("Neu");
+		 konfigLoeschen = new JButton("Löschen");
+		 konfigLoeschen.setEnabled(false);
+		 speichern = new JButton("Speichern");
+		 speichern.setEnabled(false);
+		
+		 buttonPane.add(neu);
+		 buttonPane.add(konfigLoeschen);
+		 buttonPane.add(speichern);
 		this.add(scrollPane, BorderLayout.WEST);
 		this.add(form,BorderLayout.CENTER);
 		this.add(buttonPane, BorderLayout.SOUTH);
-		return this;
 	}
+	public void disableButton() {
+		konfigLoeschen.setEnabled(false);
+//		send.setEnabled(false);
+//		neue.setEnabled(false);
+//		antworten.setEnabled(false);
+//		weiterleiten.setEnabled(false);
+//		loeschen.setEnabled(false);
+//		ordnerSync.setEnabled(false);
+	}
+	public void enableButton() {
+		konfigLoeschen.setEnabled(true);
+//		send.setEnabled(true);
+//		neue.setEnabled(true);
+//		antworten.setEnabled(true);
+//		weiterleiten.setEnabled(true);
+//		loeschen.setEnabled(true);
+//		ordnerSync.setEnabled(true);
+	}
+
 	
 	public DefaultListModel<EmailKonto> getListModel()  {
 		return listModel;
