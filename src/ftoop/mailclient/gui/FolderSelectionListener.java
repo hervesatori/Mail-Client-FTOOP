@@ -26,9 +26,9 @@ import ftoop.mailclient.daten.MailControl;
 
 public final class FolderSelectionListener implements TreeSelectionListener {
 	
-	private JScrollPane scrollPane;
-	private JSplitPane splitPane;
-	private JPanel panelCenter;
+//	private JScrollPane scrollPane;
+//	private JSplitPane splitPane;
+//	private JPanel panelCenter;
 
 	private MainView mailClient;
 	private Mail mail;
@@ -37,9 +37,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 
 	
 	
-	public FolderSelectionListener(JSplitPane splitPane,JPanel panelCenter,MainView mailClient) {
-		this.splitPane = splitPane;
-		this.panelCenter = panelCenter;	
+	public FolderSelectionListener(MainView mailClient) {
+//		this.splitPane = splitPane;
+//		this.panelCenter = panelCenter;	
 		this.mailClient = mailClient;
 		
 	}
@@ -101,48 +101,11 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 		             }
 		         }
 		       });
-//		        //JTABLE wird via ein jScrollPane abgebildet
-//		        // ***********************************************
-//			    // sog. Resizing mit splitpane und Divider
-//		        final int pos = splitPane.getDividerLocation();
-//		        System.out.println("Divider Location: " + pos);
-//		        System.out.println("Last Location: " + splitPane.getLastDividerLocation());
-//		     	scrollPane = new JScrollPane(table);
-//	     		panelCenter = new JPanel(new GridLayout(2,1,5,5));
-//	     		panelCenter.add(scrollPane);
-//	     		splitPane.setRightComponent(panelCenter);
-//		        splitPane.setLastDividerLocation(500);
-//				splitPane.setDividerLocation(500);
-////	     		splitPane.revalidate(); 
      	}else{
      		//Es wurde nur der Mail Account, aber keine Ordner selektiert..
      		this.mailControl = mailControlContainer.get(currentPath);
      	}
-   }
-//    public void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
-//    		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
-//
-//        Mail mailLokal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
-//        mail = mailLokal;
-//        System.out.println("MAIL:  "+mail.getFrom()+"Menge:  "+mailLokal.getAttachments().size());
-//        scrollPane = new JScrollPane(table);
-//        panelCenter = new JPanel(new BorderLayout(5,5));
-//        if(oneClick) {
-//          panelCenter.add(scrollPane,BorderLayout.NORTH);
-//        }
-//        panelCenter.add(new MailPane(mailLokal,MailPane.MailWindowType.READ,this.getSelectedMailControl()),BorderLayout.CENTER);
-////        // sog. Resizing mit splitpane und Divider
-////        int pos = splitPane.getLastDividerLocation(); //.getDividerLocation();
-////        System.out.println("Last Location: " + splitPane.getLastDividerLocation());
-////        splitPane.setRightComponent(panelCenter);
-////		splitPane.setDividerLocation(500);
-//////       
-////        splitPane.revalidate();  
-////        splitPane.repaint();
-////        
-//////        splitPane.setLastDividerLocation(500);
-////		splitPane.setDividerLocation(500);
-//	}      
+   }  
     public Mail getSelectedMail() {
     	return mail;
     }

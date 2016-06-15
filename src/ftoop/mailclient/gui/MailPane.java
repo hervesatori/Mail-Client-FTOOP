@@ -96,9 +96,9 @@ public class MailPane extends JPanel {
 		  this.headerPane.add(labelAn);
 		  this.headerPane.add(txtAn);
 		  this.headerPane.add(new JLabel(" "));
-		  this.headerPane.add(new JLabel(" "));
 		  this.headerPane.add(labelVon);
 		  this.headerPane.add(txtVon);
+		  this.headerPane.add(new JLabel(" "));
 		  this.headerPane.add(labelBetreff);
 		  this.headerPane.add(txtBetreff);
 		  

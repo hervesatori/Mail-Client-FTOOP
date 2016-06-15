@@ -92,7 +92,6 @@ public class MailControl {
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
   }
   
-  @SuppressWarnings("static-access")
 public void mailReceive(){
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
@@ -601,7 +600,7 @@ public boolean existsMailboxXML(){
 //  }
   public void deleteMail(String messageID) throws MessagingException{
 	  for(MailContainer mc:this.getMailContainers().values()){
-		  Iterator mcIterator = mc.getContainingMails().iterator();
+		  Iterator<Mail> mcIterator = mc.getContainingMails().iterator();
 		  while(mcIterator.hasNext()){
 			  Mail mail = (Mail) mcIterator.next();
 			  if(mail.getMessageID().equals(messageID)){
@@ -839,8 +838,7 @@ public void sendMsg(Mail mail) throws NoSuchProviderException {
 	   System.out.println("message sent successfully");
 	   
 	  } catch (MessagingException e) {
-		   JOptionPane err = new JOptionPane();
-		   err.showMessageDialog(null, "Keine gültige E-Mail Adresse", "Fehler", JOptionPane.ERROR_MESSAGE);
+		   JOptionPane.showMessageDialog(null, "Keine gültige E-Mail Adresse", "Fehler", JOptionPane.ERROR_MESSAGE);
 		  throw new RuntimeException(e);
 	    }  finally { 
 

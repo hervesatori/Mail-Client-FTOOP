@@ -47,11 +47,14 @@ import ftoop.mailclient.daten.EmailKonto;
  */
 public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
                                                      FocusListener {
-    JTextField  kontoName, email, userName,
-    password, popServer,smtpServer,imapServer;
-    JFormattedTextField popPort, smtpPort, imapPort;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8432912549117328877L;
+	JTextField  kontoName, email, userName,
+    password, popServer,smtpServer,imapServer,popPort;
+    JFormattedTextField  smtpPort, imapPort;
     JSpinner stateSpinner;
-    boolean addressSet = false;
     Font regularFont, italicFont;
     JLabel configDisplay;
     final static int GAP = 10;
@@ -74,20 +77,13 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         fieldsPane.add(createButtons());
 
         add(fieldsPane);
+        this.setFieldsEnabled(false);
     }
 
     protected JComponent createButtons() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-        JButton button = new JButton("Set address");
-        button.addActionListener(this);
-        panel.add(button);
-
-        button = new JButton("Clear address");
-        button.addActionListener(this);
-        button.setActionCommand("clear");
-        panel.add(button);
-
+ 
         //Match the SpringLayout's gap, subtracting 5 to make
         //up for the default gap FlowLayout provides.
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0,
@@ -100,27 +96,11 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
      * Enter in a text field.
      */
     public void actionPerformed(ActionEvent e) {
-        if ("clear".equals(e.getActionCommand())) {
-//            addressSet = false;
-//            streetField.setText("");
-//            cityField.setText("");
-
-            //We can't just setText on the formatted text
-            //field, since its value will remain set.
-//            zipField.setValue(null);
-        } else {
-            addressSet = true;
-        }
-        updateDisplays();
+          updateDisplays();
     }
 
     protected void updateDisplays() {
-//        configDisplay.setText(formatAddress());
-        if (addressSet) {
             configDisplay.setFont(regularFont);
-        } else {
-            configDisplay.setFont(italicFont);
-        }
     }
 
     protected JComponent createAddressDisplay() {
@@ -147,57 +127,6 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         return panel;
     }
 
-//    protected String formatAddress() {
-//        if (!addressSet) return "No address set.";
-//
-//        String street = streetField.getText();
-//        String city = cityField.getText();
-//        String state = (String)stateSpinner.getValue();
-//        String zip = zipField.getText();
-//        String empty = "";
-//
-//        if ((street == null) || empty.equals(street)) {
-//            street = "<em>(no street specified)</em>";
-//        }
-//        if ((city == null) || empty.equals(city)) {
-//            city = "<em>(no city specified)</em>";
-//        }
-//        if ((state == null) || empty.equals(state)) {
-//            state = "<em>(no state specified)</em>";
-//        } else {
-//            int abbrevIndex = state.indexOf('(') + 1;
-//            state = state.substring(abbrevIndex,
-//                                    abbrevIndex + 2);
-//        }
-//        if ((zip == null) || empty.equals(zip)) {
-//            zip = "";
-//        }
-//
-//        StringBuffer sb = new StringBuffer();
-//        sb.append("<html><p align=center>");
-//        sb.append(street);
-//        sb.append("<br>");
-//        sb.append(city);
-//        sb.append(" ");
-//        sb.append(state); //should format
-//        sb.append(" ");
-//        sb.append(zip);
-//        sb.append("</p></html>");
-//
-//        return sb.toString();
-//    }
-
-    //A convenience method for creating a MaskFormatter.
-    protected MaskFormatter createFormatter(String s) {
-        MaskFormatter formatter = null;
-        try {
-            formatter = new MaskFormatter(s);
-        } catch (java.text.ParseException exc) {
-            System.err.println("formatter is bad: " + exc.getMessage());
-            System.exit(-1);
-        }
-        return formatter;
-    }
 
     /**
      * Called when one of the fields gets the focus so that
@@ -280,30 +209,29 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         this.password.setColumns(20);
         fields[fieldNum++] = this.password;
 
-        this.popPort = new JFormattedTextField(createFormatter("#####"));
+        NumberFormatter nf = new NumberFormatter();
+        nf.setMinimum(new Integer(1));
+        nf.setMaximum(new Integer(50000));
+        this.popPort = new JFormattedTextField(nf);
         fields[fieldNum++] = this.popPort;
 
         this.popServer  = new JTextField();
         this.popServer.setColumns(20);
         fields[fieldNum++] = this.popServer;
 
-        this.smtpPort = new JFormattedTextField(createFormatter("#####"));
+        this.smtpPort = new JFormattedTextField(nf);
         fields[fieldNum++] = this.smtpPort;
 
         this.smtpServer  = new JTextField();
         this.smtpServer.setColumns(20);
         fields[fieldNum++] = this.smtpServer;
 
-        this.imapPort = new JFormattedTextField(createFormatter("#####"));
+        this.imapPort = new JFormattedTextField(nf);
         fields[fieldNum++] = this.imapPort;
 
         this.imapServer  = new JTextField();
         this.imapServer.setColumns(20);
         fields[fieldNum++] = this.imapServer;
-
-//        String[] stateStrings = getStateStrings();
-//        stateSpinner = new JSpinner(new SpinnerListModel(stateStrings));
-//        fields[fieldNum++] = stateSpinner;
 
         //Associate label/field pairs, add everything,
         //and lay it out.
@@ -342,6 +270,35 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
             return null;
         }
     }
+
+		public void setFieldsEnabled(boolean enabled) {
+	    	this.kontoName.setEnabled(enabled);
+	    	this.email.setEnabled(enabled);
+	    	this.userName.setEnabled(enabled);
+	    	this.password.setEnabled(enabled);
+	    	this.popServer.setEnabled(enabled);
+	    	this.smtpServer.setEnabled(enabled);
+	    	this.imapServer.setEnabled(enabled);
+	    	
+	    	this.popPort.setEnabled(enabled);
+	    	this.smtpPort.setEnabled(enabled);
+	    	this.imapPort.setEnabled(enabled);
+			
+		}
+
+		public void clearFields() {
+	    	this.kontoName.setText("");
+	    	this.email.setText("");
+	    	this.userName.setText("");
+	    	this.password.setText("");
+	    	this.popServer.setText("");
+	    	this.smtpServer.setText("");
+	    	this.imapServer.setText("");
+	    	
+	    	this.popPort.setText("");
+	    	this.smtpPort.setText("");
+	    	this.imapPort.setText("");
+		}
 
 
 }

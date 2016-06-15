@@ -19,7 +19,6 @@ import ftoop.mailclient.daten.MailButtonListenerTool;
 public class PopupMailFrame extends JFrame {
 	public static final int NEW_MAIL_FRAME = 1;
 	public static final int READING_MAIL_FRAME = 2;
-	private ButtonListener buttonListener;
 	private MailPane mailWindow;
 	/**
 	 *   Popup Fenster für neue, antworten und weiterleiten von Mails, ebenso als lese Mailframe
@@ -66,7 +65,6 @@ public class PopupMailFrame extends JFrame {
 		JButton antworten = new JButton("Antworten");
 		JButton weiterLeiten = new JButton("Weiterleiten");
 
-		senden.setActionCommand(ButtonListener.SENDEN);
 		senden.setEnabled(true);
 		antworten.setEnabled(false);
 		weiterLeiten.setEnabled(false);

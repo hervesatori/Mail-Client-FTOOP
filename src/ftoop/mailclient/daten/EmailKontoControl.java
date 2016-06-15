@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -135,14 +136,24 @@ public class EmailKontoControl {
 		this.getKontos().add(newKonto);
 	}
 
-  public void removeKonto(int id) {
-	  
-	  if(id>=0 && id < this.getKontos().size()){
-		  this.getKontos().remove(id);
-	  }else{
-		  System.out.println("Konto ID "+ id + " existiert nicht.");
-	  }
-  }
+//  public void removeKonto(int id) {
+//	  
+//	  if(id>=0 && id < this.getKontos().size()){
+//		  this.getKontos().remove(id);
+//	  }else{
+//		  System.out.println("Konto ID "+ id + " existiert nicht.");
+//	  }
+//  }
+	public synchronized void removeKonto(String emailName){
+		Iterator<EmailKonto> it = this.getKontos().iterator();
+		while(it.hasNext()){
+			EmailKonto konto = it.next();
+			if(konto.getEmail().equals(emailName)){
+				it.remove();
+			}
+			
+		}
+	}
   @Override
   public String toString(){
 	  String returnStr = "";
@@ -161,8 +172,26 @@ public class EmailKontoControl {
 	  }
 	  return returnStr;
   }
-public void addKonto(EmailKonto konto) {
-	this.getKontos().add(konto);
-	
-}
+	public void addKonto(EmailKonto konto) {
+		this.getKontos().add(konto);
+		
+	}
+	/**
+	 * 
+	 * @param emailName EmailName zum durchsuchen
+	 * @return returns null, falls kein Konto gefunden wurde
+	 */
+	public EmailKonto getKontoByEmail(String emailName) {
+		if(this.getKontos().size()>0){
+			Iterator<EmailKonto> it = this.getKontos().iterator();
+			while(it.hasNext()){
+				EmailKonto konto = it.next();
+				if(konto.getEmail().equals(emailName)){
+					return konto;
+				}
+			}
+		}
+		
+		return null;
+	}
 }

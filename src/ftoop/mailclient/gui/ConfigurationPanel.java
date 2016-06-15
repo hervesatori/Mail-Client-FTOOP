@@ -37,36 +37,24 @@ public class ConfigurationPanel extends JPanel {
 	private JButton konfigLoeschen;
 	private JButton speichern;
 	private ConfigurationFieldsPanel configFieldPanel;
-	// Init der Labels
-    private final static String[] labels = { "Kontoname","Emailadresse","Benutzername", "Passwort","Pop3 Port" ,
-    		"Pop3 Server","SMTP Port","SMTP Server","IMAP Port","IMAP Server"};
-  
-    private final int[] widths = { 70,70,70,70,70,70,70,70,70,70 };
-    private final static String[] descs = { "Kontoname","Emailadresse","Benutzername", "Passwort","Pop3 Port" ,
-    		"Pop3 Server","SMTP Port","SMTP Server","IMAP Port","IMAP Server"};
-    private final static String[] type ={ "kein","kein","kein", "pass","kein" ,
-		"kein","kein","kein","kein","kein"};
 	private DefaultListModel<EmailKonto> listModel;
 	private JList<EmailKonto> list;
-	private EmailKonto konto;
-	private Boolean status = true;
-	private boolean neuAktiv = false;
+	private EmailKontoControl kontoControl;
+	private boolean neuModus = false;
 	private MainView mailClient;
 
 	
-	public ConfigurationPanel()  {
+	public ConfigurationPanel(MainView mailClient)  {
+		this.mailClient = mailClient;
+		this.kontoControl = this.mailClient.getKontoControl();
 		this.setLayout(new BorderLayout());
 		initPanelGUI();
 		loadMailKontoConfig();
 	}	 
 		 
 	public void loadMailKontoConfig() {	 
-			//**********Laden der Konti
-			EmailKontoControl kontoControl = new EmailKontoControl();
-			kontoControl.loadKonten("kontos.xml");
-		    //*******************************************
 		    //Model ListModel wird erstellt
-			 for(EmailKonto konto : kontoControl.getKontos()) {
+			 for(EmailKonto konto : this.kontoControl.getKontos()) {
 	  		    	listModel.addElement(konto);
 	  		    }
 //			 form.disableField();
@@ -75,37 +63,46 @@ public class ConfigurationPanel extends JPanel {
 			 if(kontoControl.getKontos().size() == 0) { 	 
 				 speichern.setEnabled(false);
 				 konfigLoeschen.setEnabled(false);
+         		//Ebenso die Eingabefelder deaktivieren
+         		ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(false);
 				 
 				 JOptionPane.showMessageDialog(this, "Bitte Button Neu drücken um ein neues Konto hinzufügen",
 						 "Achtung", JOptionPane.WARNING_MESSAGE);
 			 }
 			
 		    list.addListSelectionListener(new ListSelectionListener() {
-		        @Override
+		        @SuppressWarnings("rawtypes")
+				@Override
 		        public void valueChanged(final ListSelectionEvent e) {
 		        	
-		            if (!e.getValueIsAdjusting() && status == true) {
+		            if (!e.getValueIsAdjusting()&&kontoControl.getKontos().size()>0) {
 		              //Selected Konto wird bearbeitet
-		            	
-		            	System.out.println(kontoControl.getKontos().get(list.getSelectedIndex()));
-		              konto = kontoControl.getKontos().get(list.getSelectedIndex());
-		             int index = list.getSelectedIndex(); 
+		            	EmailKonto listKonto = list.getSelectedValue();
+		              EmailKonto konto = kontoControl.getKontoByEmail(listKonto.getEmail());
+		              int index = list.getSelectedIndex(); 
 		              ConfigurationPanel.this.configFieldPanel.setFieldTexts(konto);
-		              System.out.println(konto.getBenutzerNamePop()+index);
-		              String[] fieldsGet = { konto.getKonto(), konto.getEmail(), konto.getBenutzerNamePop(), 
-		            		  konto.getPasswortPop(),String.valueOf(konto.getPop3Port()),
-		                		konto.getPop3Server(),String.valueOf(konto.getSmtpPort()),
-		                		konto.getSmtpServer(),String.valueOf(konto.getImapPort()),konto.getImapServer()};
-		                
-//		              for(int i =0;i<fieldsGet.length;i++) {
-//		            	  form.setText(i, fieldsGet[i]);
-//		              } 
-		              ConfigurationPanel.this.configFieldPanel.setEnabled(true);
-//		              form.enableField();
-		              konfigLoeschen.setEnabled(true);
+		              System.out.println(konto.getBenutzerNamePop()+index);		              
 		              speichern.setEnabled(true);
 		             
 		            } 
+		            //Falls in der Liste kein Item selektiert ist.
+		            Object oList = e.getSource();
+		            if(oList instanceof JList){
+		            	if(((JList)oList).isSelectionEmpty() == true){
+			            	//Button Löschen und Speichern deaktivieren
+		            		ConfigurationPanel.this.speichern.setEnabled(false);
+		            		ConfigurationPanel.this.konfigLoeschen.setEnabled(false);
+		            		//Ebenso die Eingabefelder deaktivieren
+		            		ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(false);
+			            }else{
+			            	//Button Löschen und Speichern deaktivieren
+		            		ConfigurationPanel.this.speichern.setEnabled(true);
+		            		ConfigurationPanel.this.konfigLoeschen.setEnabled(true);
+		            		//Ebenso die Eingabefelder deaktivieren
+		            		ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(true);
+			            }
+		            }
+		            checkKonfigLoeschenButton();
 		        }
 		    });
 		    
@@ -113,69 +110,44 @@ public class ConfigurationPanel extends JPanel {
 		    //Buttons Listener NEU  LOESCHEN SPEICHERN
 		    neu.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-//		        	form.enableField();
-		        	ConfigurationPanel.this.configFieldPanel.setEnabled(true);
-		    	  for(int i =0; i < labels.length; i++) {
-//		        	  form.setText(i, "");
-		        	 
-		          }  
+		        	ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(true);        	
 		    	  
 		    	  speichern.setEnabled(true);
-		    	  neuAktiv = true;  	  
+		    	  neuModus = true;  
+		    	  ConfigurationPanel.this.neu.setEnabled(false);
 		        }
 		    });
 		    speichern.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					int pop, smtp, imap;;
-				 try {
+				 try {					 
 					 
-//					    pop =  Integer.valueOf(form.getText(4));
-//						smtp = Integer.valueOf(form.getText(6));
-//						imap = Integer.valueOf(form.getText(8));
-				
-				   if(neuAktiv) {	
-//					  EmailKonto konto = new EmailKonto((String) form.getText(0),(
-//							  String) form.getText(2),(String) form.getText(1),(String) form.getText(5),pop
-//		      			  ,(String) form.getText(2),(String) form.getText(3),(String) form.getText(7),
-//		      			  smtp,(String) form.getText(0),(String) form.getText(0),(String) form.getText(9),imap);
+				   if(neuModus) {	
 					   EmailKonto newKontoToAdd = ConfigurationPanel.this.configFieldPanel.getFieldTexts();
+			            if(kontoControl.getKontoByEmail(newKontoToAdd.getEmail())!=null) { 
+			        	  JOptionPane.showMessageDialog(null, "Konto existiert schon", "Fehler", JOptionPane.ERROR_MESSAGE);
+			   		      return;
+			            }		 
 					  kontoControl.addKonto(newKontoToAdd);
-					  listModel.addElement(konto);
+					  listModel.addElement(newKontoToAdd);
 				   }else {
-//					  konto = list.getSelectedValue();
-//					  konto.setKonto((String) form.getText(0));
-//					  konto.setEmail((String) form.getText(1));
-//					  konto.setBenutzerNamePop((String) form.getText(2));
-//					  konto.setPasswortPop((String) form.getText(3));
-//					  konto.setPop3Port(pop);
-//					  konto.setPop3Server((String) form.getText(5));
-//					  konto.setSmtpPort(smtp);
-//					  konto.setSmtpServer((String) form.getText(7));
-//					  konto.setImapPort(imap);
-//					  konto.setImapServer((String) form.getText(9));		 
+					   
+					  EmailKonto kontoInList = list.getSelectedValue();
+					  EmailKonto existingKonto = kontoControl.getKontoByEmail(kontoInList.getEmail());
+					  kontoControl.removeKonto(existingKonto.getEmail());
+					  
+					  //Update Konto in der Liste mit neuen Werten					  
+					  kontoInList = ConfigurationPanel.this.configFieldPanel.getFieldTexts();					  
+					  //Füge das neue Konto wieder zum KontoControl hinzu
+					  kontoControl.addKonto(kontoInList);
 				   }
-		        /*  //Test ob der Konto schon vorhanden ist
-		          for(int i = 0; i<kontoControl.getKontos().size(); i++) {
-		            if(kontoControl.getKontos().get(i).getEmail().equals(konto.getEmail())) { 	  
-		        	  JOptionPane err = new JOptionPane();
-		   		      err.showMessageDialog(null, "Konto existiert schon", "Fehler", JOptionPane.ERROR_MESSAGE);
-		   		      return;
-		            }
-		          }*/
+
 		         
 		          kontoControl.saveKonten("kontos.xml");
 		          System.out.println(listModel.getSize()); 
-		          neuAktiv = false;
-		          
-		          if(kontoControl.getKontos().size() > 0) { 	  
-		        	 
-		        	  enableButton();
-		          }
-//		          //Ordner synchronisieren
-//		          MainView.init(false);
-		          
+		          ConfigurationPanel.this.speichern.setEnabled(false);
+		          ConfigurationPanel.this.neu.setEnabled(true);
 			   } catch (NumberFormatException nfe){
-					 JOptionPane.showMessageDialog(null, "Als Port Nummer sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+					 JOptionPane.showMessageDialog(null, "Als Port Nummern sind nur Zahlen erlaubt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		   		      return;
 			   } 
 		          
@@ -183,65 +155,38 @@ public class ConfigurationPanel extends JPanel {
 		      });
 		    konfigLoeschen.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	   // Rezising von splitpane / panelcenter
-//			          ButtonListener.resizing();
 		          int index = list.getSelectedIndex();
-		          System.out.println(index);
-		      //    System.out.println(listModel.getElementAt(index));
-		          status = false;
+		          EmailKonto kontoToRemove = list.getModel().getElementAt(index);
 		          if(index >= 0 && index < listModel.size()) { 
-		         // Jtree (Folder) wird gelöscht
-		          	  Object root = ConfigurationPanel.this.mailClient.getCurrentTree().getModel().getRoot();
-			    	  DefaultTreeModel treeModel = (DefaultTreeModel) ConfigurationPanel.this.mailClient.getCurrentTree().getModel();
-			    	  for(int i = 0; i < treeModel.getChildCount(root);i++) {
-			    		  if(treeModel.getChild(root, i).toString().equals(kontoControl.getKontos().get(index).getEmail())) {
-			    			  treeModel.removeNodeFromParent((MutableTreeNode) treeModel.getChild(root, i));
-			    		  }
-			    	  }   	  
-		        	  kontoControl.removeKonto(index);
+		        	  ConfigurationPanel.this.mailClient.removeKontoFromMailTree(kontoToRemove);
+		        	  kontoControl.removeKonto(kontoToRemove.getEmail());
 			          kontoControl.saveKonten("kontos.xml");
-			      
-			          for(int i =0; i < labels.length; i++) {
-//			        	  form.setText(i, "");
-			          }  
-			       // ModelList wird gelöscht
 		          	  listModel.removeElement(listModel.getElementAt(index));
-//		          	  ButtonListener.resizing();
 		         
 		          }else {
 		        	  System.out.println("ListModel, Konto.Id "+index+" existiert nicht");
 		          }
-		          status = true;
+//		          status = true;
 		       
 		          
 		          //button deaktiviert + textfelder
 		          if(kontoControl.getKontos().size() == 0) { 	  
 		        	  speichern.setEnabled(false);
-		        	  disableButton();
-//		        	  form.disableField();
-		        	  ConfigurationPanel.this.configFieldPanel.setEnabled(true);
+		        	  checkKonfigLoeschenButton();
+		        	  ConfigurationPanel.this.configFieldPanel.setEnabled(false);
+		        	  ConfigurationPanel.this.configFieldPanel.clearFields();
 		          }
 		          
 		        }
-		      });	 
-		    
-		// Port dürfen NUR int sein !!
-		    KeyListener keyListener= new KeyAdapter() {
-		        public void keyTyped(KeyEvent e) {
-		          char c = e.getKeyChar();
-		          if (!((c >= '0') && (c <= '9') ||
-		             (c == KeyEvent.VK_BACK_SPACE) ||
-		             (c == KeyEvent.VK_DELETE))) {
-		            getToolkit().beep();
-		            e.consume();
-		          }
-		        }
-		      };
-//		      form.getField(4).addKeyListener(keyListener);
-//		      form.getField(6).addKeyListener(keyListener);
-//		      form.getField(8).addKeyListener(keyListener);
+		      });	
 	 } 
-	
+	private void checkKonfigLoeschenButton(){
+        if(this.list.getModel().getSize()> 0 && !this.list.isSelectionEmpty()) {       	 
+      	  	ConfigurationPanel.this.konfigLoeschen.setEnabled(true);
+        }else{
+        	 ConfigurationPanel.this.konfigLoeschen.setEnabled(false);
+        }
+	}
 	private void initPanelGUI(){	
 		 JSplitPane splitPane = new JSplitPane(); 	
 		 listModel = new DefaultListModel<EmailKonto>();
@@ -271,29 +216,8 @@ public class ConfigurationPanel extends JPanel {
 		this.add(splitPane,BorderLayout.CENTER);
 		this.add(buttonPane, BorderLayout.NORTH);		
 		int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-		splitPane.setDividerLocation((int)(width*0.4));
-	}
-//	public void setSplitPaneDividerLocation(Double)
-	public void disableButton() {
-		konfigLoeschen.setEnabled(false);
-//		send.setEnabled(false);
-//		neue.setEnabled(false);
-//		antworten.setEnabled(false);
-//		weiterleiten.setEnabled(false);
-//		loeschen.setEnabled(false);
-//		ordnerSync.setEnabled(false);
-	}
-	public void enableButton() {
-		konfigLoeschen.setEnabled(true);
-//		send.setEnabled(true);
-//		neue.setEnabled(true);
-//		antworten.setEnabled(true);
-//		weiterleiten.setEnabled(true);
-//		loeschen.setEnabled(true);
-//		ordnerSync.setEnabled(true);
-	}
-
-	
+		splitPane.setDividerLocation((int)(width*0.3));
+	}	
 	public DefaultListModel<EmailKonto> getListModel()  {
 		return listModel;
 	}

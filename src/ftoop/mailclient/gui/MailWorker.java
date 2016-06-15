@@ -67,12 +67,12 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
 		return null;
 	}
 	
-	@Override
-	protected void process(final List<Mail> mails){
-		for(final Mail mail:mails ){
-			//TODO Update JTREE
-		}
-	}
+//	@Override
+//	protected void process(final List<Mail> mails){
+//		for(final Mail mail:mails ){
+//			//TODO Update JTREE
+//		}
+//	}
 	@Override
 	protected void done(){
 		System.out.println("SwingWorker ist fertig, aktualisiere MailTree");
