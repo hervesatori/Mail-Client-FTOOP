@@ -17,9 +17,9 @@ import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 
 public final class MailWorker extends SwingWorker<Integer, Mail> {
-	private EmailKontoControl kontoControl;
-	private HashMap<String,MailControl> mailControlContainer;
-	private MainView mailClient;
+	private final EmailKontoControl kontoControl;
+	private final HashMap<String,MailControl> mailControlContainer;
+	private final MainView mailClient;
 	private JFrame frameWaiting;
 	
 	public MailWorker(EmailKontoControl kontoControl,HashMap<String,MailControl> mailControlContainer, MainView mailClient){
@@ -64,6 +64,7 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
 			for(MailControl currentMC:mailControlContainer.values()){
 				currentMC.mailReceive();
 				currentMC.saveMailContainers();
+				closeFolderConnections(currentMC);				
 			}			
 		    //Die neuen Konti werden zum Container hinzugefügt
 	        for(int i = 0; i < kontosToAdd.size(); i++){
@@ -72,17 +73,19 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
              mailControl.mailReceive();
              mailControl.saveMailContainers();
              mailControlContainer.put(kontoControl.getKontos().get(i).getName(),mailControl);
-             
-             //********** Schliessen aller offenen Verbindungen
-             try {
-          	   mailControl.closeAllFolderConnections();
-             } catch (MessagingException e) {
-          	   System.out.println("Fehler beim Schliessen der offenen Verbindungen");
-          	   e.printStackTrace();
-             }
+             closeFolderConnections(mailControl);
 	        }
       
 		return null;
+	}
+	private void closeFolderConnections(MailControl mailControl){
+        //********** Schliessen aller offenen Verbindungen
+        try {
+     	   mailControl.closeAllFolderConnections();
+        } catch (MessagingException e) {
+     	   System.out.println("Fehler beim Schliessen der offenen Verbindungen");
+     	   e.printStackTrace();
+        }
 	}
 	
 	@Override

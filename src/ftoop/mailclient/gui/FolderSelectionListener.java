@@ -17,7 +17,6 @@ import ftoop.mailclient.daten.MailControl;
 public final class FolderSelectionListener implements TreeSelectionListener {
 	
 	private MainView mailClient;
-	private Mail mail;
 	private MailControl mailControl;
 	private JTable currentTable;
 	private MailTableModel currentMailsInTable;

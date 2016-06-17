@@ -231,7 +231,7 @@ public final class MainView extends JFrame{
 	        if(!oneClick) {
 	        	//Doppelklick, somit öffne die Mail in einem separaten Fenster
 	        	final MailPane mw = new MailPane(mailLocal,MailPane.MailWindowType.READ, this.folderSelectionListener.getSelectedMailControl());
-				final PopupMailFrame readingFrame = new PopupMailFrame(mailLocal.getFrom(), mw,PopupMailFrame.READING_MAIL_FRAME );
+				final PopupMailFrame readingFrame = new PopupMailFrame(mailLocal.getFrom(), mw,PopupMailFrame.READING_MAIL_FRAME,folderSelectionListener );
 	        	
 	        }
     }  

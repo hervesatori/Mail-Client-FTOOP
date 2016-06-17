@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
+import ftoop.mailclient.gui.DeleteMailWorker;
 import ftoop.mailclient.gui.FolderSelectionListener;
 import ftoop.mailclient.gui.MailPane;
 import ftoop.mailclient.gui.MailTableModel;
@@ -106,7 +107,7 @@ public class MailButtonListenerTool {
 			public void actionPerformed(ActionEvent arg0) {
 				MailControl currentMailControl = folderSelectionListener.getSelectedMailControl();
 				MailPane mailWindows = new MailPane(null,MailPane.MailWindowType.NEW,currentMailControl);
-				PopupMailFrame newMailFrame = new PopupMailFrame("Neue E-Mail senden",mailWindows,PopupMailFrame.NEW_MAIL_FRAME);
+				PopupMailFrame newMailFrame = new PopupMailFrame("Neue E-Mail senden",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
 			}
 			
 		};
@@ -120,7 +121,7 @@ public class MailButtonListenerTool {
 				MailControl currentMailControl = folderSelectionListener.getSelectedMailControl();
 				Mail mail = folderSelectionListener.getSelectedMail();
 				MailPane mailWindows = new MailPane(mail,MailPane.MailWindowType.RESPOND,currentMailControl);
-				PopupMailFrame newMailFrame = new PopupMailFrame("Auf E-Mail antworten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME);
+				PopupMailFrame newMailFrame = new PopupMailFrame("Auf E-Mail antworten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
 				
 
 			}
@@ -136,7 +137,7 @@ public class MailButtonListenerTool {
 				MailControl currentMailControl = folderSelectionListener.getSelectedMailControl();
 				Mail mail = folderSelectionListener.getSelectedMail();
 				MailPane mailWindows = new MailPane(mail,MailPane.MailWindowType.FORWARD,currentMailControl);
-				PopupMailFrame newMailFrame = new PopupMailFrame("E-Mail weiterleiten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME);
+				PopupMailFrame newMailFrame = new PopupMailFrame("E-Mail weiterleiten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
 				
 				
 
@@ -148,6 +149,8 @@ public class MailButtonListenerTool {
 	public static ActionListener getDeleteMailActionListener(FolderSelectionListener folderSelectionListener){
 		final ActionListener deleteMailAL = new ActionListener(){
 			
+			
+			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {	
 
@@ -155,71 +158,48 @@ public class MailButtonListenerTool {
 				JTable table = folderSelectionListener.getCurrentTable();
 			    final int tRow = table.getSelectedRow();
 			    final int modelRow =  table.convertRowIndexToModel(tRow);
+			    final MailControl mc = folderSelectionListener.getSelectedMailControl();
 				
-				String msgId = folderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
-				System.out.println("Mail mit ID: "+ msgId+"   ...wird gelöscht!");
 				if(table.getRowCount() > 0){
 						((MailTableModel) table.getModel()).removeRow(modelRow);
 				}
 				
-			    //Thread work um mail zu löschen 	
-				SwingWorker<Void,Void> workerLoeschen = new SwingWorker<Void,Void>() {
-    			      @Override
-    			      protected Void doInBackground()
-    			      {
-		    			      	
-					  	    try {					    			   
-					    		//Lösche die Mail vom Server	
-					  	    	String messageID = mailToDelete.getMessageID();
-					  	    	folderSelectionListener.getSelectedMailControl().deleteMail(messageID);
-					  	    	
-							} catch (MessagingException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (NoSuchElementException e2){
-								String message = e2.getMessage();
-								String header = "Fehler";
-								JFrame frame = new JFrame();
-								frame.setSize(300,125);
-								frame.setLayout(new GridBagLayout());
-								GridBagConstraints constraints = new GridBagConstraints();
-								constraints.gridx = 0;
-								constraints.gridy = 0;
-								constraints.weightx = 1.0f;
-								constraints.weighty = 1.0f;
-								constraints.insets = new Insets(5, 5, 5, 5);
-								constraints.fill = GridBagConstraints.BOTH;
-								JLabel headingLabel = new JLabel(header);
-								headingLabel.setOpaque(false);
-								frame.add(headingLabel, constraints);
-								constraints.gridx++;
-								constraints.weightx = 0f;
-								constraints.weighty = 0f;
-								constraints.fill = GridBagConstraints.NONE;
-								constraints.anchor = GridBagConstraints.NORTH;
-								JButton cloesButton = new JButton("X");
-								cloesButton.setMargin(new Insets(1, 4, 1, 4));
-								cloesButton.setFocusable(false);
-								frame.add(cloesButton, constraints);
-								constraints.gridx = 0;
-								constraints.gridy++;
-								constraints.weightx = 1.0f;
-								constraints.weighty = 1.0f;
-								constraints.insets = new Insets(5, 5, 5, 5);
-								constraints.fill = GridBagConstraints.BOTH;
-								JLabel messageLabel = new JLabel("<HtMl>"+message);
-								frame.add(messageLabel, constraints);
-								frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-								frame.setVisible(true);
-						}
-				        return null;
-    			      }
-			    			   
-			    			 
-    			  };
-    			  workerLoeschen.execute();
+				deleteMailUsingWorker(mailToDelete, mc);
 			}
 		};
 		return deleteMailAL;
+	}	
+	/**
+	 * Dieser AL wird benötigt von einem externen Mailframe, example PopupMailFrame
+	 * @param toBeDeleted
+	 * @param mailTable
+	 * @param currentMc
+	 * @param folderSelectionListener
+	 * @return
+	 */
+	public static ActionListener getDeleteMailActionListener(Mail toBeDeleted, JTable mailTable, MailControl currentMc, FolderSelectionListener folderSelectionListener){
+		final ActionListener deleteMailAL = new ActionListener(){
+			private final Mail mailToDelete = toBeDeleted;
+			private final  JTable mTable = mailTable;
+			private final MailControl mc = currentMc; 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				deleteMailUsingWorker(mailToDelete, mc);
+				if(mTable.equals(folderSelectionListener.getCurrentTable())){
+				    final int tRow = mTable.getSelectedRow();
+				    final int modelRow =  mTable.convertRowIndexToModel(tRow);
+				    mTable.clearSelection();
+					if(mTable.getRowCount() > 0){
+						((MailTableModel) mTable.getModel()).removeRow(modelRow);
+					}
+				}		
+				
+			}
+		};
+		return deleteMailAL;
+	}
+	private static void deleteMailUsingWorker(Mail mailToDelete, MailControl currentMc){
+		DeleteMailWorker workerLoeschen = new DeleteMailWorker(mailToDelete, currentMc);
+	    workerLoeschen.execute();
 	}
 }

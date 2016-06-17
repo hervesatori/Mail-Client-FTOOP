@@ -133,6 +133,7 @@ public class MailPane extends JPanel {
 		  this.txtBetreff.setText("Fw: " + mail.getSubject());
 		  break;
 	   case NEW: 
+		  this.headerPane.add(new JLabel(" "));
 		  this.txtVon.setText(currentMC.getCurrentKonto().getEmail());
 		  this.txtVon.setEnabled(false);
 		  break;

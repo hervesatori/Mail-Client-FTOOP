@@ -70,7 +70,7 @@ public class MailControl {
 	private  final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	private String mailboxName; 
 	private String attachmentPath;
-	
+	private HashSet<String> folderFullNames;
 	private ArrayList<String> folderContainer;
 	private HashMap<String, ArrayList<String>> parentContainer;
 	private Set<String> folderWithoutParent;
@@ -87,6 +87,7 @@ public class MailControl {
 	  this.folderWithoutParent = new TreeSet<String>();
 	  //Setzen des Mailboxnamens
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
+	  this.folderFullNames = new HashSet<String>();
   }
   
 public void mailReceive(){
@@ -143,6 +144,14 @@ public void mailReceive(){
 public String getMailboxName() {
 	return mailboxName;
 }
+private boolean checkIfFolderExists(Folder folderToCheck){
+	for(Folder folder:this.getServerMailFolders()){
+		if(folder.getFullName().equals(folderToCheck.getFullName())){
+			return true;
+		}	
+	}
+	return false;
+}
 /**
    * Initialisiere ServerMailFolders - Reflektiert die Ordner auf dem Server, mit welchen später auch die direkte Mailabfrage gemacht wird
    */
@@ -151,13 +160,15 @@ public String getMailboxName() {
 		   System.out.println("Initialisiere MailControl ServerMailFolders");
 		   for (javax.mail.Folder folder:store.getDefaultFolder().list("*")) {
 		        if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
-		        	this.getServerMailFolders().add(folder);
+		        	if(!checkIfFolderExists(folder)){
+		        		this.getServerMailFolders().add(folder);		        	
+		        	}
 		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount()); 
 		            System.out.println(folder.getParent() + ": " + folder.getMessageCount());	
 		           
 		                
 		      if(folder.getParent().toString()=="") { 
-	        	    System.out.println("KEINE");
+	        	    System.out.println("KEIN Parentfolder vorhanden");
 		        	folderWithoutParent.add(folder.getFullName());
 		        }else {
 		          for(Folder fold : folder.getParent().list()) {
@@ -545,6 +556,8 @@ public boolean existsMailboxXML(){
 						  }else{
 							  if(msgArr.length== 0){								  
 								throw new NoSuchElementException("Konnte Online die zu löschende Mail nicht finden mit ID "+messageID);				
+							  }	else{
+								  throw new NoSuchElementException("Konnte Online die Mail aus unbekannten Gründen nicht löschen. "+messageID);
 							  }
 						  }
 					  }

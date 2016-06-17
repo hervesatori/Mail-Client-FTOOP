@@ -125,6 +125,8 @@ public class ConfigurationPanel extends JPanel {
 			            }		 
 					  kontoControl.addKonto(newKontoToAdd);
 					  listModel.addElement(newKontoToAdd);
+					  //Neues Konto hinzugefügt, Modus neu auf false setzen
+					  neuModus = false;
 				   }else {
 					   
 					  EmailKonto kontoInList = list.getSelectedValue();
@@ -135,6 +137,8 @@ public class ConfigurationPanel extends JPanel {
 					  kontoInList = ConfigurationPanel.this.configFieldPanel.getFieldTexts();					  
 					  //Füge das neue Konto wieder zum KontoControl hinzu
 					  kontoControl.addKonto(kontoInList);
+					  //Liste neu laden
+					  reloadKontoToListModel();
 				   }
 
 		         
@@ -178,6 +182,12 @@ public class ConfigurationPanel extends JPanel {
 		        }
 		      });	
 	 } 
+	private void reloadKontoToListModel(){
+		listModel.clear();
+		for(EmailKonto konto : this.kontoControl.getKontos()) {
+		    	listModel.addElement(konto);
+		    }
+	}
 	private void clearFieldSelectionAndDisableFields(){
       list.clearSelection();
   	  ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(false);
