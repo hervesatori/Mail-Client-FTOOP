@@ -1,12 +1,8 @@
 package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
-
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -14,15 +10,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 
@@ -36,7 +28,6 @@ public class MailPane extends JPanel {
 	private Mail mail;
 	private  JPanel headerPane;
 	private  JEditorPane msgPane;
-	private JScrollPane scrollEditor;
 	// Labeltitel für Mails werden definiert
 	private final String von = "Von:";
 	private final String an = "An:";
@@ -44,7 +35,6 @@ public class MailPane extends JPanel {
 	private final String datum = "Datum:";
 	private  JLabel labelVon ;
 	private  JLabel labelAn;
-	private JLabel labelCc;
 	private  JLabel labelBetreff;
 	private  JLabel labelDate;
 	private JTextField txtAn;
@@ -119,17 +109,27 @@ public class MailPane extends JPanel {
 		  msgPane.setText(mail.getMessage());
 		  this.txtBetreff.setText(mail.getSubject());
 		  this.txtBetreff.setEditable(false);
+		  this.txtAn.setEditable(false);
+		  this.txtAn.setText(mail.getTo());
+		  this.txtVon.setEditable(false);
+		  this.txtVon.setText(mail.getFrom());
 		  this.addDateToPanel();
 		  break;
 	   case RESPOND:
-		   this.loadMsgContentToRespond();
+		  this.loadMsgContentToRespond();
+		  this.headerPane.add(new JLabel(" "));
 		  this.txtAn.setText(mail.getFrom());
 		  this.txtBetreff.setText("Re: " + mail.getSubject());
+		  this.txtVon.setEditable(false);
+		  this.txtVon.setText(mail.getFrom());
 		  break;
 	   case FORWARD:
-		   
+
+		  this.headerPane.add(new JLabel(" "));
 		   this.loadMsgContentToRespond();
 
+		  this.txtVon.setEditable(false);
+		  this.txtVon.setText(mail.getFrom());
 		  this.txtBetreff.setText("Fw: " + mail.getSubject());
 		  break;
 	   case NEW: 

@@ -14,13 +14,18 @@ import ftoop.mailclient.daten.Mail;
  *
  */
 public class MailTableModel extends AbstractTableModel {
-	
+	public final static int VON_COLUMN = 0;
+	public final static int AN_COLUMN = 1;
+	public final static int BETREFF_COLUMN = 2;
+	public final static int DATUM_COLUMN = 3;
+	public final static int ATTACHMENTS_COLUMN = 4;
+	public final static int GELESEN_COLUMN = 5;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","Ungelesen"};
+	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","Gelesen"};
   
     private final List<Mail> containingMails;
 
@@ -44,17 +49,17 @@ public class MailTableModel extends AbstractTableModel {
     public Object getValueAt(final int rowIndex, final int columnIndex){
         final Mail mail = containingMails.get(rowIndex);
         Format sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
-        if (columnIndex == 0)
+        if (columnIndex == MailTableModel.VON_COLUMN)
             return mail.getFrom();
-        else if (columnIndex == 1)
+        else if (columnIndex == MailTableModel.AN_COLUMN)
             return mail.getTo();
-        else if (columnIndex == 2)
+        else if (columnIndex == MailTableModel.BETREFF_COLUMN)
             return mail.getSubject();
-        else if (columnIndex == 3)
+        else if (columnIndex == MailTableModel.DATUM_COLUMN)
             return sdf.format(mail.getReceived());
-        else if (columnIndex == 4)
+        else if (columnIndex == MailTableModel.ATTACHMENTS_COLUMN)
             return mail.getAttachments().size();
-        else if (columnIndex == 5)
+        else if (columnIndex == MailTableModel.GELESEN_COLUMN)
             return mail.getisRead();
 
         throw new IllegalArgumentException("Invalid columIndex " + columnIndex);
@@ -69,6 +74,9 @@ public class MailTableModel extends AbstractTableModel {
     	containingMails.remove(row);
         fireTableRowsDeleted(row, row);
      }
+    }
+    public Mail getListEntry(final int rowIndex){
+    	return containingMails.get(rowIndex);
     }
 }
 

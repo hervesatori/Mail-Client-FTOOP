@@ -1,8 +1,6 @@
 package ftoop.mailclient.gui;
 
 import java.awt.Component;
-
-import java.awt.Component;
 import java.awt.Font;
 
 import javax.swing.JTable;

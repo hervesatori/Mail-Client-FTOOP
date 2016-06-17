@@ -2,14 +2,16 @@ package ftoop.mailclient.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 
 import javax.mail.MessagingException;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
+import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
@@ -47,14 +49,30 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
 	}
 	@Override
 	protected Integer doInBackground() throws Exception {
-		  //Konti werden gesucht
-	        for(int i = 0; i < kontoControl.getKontos().size(); i++){
+			
+			
+			Iterator<EmailKonto> kontoIterator = kontoControl.getKontos().iterator();
+			//Kontos die in kontosToAdd sind, sind neue und müssen intiliaisert und zum MailControlCnotainer hinzugefügt werden werden
+			ArrayList<EmailKonto> kontosToAdd = new ArrayList<EmailKonto>(); 
+			while(kontoIterator.hasNext()){
+				EmailKonto konto = kontoIterator.next();
+				if(mailControlContainer.get(konto.getEmail())== null){
+					kontosToAdd.add(konto);
+				}
+			}
+			//Aktualisieren der bestehenden Konti
+			for(MailControl currentMC:mailControlContainer.values()){
+				currentMC.mailReceive();
+				currentMC.saveMailContainers();
+			}			
+		    //Die neuen Konti werden zum Container hinzugefügt
+	        for(int i = 0; i < kontosToAdd.size(); i++){
 	        	//********** Verwenden eines Kontos mit MailControl 
-             MailControl mailControl = new MailControl(kontoControl.getKontos().get(i));
+             MailControl mailControl = new MailControl(kontosToAdd.get(i));
              mailControl.mailReceive();
              mailControl.saveMailContainers();
-             //System.out.println(kontoControl.getKontos().get(i).getName());
              mailControlContainer.put(kontoControl.getKontos().get(i).getName(),mailControl);
+             
              //********** Schliessen aller offenen Verbindungen
              try {
           	   mailControl.closeAllFolderConnections();
@@ -67,12 +85,6 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
 		return null;
 	}
 	
-//	@Override
-//	protected void process(final List<Mail> mails){
-//		for(final Mail mail:mails ){
-//			//TODO Update JTREE
-//		}
-//	}
 	@Override
 	protected void done(){
 		System.out.println("SwingWorker ist fertig, aktualisiere MailTree");

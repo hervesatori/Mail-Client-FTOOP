@@ -136,14 +136,6 @@ public class EmailKontoControl {
 		this.getKontos().add(newKonto);
 	}
 
-//  public void removeKonto(int id) {
-//	  
-//	  if(id>=0 && id < this.getKontos().size()){
-//		  this.getKontos().remove(id);
-//	  }else{
-//		  System.out.println("Konto ID "+ id + " existiert nicht.");
-//	  }
-//  }
 	public synchronized void removeKonto(String emailName){
 		Iterator<EmailKonto> it = this.getKontos().iterator();
 		while(it.hasNext()){

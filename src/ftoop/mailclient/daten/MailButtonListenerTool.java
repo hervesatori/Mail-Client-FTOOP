@@ -1,6 +1,5 @@
 package ftoop.mailclient.daten;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,7 +12,6 @@ import javax.mail.NoSuchProviderException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
@@ -44,7 +42,6 @@ public class MailButtonListenerTool {
 					   //Mail ist erstellt, versende diese
 					   mailWindow.getCurrentMC().sendMsg(mail);
 				   } catch (NoSuchProviderException e1) {
-					   // TODO Auto-generated catch block
 				 	   e1.printStackTrace();
 				     }
 			}
@@ -64,10 +61,33 @@ public class MailButtonListenerTool {
 		};
 		return sendenAL;		
 	}
+	private static String convertMailNamestoNormalMail(String singleTo){
+		   String tempTo ="";
+		   if(singleTo.contains("<") && singleTo.contains(">")){
+			   singleTo =  singleTo.split("<")[1];
+			   singleTo = singleTo.split(">")[0];	
+			   tempTo += singleTo;
+			  }else{
+				  tempTo += singleTo;
+			  }
+		   return tempTo;
+	}
 	private static void sendNewMail(MailPane mailWindow){
  	   try {
 		   System.out.println("Versende nun Mail an: " + mailWindow.getAn() + "mit Inhalt: "+mailWindow.getMessageText());
-		   String to = mailWindow.getAn();
+		   String to = mailWindow.getAn();		
+		   if(to.contains(";")){
+			   //Auflösen von Namen zu Mailadressen: Hans Ueli <hans_ueli@yahoo.fr>; -> hans_ueli@yahoo.fr
+			   String tempTo = "";
+			   for(String singleTo : to.split(";")){
+				   tempTo += convertMailNamestoNormalMail(singleTo);
+			   }
+			   to = tempTo;
+		   }else{
+			   //Einzelne Mailadresse
+			   to = convertMailNamestoNormalMail(to);
+		   }
+		   
 		   String from = mailWindow.getCurrentMC().getCurrentKonto().getEmail();//FolderSelectionListener.getSelectedMailControl().getCurrentKonto().getEmail().replaceAll(";","");
 		   String subject = mailWindow.getBetreff();
 		   String msg = mailWindow.getMessageText();
@@ -75,7 +95,6 @@ public class MailButtonListenerTool {
 		   //Mail ist erstellt, versende diese
 		   mailWindow.getCurrentMC().sendMsg(mail);
 	   } catch (NoSuchProviderException e1) {
-		   // TODO Auto-generated catch block
 	 	   e1.printStackTrace();
 	     }
 	}
@@ -131,13 +150,16 @@ public class MailButtonListenerTool {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {	
+
+				Mail mailToDelete = folderSelectionListener.getSelectedMail();
 				JTable table = folderSelectionListener.getCurrentTable();
-				//   row = table.getSelectedRow();
-				int row =  table.convertRowIndexToModel(table.getSelectedRow());
+			    final int tRow = table.getSelectedRow();
+			    final int modelRow =  table.convertRowIndexToModel(tRow);
+				
 				String msgId = folderSelectionListener.getSelectedMail().getMessageID().replaceAll("[<>]","");
-				System.out.println(msgId);
+				System.out.println("Mail mit ID: "+ msgId+"   ...wird gelöscht!");
 				if(table.getRowCount() > 0){
-						((MailTableModel) table.getModel()).removeRow(row);
+						((MailTableModel) table.getModel()).removeRow(modelRow);
 				}
 				
 			    //Thread work um mail zu löschen 	
@@ -146,10 +168,10 @@ public class MailButtonListenerTool {
     			      protected Void doInBackground()
     			      {
 		    			      	
-					  	    try {
-					    			   
-					    		//Lösche die Mail lokal und vom Server	
-					  	    	folderSelectionListener.getSelectedMailControl().deleteMail(folderSelectionListener.getSelectedMail().getMessageID());
+					  	    try {					    			   
+					    		//Lösche die Mail vom Server	
+					  	    	String messageID = mailToDelete.getMessageID();
+					  	    	folderSelectionListener.getSelectedMailControl().deleteMail(messageID);
 					  	    	
 							} catch (MessagingException e1) {
 								// TODO Auto-generated catch block

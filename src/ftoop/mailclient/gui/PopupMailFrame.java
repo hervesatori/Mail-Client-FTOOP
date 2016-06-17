@@ -3,16 +3,11 @@ package ftoop.mailclient.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import ftoop.mailclient.daten.MailButtonListenerTool;
 
@@ -43,7 +38,7 @@ public class PopupMailFrame extends JFrame {
 	        	break;
 	        case READING_MAIL_FRAME:
 	        	System.out.println("READING_MAIL_FRAME selected");	    		
-	            this.add(this.createMenuBar(), BorderLayout.NORTH);
+	            this.add(this.createMenuBar(), BorderLayout.NORTH);	            
 	        	break;
 	        default: 
 	        	this.add(new JLabel("Fehler bei der Auswahl des popupMailFrameType"));
@@ -65,15 +60,11 @@ public class PopupMailFrame extends JFrame {
 		JButton antworten = new JButton("Antworten");
 		JButton weiterLeiten = new JButton("Weiterleiten");
 
-		senden.setEnabled(true);
-		antworten.setEnabled(false);
-		weiterLeiten.setEnabled(false);
-		loeschen.setEnabled(false);
-	
+		senden.setEnabled(false);
+		antworten.setEnabled(true);
+		weiterLeiten.setEnabled(true);
+		loeschen.setEnabled(true);
 		
-//		loeschen.addActionListener(this.buttonListener);
-//		antworten.addActionListener(this.buttonListener);
-//		weiterLeiten.addActionListener(this.buttonListener);
 		senden.addActionListener(MailButtonListenerTool.getSendenActionListener(this,mailWindow));
 		//Die Buttons werden an JMenuBar angehängt
 		menuBar.add(senden);

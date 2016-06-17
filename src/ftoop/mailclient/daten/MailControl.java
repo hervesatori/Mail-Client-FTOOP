@@ -1,7 +1,18 @@
 package ftoop.mailclient.daten;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,11 +24,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.io.*;
-import java.nio.file.Files;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -35,7 +41,6 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
-import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -43,9 +48,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.search.MessageIDTerm;
 import javax.mail.search.SearchTerm;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -54,12 +57,6 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-
-import com.sun.mail.pop3.POP3SSLStore;
-
-import ftoop.mailclient.gui.MainView;
-
-import java.util.HashMap;
 /**
  * 
  * @author Herve Satori & Dominique Borer
@@ -147,12 +144,6 @@ public String getMailboxName() {
 	return mailboxName;
 }
 /**
- * @param mailboxName the mailboxName to set
- */
-private void setMailboxName(String mailboxName) {
-	this.mailboxName = mailboxName;
-}
-/**
    * Initialisiere ServerMailFolders - Reflektiert die Ordner auf dem Server, mit welchen später auch die direkte Mailabfrage gemacht wird
    */
   private void initializeServerMailFolders(){
@@ -161,8 +152,7 @@ private void setMailboxName(String mailboxName) {
 		   for (javax.mail.Folder folder:store.getDefaultFolder().list("*")) {
 		        if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
 		        	this.getServerMailFolders().add(folder);
-		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount());
-//*****Herve CHANGE ******************************************************************************************************    
+		            System.out.println(folder.getFullName() + ": " + folder.getMessageCount()); 
 		            System.out.println(folder.getParent() + ": " + folder.getMessageCount());	
 		           
 		                
@@ -219,68 +209,6 @@ public boolean existsMailboxXML(){
 	public void setCurrentKonto(EmailKonto currentKonto) {
 		this.currentKonto = currentKonto;
 	}
-//	/**
-//   * 
-//   * @throws NoSuchProviderException
-//   * 
-//   */
-//  public void receiveMsg() throws NoSuchProviderException {
-//	 
-//	  Store store = null;
-//	  Folder emailFolder = null;
-//	 
-//	
-//	  //properties wird erstellt
-//	  //The Properties class represents a persistent set of properties
-//      Properties properties = new Properties();
-//
-//      properties.put("mail.pop3.socketFactory.class", SSL_FACTORY);
-//      properties.put("mail.pop3.socketFactory.fallback", "false");
-//      properties.put("mail.pop3.port", Integer.toString(currentKonto.getPop3Port()));
-//      properties.put("mail.pop3.socketFactory.port",Integer.toString(currentKonto.getPop3Port()));
-//
-//      URLName url = new URLName("pop3", currentKonto.getPop3Server(),currentKonto.getPop3Port(), "",
-//    		  currentKonto.getBenutzerNamePop(), currentKonto.getPasswortPop());
-//      //Objekt Session kapselt die Verbindung an Mail Server
-//      Session emailSession = Session.getDefaultInstance(properties);
-//     
-//      //Objekt Store + Verbindung an POP3 Server
-//     
-//	try {
-//		 store = new POP3SSLStore(emailSession, url);
-//		 store.connect();
-//
-//      //Objekt Folder wird instanziert
-//		emailFolder = store.getFolder("INBOX");
-//		emailFolder.open(Folder.READ_ONLY);
-//	  // Array Messages wird instanziert	
-//		 Message[] messages = emailFolder.getMessages();
-//	  // Messages werden an Console angezeigt
-//		 printMessages(messages);
-//	  // Messages werden in File "MailsInbox gespeichert
-//		 safeContainers(messages,fileInbox);
-//		 
-//	} catch (MessagingException e) {
-//		
-//		e.printStackTrace();
-//	}finally {
-//		if (emailFolder != null && emailFolder.isOpen()) { 
-//	          try {         	  
-//	        	  emailFolder.close(false); // false -> Mails die DELETED markiert sind, werden nicht gelöscht
-//	          } catch (Exception e) { 
-//	              e.printStackTrace(); 
-//	            } 
-//	    } 
-//        try { 
-//            if (store != null && store.isConnected()) { 
-//                store.close(); 
-//            } 
-//        } catch (MessagingException e) { 
-//            e.printStackTrace(); 
-//        } 
-//	 }
-//    }
-  
 	public HashMap<String, MailContainer> getMailContainers() {
 		return mailContainers;
 	}
@@ -392,10 +320,12 @@ public boolean existsMailboxXML(){
 					this.addMailContainer(folder);
 				}
 				MailContainer mc = this.getMailContainers().get(folder.getFullName());
+				HashSet<String> stillExistingIDs = new HashSet<String>();
 				// Array Messages wird instanziert	
 				 for(Message message:folder.getMessages()){
 					try {
 						String mID = this.getMessageID(message.getHeader("Message-ID"));
+						stillExistingIDs.add(mID);
 						boolean exists = mc.existsMail(mID);
 						if(exists){
 							System.out.println("Mail mit ID "+mID + " existiert bereits und wird nicht erneut heruntergeladen");
@@ -412,6 +342,7 @@ public boolean existsMailboxXML(){
 						e.printStackTrace();
 					}
 				 }
+				 this.removeLocalMail(stillExistingIDs,mc);
 			}
 		}else{
 			try {
@@ -422,7 +353,19 @@ public boolean existsMailboxXML(){
 				
 		}
 	}
-    private String getMessageID(String[] mIDArr){
+    private synchronized void removeLocalMail(HashSet<String> stillExistingIDs, MailContainer mc) {
+    	Iterator<Mail> mails = mc.getContainingMails().iterator();
+    	while(mails.hasNext()){
+    		Mail mailInMc = mails.next();
+    		if(stillExistingIDs.contains(mailInMc.getMessageID()) == false){
+    			System.out.println("Mail +" + mailInMc.getSubject() + " von: "+ mailInMc.getFrom() + " mit ID: "+ mailInMc.getMessageID() + " existiert nicht mehr und wird lokal gelöscht.");
+    			mails.remove();
+    		}
+    	}
+	
+    }
+
+	private String getMessageID(String[] mIDArr){
     	String mID = "";
     	for(int i = 0; i <mIDArr.length; i++){
     		mID += mIDArr[i];
@@ -576,28 +519,6 @@ public boolean existsMailboxXML(){
 	     }
 	  return content;
   }
-//  private String getTextFromMessage(Message message) throws Exception {
-//	    if (message.isMimeType("text/plain")){
-//	        return message.getContent().toString();
-//	    }else if (message.isMimeType("multipart/*")) {
-//	        String result = "";
-//	        MimeMultipart mimeMultipart = (MimeMultipart)message.getContent();
-//	        int count = mimeMultipart.getCount();
-//	        for (int i = 0; i < count; i ++){
-//	            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-//	            if (bodyPart.isMimeType("text/plain")){
-//	                result = result + "\n" + bodyPart.getContent();
-//	                break;  //without break same text appears twice in my tests
-//	            } else if (bodyPart.isMimeType("text/html")){
-//	                String html = (String) bodyPart.getContent();
-//	                result = html;//result + "\n" + Jsoup.parse(html).text();
-//
-//	            }
-//	        }
-//	        return result;
-//	    }
-//	    return "";
-//  }
   public void deleteMail(String messageID) throws MessagingException{
 	  for(MailContainer mc:this.getMailContainers().values()){
 		  Iterator<Mail> mcIterator = mc.getContainingMails().iterator();
@@ -758,9 +679,6 @@ private String getToAddresses(Message msg){
 	
 	
 }
-private void setMailFolders(ArrayList<Folder> serverMailFolders) {
-	this.serverMailFolders = serverMailFolders;
-}
 
   
   
@@ -835,7 +753,7 @@ public void sendMsg(Mail mail) throws NoSuchProviderException {
 	   transport.connect();
 	   transport.sendMessage(message, message.getAllRecipients());  
 	  
-	   System.out.println("message sent successfully");
+	   System.out.println("message sent successfully to" + mail.getTo());
 	   
 	  } catch (MessagingException e) {
 		   JOptionPane.showMessageDialog(null, "Keine gültige E-Mail Adresse", "Fehler", JOptionPane.ERROR_MESSAGE);

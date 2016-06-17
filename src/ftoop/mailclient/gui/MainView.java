@@ -18,27 +18,26 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailButtonListenerTool;
-import ftoop.mailclient.daten.MailContainer;
 import ftoop.mailclient.daten.MailControl;
 
 
@@ -56,6 +55,7 @@ public final class MainView extends JFrame{
 //	private JPanel panelCenter;
 	private JSplitPane splitPane;
 	// Labeltitel für Mails werden definiert
+	private String xmlPath = "kontos.xml";
 	protected String von = "Von";
 	protected String an = "An";
 	protected String betreff = "Betreff";
@@ -72,6 +72,7 @@ public final class MainView extends JFrame{
 	private DefaultMutableTreeNode rootNode;
 	private DefaultTreeModel mailTreeModel;	
 	private FolderSelectionListener folderSelectionListener;
+	private JSplitPane horizontalMailPane;
 	
 	/**
 	 * Create the frame.
@@ -108,12 +109,11 @@ public final class MainView extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					//Ersetze das Panel in der Mitte durch ein leeres und zeige somit ein Schliessen an
-		           splitPane.setRightComponent(new JPanel());
-		    	   splitPane.validate();
-		    	   
-		    	   loeschen.setEnabled(false);
-		    	   weiterLeiten.setEnabled(false);
-		    	   antworten.setEnabled(false);
+					replaceRightComponentWithNewPanel(new JPanel());	
+				   
+				   loeschen.setEnabled(false);
+				   weiterLeiten.setEnabled(false);
+				   antworten.setEnabled(false);
 			}
 			
 		});
@@ -170,11 +170,17 @@ public final class MainView extends JFrame{
 		
 	}
 	 private JComponent createCenterPanel() {
+
+	    	int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+	    	int height = Toolkit.getDefaultToolkit().getScreenSize().height;
 		 	//Init der panelCenter
 		 	JPanel panelCenter = new JPanel();
-		 	panelCenter.add(new JTextArea("MAIL CLIENT"));
+		 	this.horizontalMailPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		 	this.horizontalMailPane.setTopComponent(new JLabel("MAIL CLIENT", SwingConstants.CENTER));
+		 	this.horizontalMailPane.setDividerLocation((int)(height*0.5));
+		 	panelCenter.add(this.horizontalMailPane);
+		 	
 	        splitPane = new JSplitPane();
-	    	int width = Toolkit.getDefaultToolkit().getScreenSize().width;
 			splitPane.setDividerLocation((int)(width*0.2));
 	        //JTREE  ****************************************
 	        // Root wird via Method buildTree erzeugt
@@ -209,22 +215,17 @@ public final class MainView extends JFrame{
 	 }
     private void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
 	    		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
-	 //  	    Point origin = e.getPoint () ;
-	 //       int row = table.rowAtPoint( origin ) ; 
-	        Mail mailLocal = containingMails.get(table.convertRowIndexToModel(table.getSelectedRow()));//containingMails.get(row);
+    	
+	        Mail mailLocal = this.folderSelectionListener.getSelectedMail();
 	        mailLocal.setIsRead(true);
-	        System.out.println("MAIL:  "+mailLocal.getFrom()+"Menge:  "+mailLocal.getAttachments().size());
-	        
-	        
-	        
+	        System.out.println("MAIL:  "+mailLocal.getFrom()+" mID: "+ mailLocal.getMessageID() +"Menge:  "+mailLocal.getAttachments().size());
 	        
 	        scrollPane = new JScrollPane(table);
 	        panelCenter = new JPanel(new BorderLayout(5,5));
-//	        final MailWindows readingMailWindow = new MailWindows(mailLocal,"lesen", this);
 
 	        //Zeige im MainGui die Mail unterhalb der Selektion an
-	        panelCenter.add(scrollPane,BorderLayout.NORTH);
-	        panelCenter.add(new MailPane(mailLocal,MailPane.MailWindowType.READ,this.folderSelectionListener.getSelectedMailControl()),BorderLayout.CENTER);
+	        this.replaceHorizontalSplitPaneComponents(scrollPane, new MailPane(mailLocal,MailPane.MailWindowType.READ,this.folderSelectionListener.getSelectedMailControl()));
+	        panelCenter.add(this.horizontalMailPane);
 	        this.replaceRightComponentWithNewPanel(panelCenter);
 	        
 	        if(!oneClick) {
@@ -240,70 +241,43 @@ public final class MainView extends JFrame{
         splitPane.setRightComponent(newPanel);
 		splitPane.setDividerLocation(pos);
     }
-	 public void setMailSelection(TreePath treePath){
-	    	Object[] obj = null;
-	        final Object pathComponent = treePath.getLastPathComponent();
-	        final String type = pathComponent.getClass().getSimpleName();
-	        //Button neue mail wird aktiviert
-	        this.setButtonNeueOn();
-	        System.out.println("Path: " + treePath + " / Object: " + pathComponent.toString() + " / Type: " + type+"///////"+pathComponent);
-	        //return a array of path
-	        obj= treePath.getPath();
-	        System.out.println(mailControlContainer.get(obj[1].toString()).toString());  
-	        System.out.println(obj[1].toString());
-	        HashMap<String,MailContainer> mailcontainers = mailControlContainer.get(obj[1].toString()).getMailContainers();
-	        
-	        // Ordnerbehandlung, "/" wird getrennt
-	        String tempStr = treePath.toString().replaceAll("\\s","");
-	        String currentPath;
-	        String[]anpassen = tempStr.split(",");
-	        int lange = anpassen.length;
-	        if(lange>3) {
-	        	currentPath = anpassen[lange-2]+"/"+pathComponent.toString();
-	        	
-	        }else {
-	        	currentPath = pathComponent.toString();
-	        }
-	        System.out.println(currentPath);
-	     	if(mailcontainers.get(currentPath)!=null) {
-	            //  Init von List containingsMails (Alle Mails von einen Ordner)
-	     		//  TableModel wird auch instanziert
-	            List<Mail> containingMails = mailControlContainer.get(obj[1].toString()).getMailContainers()
-	        		  .get(currentPath).getContainingMails();
-//	            final MailControl mailControl = mailControlContainer.get(obj[1].toString());
-		        final MailTableModel tableModel = new MailTableModel(containingMails);
-				final JTable table = new JTable(tableModel);
-				// JTable wird nach Datum sortiert
-				table.setAutoCreateRowSorter(true);
-	            table.getRowSorter().toggleSortOrder(3);
-	            table.setDefaultRenderer(Object.class, new BoldRenderer());
-	            table.getRowSorter().toggleSortOrder(3);
-	            
+    private void replaceHorizontalSplitPaneComponents(JComponent top, JComponent bottom){
+        // sog. Resizing mit splitpane und Divider
+        int pos = this.horizontalMailPane.getDividerLocation();
+        this.horizontalMailPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        this.horizontalMailPane.setTopComponent(top);
+        this.horizontalMailPane.setBottomComponent(bottom);
+        horizontalMailPane.setDividerLocation(pos);
+    }
+	 public void setMailSelection(){
 		        //JTABLE wird via ein jScrollPane abgebildet
 		        // ***********************************************
-		    	JScrollPane scrollPane = new JScrollPane(table);
-		    	JPanel panelCenter = new JPanel(new GridLayout(2,1,5,5));
-	     		panelCenter.add(scrollPane);
+		 		JTable currentMailTable = folderSelectionListener.getCurrentTable();
+		    	JScrollPane scrollPane = new JScrollPane(currentMailTable);
+		 		this.replaceHorizontalSplitPaneComponents(scrollPane, new JPanel());
+		    	JPanel panelCenter = new JPanel(new GridLayout()); //(new GridLayout(2,1,5,5));
+	     		panelCenter.add(this.horizontalMailPane);
+	     		
 	     		
 	     		
 //			     Setze beim Splitpane den Divider auf die letzte Position, da durch den Tausch des Panels das Splitpane neu gepackt wird.
-		        final int pos = splitPane.getDividerLocation();
-	     		splitPane.setRightComponent(panelCenter);
-				splitPane.setDividerLocation(pos);
+		        this.replaceRightComponentWithNewPanel(panelCenter);
 				
-			    table.addMouseListener ( new MouseAdapter () {
+				currentMailTable.addMouseListener ( new MouseAdapter () {
 			         public void mouseClicked ( MouseEvent e ) {
 			        	 setButtonLoeschenAntWeiterOn();
-			             if  (e.getClickCount () == 1) {
-			            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,table,containingMails);			            	
+			        	 List<Mail> containingMails = folderSelectionListener.getCurrentContainingMails();
+		            	 if  (e.getClickCount () == 1) {
+			            	 clickRefresh(scrollPane,panelCenter,splitPane,true,e,currentMailTable,containingMails);
 			             }else if(e.getClickCount () == 2) {
-			            	 clickRefresh(scrollPane,panelCenter,splitPane,false,e,table,containingMails);
-			             }
+			            	 clickRefresh(scrollPane,panelCenter,splitPane,false,e,currentMailTable,containingMails);
+			             }			            
 			         }
 			       });
 
-	     	}        
+	     	       
 	 }
+
 	 /**
 	  * buildTree wird verwendet um links in der Gui den Mailkontobaum anzuzeigen
 	  */
@@ -319,40 +293,42 @@ public final class MainView extends JFrame{
 	        	final String kontoName= currentKonto.getName();
 	     		System.out.println("Füge Konto "+ kontoName  + " hinzu.");
 	        	  DefaultMutableTreeNode konto = new DefaultMutableTreeNode(kontoName);  	
-            //Folders werden an Konto hinzugefügt  
-  
-	        	  Set<String> keyParent = mailControlContainer.get(currentKonto.getName()).
-	        			  getParentContainer().keySet(); 
-	        	  System.out.println(keyParent.size());
-	        	for(String folderFullPath : keyParent ){
-	            	
-	        		DefaultMutableTreeNode folder = new DefaultMutableTreeNode(folderFullPath);
-	        	    ArrayList<String> str =	mailControlContainer.get(currentKonto.getName()).
-	        	    		getParentContainer().get(folderFullPath);
-	                for(String folder1 : str) {
-	                	DefaultMutableTreeNode folder2 = new DefaultMutableTreeNode(folder1);
-	                	folder.add(folder2);
-	                }
-	               konto.add(folder);
-	        	}   
-	               for(String str2 : mailControlContainer.get(currentKonto.getName()).getFolderWithoutParent()) {
-	            	   if(!str2.equals(null)){
-		            	   DefaultMutableTreeNode folder3 = new DefaultMutableTreeNode(str2);
-		            	   konto.add(folder3);
-	            	   }
-	               }
-	        	
-	            this.rootNode.add(konto); 
+	        	  //Folders werden an Konto hinzugefügt  
+	        	  MailControl currentMC = mailControlContainer.get(currentKonto.getName());
+	        	  	//Falls der MailControlContainer schon geladen wurde
+	        	  if(currentMC != null){
+		        	  Set<String> keyParent = currentMC.getParentContainer().keySet(); 
+		        	  System.out.println(keyParent.size());
+		        	for(String folderFullPath : keyParent ){
+		            	
+		        		DefaultMutableTreeNode folder = new DefaultMutableTreeNode(folderFullPath);
+		        	    ArrayList<String> str =	mailControlContainer.get(currentKonto.getName()).
+		        	    		getParentContainer().get(folderFullPath);
+		                for(String folder1 : str) {
+		                	DefaultMutableTreeNode folder2 = new DefaultMutableTreeNode(folder1);
+		                	folder.add(folder2);
+		                }
+		               konto.add(folder);
+		        	}   
+		               for(String str2 : mailControlContainer.get(currentKonto.getName()).getFolderWithoutParent()) {
+		            	   if(!str2.equals(null)){
+			            	   DefaultMutableTreeNode folder3 = new DefaultMutableTreeNode(str2);
+			            	   konto.add(folder3);
+		            	   }
+		               }
+		        	
+		            this.rootNode.add(konto); 
+		         }
 	         }
-	         //Falls es nun mindestens ein Konto hat, den OrdnerSynchro Button aktivieren
-	         this.checkOrdnerSynchro();
 	    }
 	    this.mailTreeModel.reload(this.rootNode);
 	  }
-//	  public void synchronizeFolders(){
+
+
+	//	  public void synchronizeFolders(){
 //		  
 //	  }
-	  private void checkOrdnerSynchro(){
+	  public void checkOrdnerSynchro(){
 		  if(this.kontoControl.getKontos().size()>0){
 			  this.ordnerSynchro.setEnabled(true);
 		  }else{
@@ -374,9 +350,11 @@ public final class MainView extends JFrame{
   		  mailControlContainer = new HashMap<String,MailControl>();
   		  //**********Laden der Konti
   		  kontoControl = new EmailKontoControl();
-  		  kontoControl.loadKonten("kontos.xml");
+  		  kontoControl.loadKonten(this.getXmlPath());
   		  this.startFolderSynchronization();
-  		  
+         //Falls es nun mindestens ein Konto hat, den OrdnerSynchro Button aktivieren
+         this.checkOrdnerSynchro();
+         
 		  this.setVisible(true);		  
 	  }
   /**
@@ -396,10 +374,14 @@ public final class MainView extends JFrame{
  			  treeModel.removeNodeFromParent((MutableTreeNode) treeModel.getChild(root, i));
  		  }
  	  } 
- 	  //also kontoControl aktualisieren
- 	 kontoControl.loadKonten("kontos.xml");
+
    }
-  
+	/**
+	 * @return the xmlPath
+	 */
+	public String getXmlPath() {
+		return xmlPath;
+	}
    /**
     * Launch the application.
     * @throws UnsupportedLookAndFeelException 
