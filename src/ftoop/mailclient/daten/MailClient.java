@@ -1,26 +1,18 @@
 package ftoop.mailclient.daten;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
 
-import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import ftoop.mailclient.gui.MainView;
 
 public class MailClient {
 	
 	
-
+	/**
+	 * Diese Klasse wird lediglich zum testen einzelner Businesslogik Klassen verwendet
+	 * @param args
+	 */
 	public static void main(String[] args) {	
 		//**********Programm Initialisierung
 		//**********Laden der Konti

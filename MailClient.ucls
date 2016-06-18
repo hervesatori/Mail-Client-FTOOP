@@ -1,92 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.1.9" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="ftoop.mailclient.daten.MailControl" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/MailControl.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="790" width="352" x="211" y="37"/>    
+  <package id="1" language="java" name="ftoop.mailclient.gui" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="808" y="163"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <class id="2" language="java" name="ftoop.mailclient.gui.ConfigurationFieldsPanel" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/ConfigurationFieldsPanel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1036" y="1329"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="ftoop.mailclient.daten.EmailKonto" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/EmailKonto.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="974" y="713"/>    
+  <class id="3" language="java" name="ftoop.mailclient.gui.MailButtonListenerTool" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MailButtonListenerTool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="99" y="536"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="ftoop.mailclient.daten.MailContainer" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/MailContainer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="33" y="335"/>    
+  <class id="4" language="java" name="ftoop.mailclient.gui.MailTableModel" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MailTableModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="254" y="2089"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="ftoop.mailclient.daten.Mail" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/Mail.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="-50" y="826"/>    
+  <class id="5" language="java" name="ftoop.mailclient.gui.DeleteMailWorker" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/DeleteMailWorker.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="760" y="419"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="ftoop.mailclient.daten.EmailKontoControl" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/EmailKontoControl.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="214" width="547" x="603" y="37"/>    
+  <class id="6" language="java" name="ftoop.mailclient.gui.BoldRenderer" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/BoldRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1379" y="406"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="ftoop.mailclient.daten.MailClient" project="Mail Client" 
-    file="/Mail Client/src/ftoop/mailclient/daten/MailClient.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="106" width="130" x="41" y="37"/>    
+  <class id="7" language="java" name="ftoop.mailclient.gui.PopupMailFrame" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/PopupMailFrame.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="482" y="1082"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="7">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="8" name="Kontos"/>      
-      <multiplicity id="9" minimum="0" maximum="2147483647"/>    
+  <class id="8" language="java" name="ftoop.mailclient.gui.ConfigurationPanel" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/ConfigurationPanel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2044" y="588"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="9" language="java" name="ftoop.mailclient.gui.MailPane.MailWindowType" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MailPane.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-249" y="2301"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </enumeration>  
+  <class id="10" language="java" name="ftoop.mailclient.gui.MailWorker" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MailWorker.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1640" y="2232"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="ftoop.mailclient.gui.FolderSelectionListener" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/FolderSelectionListener.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="876" y="2069"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="ftoop.mailclient.gui.MailPane" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MailPane.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-180" y="1775"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="ftoop.mailclient.gui.MainView" project="Mail Client" 
+    file="/Mail Client/src/ftoop/mailclient/gui/MainView.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1722" y="1459"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="14">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="15" name="mailWindow"/>      
+      <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="17">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="18" name="configFieldPanel"/>      
+      <multiplicity id="19" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="10">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="11" name="containingMails"/>      
-      <multiplicity id="12" minimum="0" maximum="2147483647"/>    
+  <association id="20">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="21" name="mailWorker"/>      
+      <multiplicity id="22" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="23">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="24" name="folderSelectionListener"/>      
+      <multiplicity id="25" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="26">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="27" name="mailClient"/>      
+      <multiplicity id="28" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="29">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="30" name="mailClient"/>      
+      <multiplicity id="31" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="32">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="33" name="folderSelectionListener"/>      
+      <multiplicity id="34" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="35">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="36" name="currentMailsInTable"/>      
+      <multiplicity id="37" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="13">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="14" name="mailContainers"/>      
-      <multiplicity id="15" minimum="0" maximum="2147483647"/>    
+  <association id="38">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="39" name="mailClient"/>      
+      <multiplicity id="40" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
+    <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="16">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="17" name="currentKonto"/>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
+  <nesting id="41">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="9"/>  
+  </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    

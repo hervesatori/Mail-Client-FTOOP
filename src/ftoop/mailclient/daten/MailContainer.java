@@ -1,12 +1,6 @@
 package ftoop.mailclient.daten;
 
 import java.util.ArrayList;
-
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Store;
 /**
  * 
  * @author Herve Satori & Dominique Borer

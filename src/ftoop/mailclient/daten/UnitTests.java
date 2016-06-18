@@ -1,13 +1,7 @@
 package ftoop.mailclient.daten;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
 
 import javax.mail.NoSuchProviderException;
 

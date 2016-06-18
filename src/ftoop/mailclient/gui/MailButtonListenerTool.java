@@ -1,26 +1,13 @@
-package ftoop.mailclient.daten;
+package ftoop.mailclient.gui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.NoSuchElementException;
 
-import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
 
-import ftoop.mailclient.gui.DeleteMailWorker;
-import ftoop.mailclient.gui.FolderSelectionListener;
-import ftoop.mailclient.gui.MailPane;
-import ftoop.mailclient.gui.MailTableModel;
-import ftoop.mailclient.gui.PopupMailFrame;
+import ftoop.mailclient.daten.Mail;
+import ftoop.mailclient.daten.MailControl;
 
 public class MailButtonListenerTool {
 	
@@ -108,6 +95,7 @@ public class MailButtonListenerTool {
 				MailControl currentMailControl = folderSelectionListener.getSelectedMailControl();
 				MailPane mailWindows = new MailPane(null,MailPane.MailWindowType.NEW,currentMailControl);
 				PopupMailFrame newMailFrame = new PopupMailFrame("Neue E-Mail senden",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
+				newMailFrame.setVisible(true);
 			}
 			
 		};
@@ -122,7 +110,22 @@ public class MailButtonListenerTool {
 				Mail mail = folderSelectionListener.getSelectedMail();
 				MailPane mailWindows = new MailPane(mail,MailPane.MailWindowType.RESPOND,currentMailControl);
 				PopupMailFrame newMailFrame = new PopupMailFrame("Auf E-Mail antworten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
-				
+				newMailFrame.setVisible(true);
+
+			}
+			
+		};
+		return respondMailAL;
+	}
+	public static ActionListener getRespondToMailActionListener(Mail toBeResponded,  MailControl currentMc,FolderSelectionListener folderSelectionListener){
+		final ActionListener respondMailAL = new ActionListener(){
+			private final Mail tBR = toBeResponded;
+			private final MailControl cMC = currentMc;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				MailPane mailWindows = new MailPane(tBR,MailPane.MailWindowType.RESPOND,cMC);
+				PopupMailFrame newMailFrame = new PopupMailFrame("Auf E-Mail antworten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
+				newMailFrame.setVisible(true);
 
 			}
 			
@@ -138,7 +141,24 @@ public class MailButtonListenerTool {
 				Mail mail = folderSelectionListener.getSelectedMail();
 				MailPane mailWindows = new MailPane(mail,MailPane.MailWindowType.FORWARD,currentMailControl);
 				PopupMailFrame newMailFrame = new PopupMailFrame("E-Mail weiterleiten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
+				newMailFrame.setVisible(true);
 				
+
+			}
+			
+		};
+		return forwardMailAL;
+	}	
+	public static ActionListener getForwardToMailActionListener(Mail toBeForwarded,  MailControl currentMc,FolderSelectionListener folderSelectionListener){
+		final ActionListener forwardMailAL = new ActionListener(){
+			private final Mail tBF = toBeForwarded;
+			private final MailControl cMC = currentMc;
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				MailPane mailWindows = new MailPane(tBF,MailPane.MailWindowType.FORWARD,cMC);
+				PopupMailFrame newMailFrame = new PopupMailFrame("E-Mail weiterleiten",mailWindows,PopupMailFrame.NEW_MAIL_FRAME, folderSelectionListener);
+				newMailFrame.setVisible(true);
 				
 
 			}

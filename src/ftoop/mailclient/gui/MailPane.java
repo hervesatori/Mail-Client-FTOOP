@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.jsoup.Jsoup;
@@ -75,7 +76,9 @@ public class MailPane extends JPanel {
 		  headerPane.setBackground(new Color(255,255,204));
 		  msgPane= new JEditorPane();
 		  msgPane.setContentType("text/html");
+		  msgPane.getDocument().putProperty("IgnoreCharsetDirective", Boolean.TRUE);
 		  msgPane.setEditable(true);
+		  JScrollPane scrollPane = new JScrollPane(msgPane);
 		  
 		  headerPane.setLayout(new GridLayout(4,2,7,7));
 		  
@@ -93,7 +96,7 @@ public class MailPane extends JPanel {
 		  this.headerPane.add(txtBetreff);
 		  
 		  this.add(headerPane,BorderLayout.NORTH);
-		  this.add(msgPane,BorderLayout.CENTER);
+		  this.add(scrollPane,BorderLayout.CENTER);
 	}
 	private void addDateToPanel(){
 		if(mail != null){
@@ -137,6 +140,8 @@ public class MailPane extends JPanel {
 		  this.txtVon.setText(currentMC.getCurrentKonto().getEmail());
 		  this.txtVon.setEnabled(false);
 		  break;
+	  default:
+			  break;
 	}
 		
 }
@@ -149,12 +154,14 @@ public class MailPane extends JPanel {
 		  if(this.msgPane.getContentType().equals("text/html") && isHTML){
 			  //Einfügen einer neuen Mailsektion 
 			  Document doc = Jsoup.parse(prevMailText);
-			  String bodyElements = doc.body().getAllElements().toString();
+
+			  String bodyElements = doc.body().children().toString();
 			  doc.body().children().remove();
 			  doc.body().append("<div><p><br/><br/><br/><br/></p></div><hr/>");
 			  doc.body().append("<div>"+bodyElements+"</div>");
-			  
 			  this.msgPane.setText(doc.toString());
+
+			  System.out.println(this.msgPane.getText());
 		  }else{
 			  //Ist kein HTML
 			  this.msgPane.setText("\n\n\n\n"+prevMailText);

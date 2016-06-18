@@ -37,7 +37,6 @@ import javax.swing.tree.MutableTreeNode;
 import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
 import ftoop.mailclient.daten.Mail;
-import ftoop.mailclient.daten.MailButtonListenerTool;
 import ftoop.mailclient.daten.MailControl;
 
 
@@ -232,7 +231,7 @@ public final class MainView extends JFrame{
 	        	//Doppelklick, somit öffne die Mail in einem separaten Fenster
 	        	final MailPane mw = new MailPane(mailLocal,MailPane.MailWindowType.READ, this.folderSelectionListener.getSelectedMailControl());
 				final PopupMailFrame readingFrame = new PopupMailFrame(mailLocal.getFrom(), mw,PopupMailFrame.READING_MAIL_FRAME,folderSelectionListener );
-	        	
+				readingFrame.setVisible(true);
 	        }
     }  
     private void replaceRightComponentWithNewPanel(JPanel newPanel){

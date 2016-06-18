@@ -1,12 +1,10 @@
 package ftoop.mailclient.daten;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -70,7 +67,6 @@ public class MailControl {
 	private  final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	private String mailboxName; 
 	private String attachmentPath;
-	private HashSet<String> folderFullNames;
 	private ArrayList<String> folderContainer;
 	private HashMap<String, ArrayList<String>> parentContainer;
 	private Set<String> folderWithoutParent;
@@ -87,7 +83,6 @@ public class MailControl {
 	  this.folderWithoutParent = new TreeSet<String>();
 	  //Setzen des Mailboxnamens
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
-	  this.folderFullNames = new HashSet<String>();
   }
   
 public void mailReceive(){
@@ -227,39 +222,6 @@ public boolean existsMailboxXML(){
 		this.mailContainers = mailContainers;
 	}
 
-  private void printMessages(Message[] msg) {
-    try {
-	  System.out.println(msg.length+" Mails");
-	  for (int i = 0, n = msg.length; i < n; i++) {
-		  Message message = msg[i];
-		  System.out.println("---------------------------------");
-		  System.out.println("Email-Nr. " + (i + 1));
-		  System.out.println("gesendet am: " + message.getSentDate());
-		  System.out.println("Subject: " + message.getSubject());
-		  System.out.println("From: " + message.getFrom()[0]);
-		  System.out.println("Text: " );
-          for (String line : inputStreamToStrings(message.getInputStream())) { 
-              System.out.println(line); 
-          } 
-	  }
-    }catch (Exception e) { 
-        e.printStackTrace(); 
-    } 
-  } 
-  private static List<String> inputStreamToStrings(InputStream is) {
-      InputStreamReader isr = new InputStreamReader(is);
-      List<String> strings = new LinkedList<>();
-      try (BufferedReader reader = new BufferedReader(isr)) {
-          String line = reader.readLine();
-          while (line != null) {
-              strings.add(line);
-              line = reader.readLine();
-          }
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      return strings;
-  }
   public void loadMailFolders(String pathToXML){
 	  System.out.println("Laden des XML "+ this.getMailboxName());
 	  SAXBuilder builder = new SAXBuilder();

@@ -1,17 +1,10 @@
 package ftoop.mailclient.gui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.NoSuchElementException;
 
 import javax.mail.MessagingException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
 
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;

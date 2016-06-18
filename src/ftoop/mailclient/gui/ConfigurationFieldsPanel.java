@@ -62,7 +62,12 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         JPanel fieldsPane = new JPanel(){
-            //Don't allow us to stretch vertically.
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 4136858239904998320L;
+
+			//Don't allow us to stretch vertically.
         	@Override
             public Dimension getMaximumSize() {
                 Dimension pref = getPreferredSize();

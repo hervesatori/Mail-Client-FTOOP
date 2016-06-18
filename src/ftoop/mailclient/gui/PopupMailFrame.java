@@ -13,14 +13,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JTable;
 
 import ftoop.mailclient.daten.Mail;
-import ftoop.mailclient.daten.MailButtonListenerTool;
 import ftoop.mailclient.daten.MailControl;
 
 public class PopupMailFrame extends JFrame {
 	public static final int NEW_MAIL_FRAME = 1;
-	public static final int READING_MAIL_FRAME = 2;
+	public static final int READING_MAIL_FRAME = 2;	
 	private MailPane mailWindow;
 	private FolderSelectionListener folderSelectionListener;
+	private final Mail currentMail;
+	private final JTable mailTable;
+	private final MailControl currentMc;
 	/**
 	 *   Popup Fenster für neue, antworten und weiterleiten von Mails, ebenso als lese Mailframe
 	 */
@@ -30,7 +32,10 @@ public class PopupMailFrame extends JFrame {
 	public PopupMailFrame(String titel, MailPane mailWindow, int popupMailFrameType, FolderSelectionListener folderSelectionListener) {
 		this.titel = titel;
 		this.mailWindow = mailWindow;
-		this.folderSelectionListener = folderSelectionListener;
+		this.folderSelectionListener = folderSelectionListener;		
+		currentMail = this.folderSelectionListener.getSelectedMail();
+		mailTable = this.folderSelectionListener.getCurrentTable();
+		currentMc = folderSelectionListener.getSelectedMailControl();
         this.initFrame(popupMailFrameType, mailWindow);
 	}
 	private void initFrame(int popupMailFrameType, MailPane mailWindow){
@@ -71,12 +76,27 @@ public class PopupMailFrame extends JFrame {
 		weiterLeiten.setEnabled(true);
 		loeschen.setEnabled(true);
 		
-		senden.addActionListener(MailButtonListenerTool.getSendenActionListener(this,mailWindow));		
-		final Mail toBeDeleted = folderSelectionListener.getSelectedMail();
-		final JTable mailTable = folderSelectionListener.getCurrentTable();
-		final MailControl currentMc = folderSelectionListener.getSelectedMailControl();
-		loeschen.addActionListener(MailButtonListenerTool.getDeleteMailActionListener(toBeDeleted, mailTable, currentMc, folderSelectionListener));
+		senden.addActionListener(MailButtonListenerTool.getSendenActionListener(this,mailWindow));
+		loeschen.addActionListener(MailButtonListenerTool.getDeleteMailActionListener(currentMail, mailTable, currentMc, folderSelectionListener));
 		loeschen.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				PopupMailFrame.this.dispose();				
+			}
+			
+		});
+		antworten.addActionListener(MailButtonListenerTool.getRespondToMailActionListener(currentMail, currentMc,folderSelectionListener));
+		antworten.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				PopupMailFrame.this.dispose();				
+			}
+			
+		});
+		weiterLeiten.addActionListener(MailButtonListenerTool.getForwardToMailActionListener(currentMail, currentMc,folderSelectionListener));
+		weiterLeiten.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
