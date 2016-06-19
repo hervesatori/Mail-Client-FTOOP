@@ -17,7 +17,7 @@ import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 /**
  * Die abstrakte Klasse SwingWorker  wird implementiert
- * Mailtree wird hier aktualisiert
+ * Alle Mails der Konten werden durch den Worker synchronisiert.
  * 
  * @author Dominique Borer & Herve Satori
  *
@@ -89,6 +89,10 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
       
 		return null;
 	}
+	/**
+	 * 
+	 * @param mailControl
+	 */
 	private void closeFolderConnections(MailControl mailControl){
         //********** Schliessen aller offenen Verbindungen
         try {
@@ -98,7 +102,9 @@ public final class MailWorker extends SwingWorker<Integer, Mail> {
      	   e.printStackTrace();
         }
 	}
-	
+	/**
+	 * 
+	 */
 	@Override
 	protected void done(){
 		System.out.println("SwingWorker ist fertig, aktualisiere MailTree");

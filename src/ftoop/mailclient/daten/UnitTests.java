@@ -34,7 +34,7 @@ public class UnitTests extends TestCase{
 				   passwortSmtp,imapServer,
 					  imapPort);
 	
-		String fileName = "kontos_test.xml";
+		String fileName = "kontos.xml";
 
 		testControl.saveKonten(fileName);
 		File currentDirectory = new File(new File(".").getAbsolutePath());
@@ -61,6 +61,9 @@ public class UnitTests extends TestCase{
 		TestCase.assertEquals(1234, konto.getImapPort());
 		TestCase.assertEquals("imap.not.exist", konto.getImapServer());
 	}
+	/**
+	 * Testfunktion funktioniert nur, wenn aus dem Array(1) ein gültiges Konto geladen wird
+	 */
 	public void testSendMail(){
 		EmailKontoControl testControl = new EmailKontoControl();		
 		
@@ -72,22 +75,10 @@ public class UnitTests extends TestCase{
 		try {
 			mailControl.sendMsg(testMail);
 		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			TestCase.fail();
 		}
 		
 	}
-//	public void testLoadXML(){
-//		//**********Programm Initialisierung
-//		//**********Laden der Konti
-//		EmailKontoControl kontoControl = new EmailKontoControl();
-//		
-//		kontoControl.loadKonten("kontos.xml");
-//		
-//		
-//		//********** Verwenden eines Kontos mit MailControl
-//		MailControl mailControl = new MailControl(kontoControl.getKontos().get(1));
-//	}
 
 }

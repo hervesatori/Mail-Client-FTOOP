@@ -31,18 +31,35 @@
 
 package ftoop.mailclient.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 
 import ftoop.mailclient.daten.EmailKonto;
 
 /**
- * TextInputDemo.java uses these additional files:
- *   SpringUtilities.java
- *   ...
+ * Stellt die benötigten EmailKonto Felder zu Verfügung  
+ *  
  */
 public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
                                                      FocusListener {
@@ -51,13 +68,14 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
 	 */
 	private static final long serialVersionUID = -8432912549117328877L;
 	JTextField  kontoName, email, userName,
-    password, popServer,smtpServer,imapServer,popPort;
-    JFormattedTextField  smtpPort, imapPort;
+    password, popServer,smtpServer,imapServer,popPort,smtpPort, imapPort;
     JSpinner stateSpinner;
     Font regularFont, italicFont;
     JLabel configDisplay;
     final static int GAP = 10;
-
+/**
+ * 
+ */
     public ConfigurationFieldsPanel() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
@@ -83,10 +101,12 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         add(fieldsPane);
         this.setFieldsEnabled(false);
     }
-
+    /**
+     * 
+     * @return
+     */
     protected JComponent createButtons() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-
  
         //Match the SpringLayout's gap, subtracting 5 to make
         //up for the default gap FlowLayout provides.
@@ -102,11 +122,16 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
     public void actionPerformed(ActionEvent e) {
           updateDisplays();
     }
-
+    /**
+     * 
+     */
     protected void updateDisplays() {
             configDisplay.setFont(regularFont);
     }
-
+    /**
+     * 
+     * @return
+     */
     protected JComponent createAddressDisplay() {
         JPanel panel = new JPanel(new BorderLayout());
         configDisplay = new JLabel();
@@ -144,7 +169,10 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
             ((JTextField)c).selectAll();
         }
     }
-
+    /**
+     * 
+     * @param c
+     */
     //Workaround for formatted text field focus side effects.
     protected void selectItLater(Component c) {
         if (c instanceof JFormattedTextField) {
@@ -159,6 +187,10 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
 
     //Needed for FocusListener interface.
     public void focusLost(FocusEvent e) { } //ignore
+    /**
+     * Setzen aller Felder durch das EmailKonto
+     * @param konto
+     */
     public void setFieldTexts(EmailKonto konto){
     	this.kontoName.setText(konto.getKonto());
     	this.email.setText(konto.getEmail());
@@ -172,10 +204,55 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
     	this.smtpPort.setText(String.valueOf(konto.getSmtpPort()));
     	this.imapPort.setText(String.valueOf(konto.getImapPort()));
     }
+    /**
+     * 
+     * @return
+     */
     public EmailKonto getFieldTexts() {
     	
     	return new EmailKonto(this.kontoName.getText(),this.userName.getText(),this.email.getText(),this.popServer.getText(),Integer.parseInt(this.popPort.getText()),this.userName.getText(),this.password.getText(),this.smtpServer.getText(),Integer.parseInt(this.smtpPort.getText()),this.userName.getText(),this.password.getText(),this.imapServer.getText(),Integer.parseInt(this.imapPort.getText()));
     }
+    /**
+     * Erlaubt nur Zahlen fürs Textfield
+     * @author Dominique Borer & Herve Satori
+     *
+     */
+    private class PortKeyListener implements KeyListener{
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+			char c = e.getKeyChar();
+			if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+
+				e.consume();
+			}
+			//Falls bereits schon mehr als 5 Zeichen enthalten sind (Port Range 
+			if(e.getSource() instanceof JTextField){
+				if(((JTextField) e.getSource()).getText().length()>=5){
+					e.consume();
+				}
+    		}
+		}
+    	
+    }
+    /**
+     * 
+     * @return
+     */
     protected JComponent createEntryFields() {
         JPanel panel = new JPanel(new SpringLayout());
 
@@ -213,24 +290,24 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
         this.password.setColumns(20);
         fields[fieldNum++] = this.password;
 
-        NumberFormatter nf = new NumberFormatter();
-        nf.setMinimum(new Integer(1));
-        nf.setMaximum(new Integer(50000));
-        this.popPort = new JFormattedTextField(nf);
+        this.popPort = new JTextField();
+        this.popPort.addKeyListener(new PortKeyListener());
         fields[fieldNum++] = this.popPort;
 
         this.popServer  = new JTextField();
         this.popServer.setColumns(20);
         fields[fieldNum++] = this.popServer;
 
-        this.smtpPort = new JFormattedTextField(nf);
+        this.smtpPort = new JTextField();
+        this.smtpPort.addKeyListener(new PortKeyListener());
         fields[fieldNum++] = this.smtpPort;
 
         this.smtpServer  = new JTextField();
         this.smtpServer.setColumns(20);
         fields[fieldNum++] = this.smtpServer;
 
-        this.imapPort = new JFormattedTextField(nf);
+        this.imapPort = new JTextField();
+        this.imapPort.addKeyListener(new PortKeyListener());
         fields[fieldNum++] = this.imapPort;
 
         this.imapServer  = new JTextField();
@@ -274,7 +351,10 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
             return null;
         }
     }
-
+        /**
+         * De- /Aktivieren aller Felder
+         * @param enabled
+         */
 		public void setFieldsEnabled(boolean enabled) {
 	    	this.kontoName.setEnabled(enabled);
 	    	this.email.setEnabled(enabled);
@@ -289,7 +369,9 @@ public class ConfigurationFieldsPanel extends JPanel implements ActionListener,
 	    	this.imapPort.setEnabled(enabled);
 			
 		}
-
+		/**
+		 * Entfernt den Text aus allen Feldern.
+		 */
 		public void clearFields() {
 	    	this.kontoName.setText("");
 	    	this.email.setText("");

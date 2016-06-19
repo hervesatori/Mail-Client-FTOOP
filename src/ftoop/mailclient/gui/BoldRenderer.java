@@ -14,7 +14,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class BoldRenderer extends DefaultTableCellRenderer {
 
     private static final long serialVersionUID = 1L;
-    
+    /**
+     * Falls Mail ungelesen ist -> Mail.isRead == false und wird somit fett dargestellt
+     */
     public Component getTableCellRendererComponent(JTable tblData,
             Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {

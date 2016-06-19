@@ -20,7 +20,7 @@ import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 /**
  * JPanel für E-Mail Header und Message wird definiert
- * 
+ * MailPane ist die Klasse, welche die effektive Mail darstellt und vorzugsweise in einem PopupFrame oder in der Mainview zum CenterPanel hinzugefügt wird.
  * @author Dominique Borer & Herve Satori
  *
  */
@@ -56,7 +56,12 @@ public class MailPane extends JPanel {
 	private JTextField txtBetreff;
 	
 	
-	
+	/**
+	 * 
+	 * @param mail
+	 * @param type
+	 * @param currentMC
+	 */
 	public MailPane(Mail mail,MailWindowType type, MailControl currentMC) {
 		  super(new BorderLayout(5,5));
 		  this.mail = mail;
@@ -68,6 +73,9 @@ public class MailPane extends JPanel {
 		  
 		  this.createEditorLabel(type);
 	}
+	/**
+	 * 
+	 */
 	private void initPanelGUI(){
 		this.txtBetreff = new JTextField();	
 		this.txtAn = new JTextField();
@@ -103,6 +111,9 @@ public class MailPane extends JPanel {
 		  this.add(headerPane,BorderLayout.NORTH);
 		  this.add(scrollPane,BorderLayout.CENTER);
 	}
+	/**
+	 * 
+	 */
 	private void addDateToPanel(){
 		if(mail != null){
 		  labelDate = new JLabel(datum+" "+mail.getReceived());
@@ -110,6 +121,10 @@ public class MailPane extends JPanel {
 		  headerPane.add(labelDate);
 		}
 	}
+	/**
+	 * 
+	 * @param type
+	 */
 	private void createEditorLabel(MailWindowType type) {
 	  switch (type) {
 	   case READ:
@@ -148,7 +163,9 @@ public class MailPane extends JPanel {
 	}
 		
 }
-	
+	/**
+	 * 
+	 */
 	private void loadMsgContentToRespond(){
 		  String prevMailText = mail.getMessage();
 		  
@@ -170,12 +187,24 @@ public class MailPane extends JPanel {
 			  this.msgPane.setText("\n\n\n\n"+prevMailText);
 		  }
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getMessageText(){
 		return this.msgPane.getText();		
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getBetreff(){
 		return this.txtBetreff.getText();
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getAn(){
 		return this.txtAn.getText();
 	}

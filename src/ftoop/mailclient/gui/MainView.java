@@ -82,10 +82,13 @@ public final class MainView extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.initGUI(name);
 		
-		this.init(true);
+		this.init();
 	   
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	private JMenuBar createMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
 	    neueMail = new JButton("Neue E-Mail");
@@ -116,7 +119,6 @@ public final class MainView extends JFrame{
 			}
 			
 		});
-//		senden.addActionListener(this.buttonListener);
 		konfiguration.addActionListener(new ActionListener(){
 
 			@Override
@@ -168,7 +170,11 @@ public final class MainView extends JFrame{
 		}
 		
 	}
-	 private JComponent createCenterPanel() {
+	/**
+	 * CenterPanel, welches MaiAnsicht darstellt.
+	 * @return
+	 */
+	 private JSplitPane createCenterMailPanel() {
 
 	    	int width = Toolkit.getDefaultToolkit().getScreenSize().width;
 	    	int height = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -196,6 +202,9 @@ public final class MainView extends JFrame{
 	        splitPane.setRightComponent(panelCenter);
 	        return splitPane;
 	  }
+	 /**
+	  * 
+	  */
 	 public void buttonDisable() {
 		    neueMail.setEnabled(false);
 			loeschen.setEnabled(false);
@@ -203,15 +212,31 @@ public final class MainView extends JFrame{
 			weiterLeiten.setEnabled(false);
 			ordnerSynchro.setEnabled(false);
 	 }
+	 /**
+	  * 
+	  */
 	 public void setButtonNeueOn() {
 		   neueMail.setEnabled(true);
 		
 	 }
+	 /**
+	  * 
+	  */
 	 public void setButtonLoeschenAntWeiterOn() {
 		    antworten.setEnabled(true);
 			weiterLeiten.setEnabled(true);
 			loeschen.setEnabled(true);
 	 }
+	 /**
+	  * 
+	  * @param scrollPane
+	  * @param panelCenter
+	  * @param splitPane
+	  * @param oneClick
+	  * @param e
+	  * @param table
+	  * @param containingMails
+	  */
     private void clickRefresh(JScrollPane scrollPane,JPanel panelCenter,
 	    		JSplitPane splitPane,Boolean oneClick,MouseEvent e,JTable table,List<Mail> containingMails) {
     	
@@ -234,12 +259,21 @@ public final class MainView extends JFrame{
 				readingFrame.setVisible(true);
 	        }
     }  
+    /**
+     * 
+     * @param newPanel
+     */
     private void replaceRightComponentWithNewPanel(JPanel newPanel){
         // sog. Resizing mit splitpane und Divider
         int pos = splitPane.getDividerLocation();
         splitPane.setRightComponent(newPanel);
 		splitPane.setDividerLocation(pos);
     }
+    /**
+     * 
+     * @param top
+     * @param bottom
+     */
     private void replaceHorizontalSplitPaneComponents(JComponent top, JComponent bottom){
         // sog. Resizing mit splitpane und Divider
         int pos = this.horizontalMailPane.getDividerLocation();
@@ -248,6 +282,9 @@ public final class MainView extends JFrame{
         this.horizontalMailPane.setBottomComponent(bottom);
         horizontalMailPane.setDividerLocation(pos);
     }
+    /**
+     * Baut das PancelCenter auf mit der jetzigen Mailansicht
+     */
 	 public void setMailSelection(){
 		        //JTABLE wird via ein jScrollPane abgebildet
 		        // ***********************************************
@@ -323,6 +360,9 @@ public final class MainView extends JFrame{
 	    this.mailTreeModel.reload(this.rootNode);
 	  }
 
+	  /**
+	   * Die Buttons werden aktiviert, falls Konto Anzahl > 0, deaktiviert bei 0
+	   */
 	  public void checkOrdnerSynchro(){
 		  if(this.kontoControl.getKontos().size()>0){
 			  this.ordnerSynchro.setEnabled(true);
@@ -330,17 +370,23 @@ public final class MainView extends JFrame{
 			  this.ordnerSynchro.setEnabled(false);
 		  }
 	  }
+	  /**
+	   * 
+	   * @param name Title des GUI's
+	   */
 	  private void initGUI(String name){
 			this.setTitle(name);
 			this.setSize(1100,700);
 			this.setLocationRelativeTo(null);
 			this.setLayout(new BorderLayout(5,5));
-			this.getContentPane().add(createCenterPanel(),BorderLayout.CENTER);
+			this.getContentPane().add(createCenterMailPanel(),BorderLayout.CENTER);
 			this.getContentPane().add(createMenuBar(),BorderLayout.NORTH);
 			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	  }
-
-	  private void init(Boolean start){
+	  /**
+	   * 
+	   */
+	  private void init(){
       	  //**********erstellen der MailControlContainer
   		  mailControlContainer = new HashMap<String,MailControl>();
   		  //**********Laden der Konti
@@ -352,15 +398,23 @@ public final class MainView extends JFrame{
          
 		  this.setVisible(true);		  
 	  }
-  /**
+	 /**
 	 * @return the mailControlContainer
 	 */
 	protected HashMap<String, MailControl> getMailControlContainer() {
 		return mailControlContainer;
 	}
+	/**
+	 * 
+	 * @return
+	 */
    public EmailKontoControl getKontoControl() {	   
 	   return kontoControl;
    }
+   /**
+    * 
+    * @param kontoToRemove
+    */
    public void removeKontoFromMailTree(EmailKonto kontoToRemove){
 	   Object root = this.currentTree.getModel().getRoot();
  	  DefaultTreeModel treeModel = (DefaultTreeModel) this.currentTree.getModel();

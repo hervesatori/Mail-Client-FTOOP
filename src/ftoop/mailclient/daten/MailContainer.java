@@ -2,11 +2,10 @@ package ftoop.mailclient.daten;
 
 import java.util.ArrayList;
 /**
- * 
+ * MailContainer, speichert alle Mails eines Mail Ordners
  * @author Herve Satori & Dominique Borer
  *
  */
-
 public class MailContainer{
 	private String folderFullPath;
 	private ArrayList<Mail> containingMails;
@@ -31,15 +30,27 @@ public class MailContainer{
 	public void setFolderFullPath(String folderFullPath) {
 		this.folderFullPath = folderFullPath;
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<Mail> getContainingMails(){
 		
 		return this.containingMails;
 	}
+	/**
+	 * 
+	 * @param mail
+	 */
 	public void addMailToContainer(Mail mail){
 		this.getContainingMails().add(mail);
 		
 	}
+	/**
+	 * 
+	 * @param mID
+	 * @return
+	 */
 	public boolean existsMail(String mID){
 		boolean exists = false;
 		for(Mail mail:this.getContainingMails()){	
@@ -49,6 +60,10 @@ public class MailContainer{
 		}
 		return exists;
 	}
+	/**
+	 * 
+	 * @param mID
+	 */
 	public void deleteMailFromContainer(String mID){
 		 for(Mail mail:this.getContainingMails()){
 			  if(mail.getMessageID().equals(mID)){

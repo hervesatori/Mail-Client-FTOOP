@@ -144,7 +144,22 @@ public class EmailKontoControl {
   public void setKontos(ArrayList<EmailKonto> kontos) {
 	Kontos = kontos;
   }
-
+/**
+ * Fügt ein neues Konto zum Array hinzu
+ * @param konto
+ * @param name
+ * @param email
+ * @param pop3Server
+ * @param pop3Port
+ * @param benutzerNamePop
+ * @param passwortPop
+ * @param smtpServer
+ * @param smtpPort
+ * @param benutzerNameSmtp
+ * @param passwortSmtp
+ * @param imapServer
+ * @param imapPort
+ */
 	public void newKonto(String konto,String name,String email,String pop3Server,int pop3Port,
 			  String benutzerNamePop,String passwortPop,String smtpServer,int smtpPort,
 			  String benutzerNameSmtp,
@@ -157,7 +172,10 @@ public class EmailKontoControl {
 		
 		this.getKontos().add(newKonto);
 	}
-
+	/**
+	 * 
+	 * @param emailName
+	 */
 	public synchronized void removeKonto(String emailName){
 		Iterator<EmailKonto> it = this.getKontos().iterator();
 		while(it.hasNext()){
@@ -168,6 +186,9 @@ public class EmailKontoControl {
 			
 		}
 	}
+	/**
+	 * Gitb alle Kontos auf der Konsole aus
+	 */
   @Override
   public String toString(){
 	  String returnStr = "";

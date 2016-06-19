@@ -19,6 +19,11 @@ public class MailButtonListenerTool {
 	private MailButtonListenerTool(){
 		
 	}
+	/**
+	 * 
+	 * @param mW
+	 * @return
+	 */
 	public static ActionListener getSendenActionListener(MailPane mW){
 		final MailPane mailWindow = mW;
 		final ActionListener sendenAL = new ActionListener(){
@@ -42,6 +47,12 @@ public class MailButtonListenerTool {
 		};
 		return sendenAL;		
 	}
+	/**
+	 * 
+	 * @param pMF
+	 * @param mW
+	 * @return
+	 */
 	public static ActionListener getSendenActionListener(PopupMailFrame pMF,MailPane mW){
 		final ActionListener sendenAL = new ActionListener(){
 			
@@ -54,6 +65,11 @@ public class MailButtonListenerTool {
 		};
 		return sendenAL;		
 	}
+	/**
+	 * 
+	 * @param singleTo
+	 * @return
+	 */
 	private static String convertMailNamestoNormalMail(String singleTo){
 		   String tempTo ="";
 		   if(singleTo.contains("<") && singleTo.contains(">")){
@@ -65,6 +81,10 @@ public class MailButtonListenerTool {
 			  }
 		   return tempTo;
 	}
+	/**
+	 * 
+	 * @param mailWindow
+	 */
 	private static void sendNewMail(MailPane mailWindow){
  	   try {
 		   System.out.println("Versende nun Mail an: " + mailWindow.getAn() + "mit Inhalt: "+mailWindow.getMessageText());
@@ -91,6 +111,11 @@ public class MailButtonListenerTool {
 	 	   e1.printStackTrace();
 	     }
 	}
+	/**
+	 * 
+	 * @param fSL
+	 * @return
+	 */
 	public static ActionListener getNewMailActionListener(FolderSelectionListener fSL){
 		final FolderSelectionListener folderSelectionListener = fSL;
 		final ActionListener newMailAL = new ActionListener(){
@@ -106,6 +131,11 @@ public class MailButtonListenerTool {
 		};
 		return newMailAL;
 	}
+	/**
+	 * 
+	 * @param folderSelectionListener
+	 * @return
+	 */
 	public static ActionListener getRespondToMailActionListener(FolderSelectionListener folderSelectionListener){
 		final ActionListener respondMailAL = new ActionListener(){
 			
@@ -122,6 +152,13 @@ public class MailButtonListenerTool {
 		};
 		return respondMailAL;
 	}
+	/**
+	 * 
+	 * @param toBeResponded
+	 * @param currentMc
+	 * @param folderSelectionListener
+	 * @return
+	 */
 	public static ActionListener getRespondToMailActionListener(Mail toBeResponded,  MailControl currentMc,FolderSelectionListener folderSelectionListener){
 		final ActionListener respondMailAL = new ActionListener(){
 			private final Mail tBR = toBeResponded;
@@ -137,6 +174,11 @@ public class MailButtonListenerTool {
 		};
 		return respondMailAL;
 	}
+	/**
+	 * 
+	 * @param folderSelectionListener
+	 * @return
+	 */
 	public static ActionListener getForwardToMailActionListener(FolderSelectionListener folderSelectionListener){
 		final ActionListener forwardMailAL = new ActionListener(){
 			
@@ -154,6 +196,13 @@ public class MailButtonListenerTool {
 		};
 		return forwardMailAL;
 	}	
+	/**
+	 * 
+	 * @param toBeForwarded
+	 * @param currentMc
+	 * @param folderSelectionListener
+	 * @return
+	 */
 	public static ActionListener getForwardToMailActionListener(Mail toBeForwarded,  MailControl currentMc,FolderSelectionListener folderSelectionListener){
 		final ActionListener forwardMailAL = new ActionListener(){
 			private final Mail tBF = toBeForwarded;
@@ -171,6 +220,11 @@ public class MailButtonListenerTool {
 		};
 		return forwardMailAL;
 	}	
+	/**
+	 * 
+	 * @param folderSelectionListener
+	 * @return
+	 */
 	public static ActionListener getDeleteMailActionListener(FolderSelectionListener folderSelectionListener){
 		final ActionListener deleteMailAL = new ActionListener(){
 			
@@ -223,6 +277,11 @@ public class MailButtonListenerTool {
 		};
 		return deleteMailAL;
 	}
+	/**
+	 * 
+	 * @param mailToDelete
+	 * @param currentMc
+	 */
 	private static void deleteMailUsingWorker(Mail mailToDelete, MailControl currentMc){
 		DeleteMailWorker workerLoeschen = new DeleteMailWorker(mailToDelete, currentMc);
 	    workerLoeschen.execute();

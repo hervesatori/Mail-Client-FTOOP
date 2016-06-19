@@ -10,7 +10,7 @@ import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 /**
  * Versucht Mail vom Server zu löschen
- * Die abstrakte Klasse SwingWorker  wird implementiert
+ * Die abstrakte Klasse SwingWorker wird implementiert
  * 
  * @author Dominique Borer & Herve Satori
  *

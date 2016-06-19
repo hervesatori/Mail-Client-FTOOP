@@ -55,7 +55,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 /**
- * 
+ * Speichert alle MailContainers eines Kontos, holt Mails ab und speichert diese in den entsprechenden Ordnern
  * @author Herve Satori & Dominique Borer
  *
  */
@@ -87,7 +87,9 @@ public class MailControl {
 	  //Setzen des Mailboxnamens
 	  this.mailboxName = "Mailbox-"+this.getCurrentKonto().getKonto() +".xml";
   }
-  
+  /**
+   * 
+   */
 public void mailReceive(){
 	  
 	  //Initialisieren des Konto Stores für die Mailabfrage
@@ -142,6 +144,11 @@ public void mailReceive(){
 public String getMailboxName() {
 	return mailboxName;
 }
+/**
+ * 
+ * @param folderToCheck
+ * @return
+ */
 private boolean checkIfFolderExists(Folder folderToCheck){
 	for(Folder folder:this.getServerMailFolders()){
 		if(folder.getFullName().equals(folderToCheck.getFullName())){
@@ -190,10 +197,17 @@ private boolean checkIfFolderExists(Folder folderToCheck){
         System.out.println(folderFullPath+"      **********");     
 	 }
   }
+  /**
+   * 
+   * @return
+   */
   public HashMap<String, ArrayList<String>> getParentContainer() {
 	  return parentContainer;
   }
-
+  /**
+   * 
+   * @return
+   */
   public Set<String> getFolderWithoutParent() {
 	  return folderWithoutParent;
   }
@@ -204,6 +218,10 @@ private boolean checkIfFolderExists(Folder folderToCheck){
 public ArrayList<Folder> getServerMailFolders() {
 	return serverMailFolders;
 }
+/**
+ * 
+ * @return
+ */
 public boolean existsMailboxXML(){
 	  boolean exists = false;
 	  File mailboxXML = new File(this.getMailboxName());
@@ -212,19 +230,38 @@ public boolean existsMailboxXML(){
 	  }	  
 	  return exists;
   }
+/**
+ * 
+ * @return
+ */
   public EmailKonto getCurrentKonto() {
 	return currentKonto;
   }
+  /**
+   * 
+   * @param currentKonto
+   */
 	public void setCurrentKonto(EmailKonto currentKonto) {
 		this.currentKonto = currentKonto;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public HashMap<String, MailContainer> getMailContainers() {
 		return mailContainers;
 	}
+	/**
+	 * 
+	 * @param mailContainers
+	 */
 	public void setMailContainers(HashMap<String, MailContainer> mailContainers) {
 		this.mailContainers = mailContainers;
 	}
-
+	/**
+	 * 
+	 * @param pathToXML
+	 */
   public void loadMailFolders(String pathToXML){
 	  System.out.println("Laden des XML "+ this.getMailboxName());
 	  SAXBuilder builder = new SAXBuilder();
@@ -271,10 +308,18 @@ public boolean existsMailboxXML(){
 		System.out.println(jdomex.getMessage());
 	  }
   }
+  /**
+   * 
+   * @return
+   */
   private Store getKontoStore(){
 	  return this.store; 
 	  
   }
+  /**
+   * 
+   * @param folder
+   */
   private void addMailContainer(Folder folder){
 	  this.getMailContainers().put(folder.getFullName(), new MailContainer(folder.getFullName()));
   }
@@ -329,6 +374,11 @@ public boolean existsMailboxXML(){
 				
 		}
 	}
+  /**
+   * Entfernt die lokale Mail aus dem Container
+   * @param stillExistingIDs
+   * @param mc
+   */
     private synchronized void removeLocalMail(HashSet<String> stillExistingIDs, MailContainer mc) {
     	Iterator<Mail> mails = mc.getContainingMails().iterator();
     	while(mails.hasNext()){
@@ -340,7 +390,11 @@ public boolean existsMailboxXML(){
     	}
 	
     }
-
+    /**
+     * 
+     * @param mIDArr
+     * @return
+     */
 	private String getMessageID(String[] mIDArr){
     	String mID = "";
     	for(int i = 0; i <mIDArr.length; i++){
@@ -348,6 +402,13 @@ public boolean existsMailboxXML(){
     	}
     	return mID;
     }
+	/**
+	 * 
+	 * @param msg
+	 * @return
+	 * @throws MessagingException
+	 * @throws IOException
+	 */
 	public Mail generateMailFromMessage(Message msg) throws MessagingException, IOException{
 		String messageID = this.getMessageID(msg.getHeader("Message-ID"));
 		Date received = msg.getSentDate();
@@ -457,9 +518,20 @@ public boolean existsMailboxXML(){
 			e.printStackTrace();
 		}
   }
+	/**
+	 * 
+	 * @return
+	 */
   public ArrayList<Folder> getMailFolders() {
 	return serverMailFolders;
   }
+  /**
+   * 
+   * @param msg
+   * @return
+   * @throws IOException
+   * @throws MessagingException
+   */
   private String getMessageContent(Message msg) throws IOException, MessagingException{
 	  Object msgContent = msg.getContent();
 	  String content ="";
@@ -495,6 +567,11 @@ public boolean existsMailboxXML(){
 	     }
 	  return content;
   }
+  /**
+   * Löscht eine Mail vom Online Konto
+   * @param messageID
+   * @throws MessagingException
+   */
   public void deleteMail(String messageID) throws MessagingException{
 	  for(MailContainer mc:this.getMailContainers().values()){
 		  Iterator<Mail> mcIterator = mc.getContainingMails().iterator();
@@ -534,6 +611,11 @@ public boolean existsMailboxXML(){
 		  }
 	  }
   }
+  /**
+   * Falls ein Folder Objekt die Verbindung verloren hat, stelle diese zum Online Speicher wieder her, standard Read Mode
+   * @param f
+   * @throws MessagingException
+   */
   private void reopenFolderConnection(Folder f) throws MessagingException{
 	  int folderWriteMode = Folder.READ_ONLY;
 	  if(f.isOpen()){
@@ -543,6 +625,12 @@ public boolean existsMailboxXML(){
 	  }
 	  f.open(folderWriteMode);
   }
+  /**
+   * Falls ein Folder Objekt die Verbindung verloren hat, stelle diese zum Online Speicher wieder her
+   * @param f
+   * @param folderWriteMode
+   * @throws MessagingException
+   */
   private void reopenFolderConnection(Folder f, int folderWriteMode) throws MessagingException{
 	  if(f.isOpen()){
 		  f.close(true);
@@ -550,6 +638,11 @@ public boolean existsMailboxXML(){
 	  }
 	  f.open(folderWriteMode);
   }
+  /**
+   * Entfernt ein Attachment
+   * @param mail
+   */
+  
   private void removeAttachment(Mail mail){
 	  for(File attachment:mail.getAttachments()){
 		  try{
@@ -566,11 +659,24 @@ public boolean existsMailboxXML(){
 	    	}
 	  }
   }
+  /**
+   * 
+   * @param filename
+   * @return
+   */
+
   private String removeSpecialCharactersFromFileName(String filename){
 	  Objects.requireNonNull(filename);
 	  String result = filename.replaceAll("[<>:/\\|?*\"]","");
 	  return result;
   }
+  /**
+   * 
+   * @param message
+   * @return
+   * @throws MessagingException
+   * @throws IOException
+   */
   private ArrayList<String> handleAttachment(Message message) throws MessagingException, IOException{
 	  // suppose 'message' is an object of type Message
 	  ArrayList<String> nameGuids = new ArrayList<String>();
@@ -629,6 +735,11 @@ public String getAttachmentPath() {
 public void setAttachmentPath(String attachmentPath) {
 	this.attachmentPath = attachmentPath;
 }
+/**
+ * 
+ * @param msg
+ * @return
+ */
 private String getFromAddresses(Message msg){
 	  String fromAddress ="";
 		try {
@@ -641,6 +752,11 @@ private String getFromAddresses(Message msg){
 		}
 	  return fromAddress;
   }
+/**
+ * 
+ * @param msg
+ * @return
+ */
 private String getToAddresses(Message msg){
 	String addresses ="";
 	try {
@@ -659,7 +775,11 @@ private String getToAddresses(Message msg){
 }
 
   
-  
+/**
+ *  
+ * @param mail
+ * @throws NoSuchProviderException
+ */
 public void sendMsg(Mail mail) throws NoSuchProviderException {
 	  
 	  
@@ -749,6 +869,10 @@ public void sendMsg(Mail mail) throws NoSuchProviderException {
     }  
 	   
   }
+/**
+ * 
+ * @throws MessagingException
+ */
   public void closeAllFolderConnections() throws MessagingException{
 	  for(Folder f:this.getMailFolders()){
 		  if(f.isOpen()){

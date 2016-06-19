@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 
 import ftoop.mailclient.daten.Mail;
 /**
- * Tablemodel, hier werden die Spalten der Emailliste definiert
+ * Tablemodel, hier werden die Spalten der Emailliste definiert, um danach Mails mit Hauptattributen in der Liste darzustellen
  * 
  * @author Herve Satori & Dominique Borer
  *

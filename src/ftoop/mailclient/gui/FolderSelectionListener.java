@@ -37,6 +37,9 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 		this.mailClient = mailClient;
 		
 	}
+	/**
+	 * Organisiert die Selektion im Mail JTree, und fordert die Mainview auf, die Mailliste im Center zu erneuern
+	 */
     @Override
     public void valueChanged(final TreeSelectionEvent event) {
     	System.out.println("Im Mailtree wurde die Selektion geändert.");
@@ -92,17 +95,33 @@ public final class FolderSelectionListener implements TreeSelectionListener {
      		this.mailControl = mailControlContainer.get(currentPath);
      	}
    }  
+    /**
+     * 
+     * @return
+     */
     public Mail getSelectedMail() {
     	final int tRow = this.currentTable.getSelectedRow();
     	final int modelRow =  currentTable.convertRowIndexToModel(tRow);
     	return this.currentMailsInTable.getListEntry(modelRow);
     }
+    /**
+     * 
+     * @return
+     */
     public MailControl getSelectedMailControl() {
     	return mailControl;
     }
+    /**
+     * 
+     * @return
+     */
     public JTable getCurrentTable() {
 	   return currentTable;
     }
+    /**
+     * 
+     * @return
+     */
     public List<Mail> getCurrentContainingMails() {
     	
     	return this.currentContainingMails;

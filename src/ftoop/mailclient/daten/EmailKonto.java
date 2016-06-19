@@ -20,7 +20,22 @@ public class EmailKonto {
 	private String passwortSmtp;
 	private String imapServer;
 	private int imapPort;
-	
+	/**
+	 * 
+	 * @param konto
+	 * @param name
+	 * @param email
+	 * @param pop3Server
+	 * @param pop3Port
+	 * @param benutzerNamePop
+	 * @param passwortPop
+	 * @param smtpServer
+	 * @param smtpPort
+	 * @param benutzerNameSmtp
+	 * @param passwortSmtp
+	 * @param imapServer
+	 * @param imapPort
+	 */
   public EmailKonto(String konto,String name,String email,String pop3Server,int pop3Port,
 		  String benutzerNamePop,String passwortPop,String smtpServer,int smtpPort,
 		  String benutzerNameSmtp,
@@ -42,7 +57,9 @@ public class EmailKonto {
     this.imapPort = imapPort;    
 	  
   }
-  
+  /**
+   * 
+   */
   public String toString() {
 	  return this.konto;
   }

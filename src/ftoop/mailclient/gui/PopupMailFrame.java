@@ -47,6 +47,11 @@ public class PopupMailFrame extends JFrame {
 		currentMc = folderSelectionListener.getSelectedMailControl();
         this.initFrame(popupMailFrameType, mailWindow);
 	}
+	/**
+	 * 
+	 * @param popupMailFrameType
+	 * @param mailWindow
+	 */
 	private void initFrame(int popupMailFrameType, MailPane mailWindow){
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setAutoRequestFocus(true);
@@ -73,6 +78,10 @@ public class PopupMailFrame extends JFrame {
         this.setVisible(true);
         this.toFront();
 	}
+	/**
+	 * Für den Modus ReadingPane
+	 * @return
+	 */
 	private JMenuBar createMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
 	    JButton senden = new JButton("senden");
@@ -120,6 +129,10 @@ public class PopupMailFrame extends JFrame {
 		menuBar.add(weiterLeiten);
 		return menuBar;
 	}
+	/**
+	 * Für den Modus NewMailPane
+	 * @return
+	 */
 	private JMenuBar createNewMailMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
 	    JButton senden = new JButton("senden");

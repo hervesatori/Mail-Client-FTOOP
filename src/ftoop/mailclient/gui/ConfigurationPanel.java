@@ -50,7 +50,9 @@ public class ConfigurationPanel extends JPanel {
 		initPanelGUI();
 		loadMailKontoConfig();
 	}	 
-	
+	/**
+	 * 
+	 */
 	public void loadMailKontoConfig() {	 
 		    //Model ListModel wird erstellt
 			 for(EmailKonto konto : this.kontoControl.getKontos()) {
@@ -71,6 +73,9 @@ public class ConfigurationPanel extends JPanel {
 		    list.addListSelectionListener(new ListSelectionListener() {
 		        @SuppressWarnings("rawtypes")
 				@Override
+				/**
+				 * Falls ein anderes Konto selektiert wird, werden entsprechend die Kontofelder befüllt und Speichern/Löschen Buttons de-/aktiviert.
+				 */
 		        public void valueChanged(final ListSelectionEvent e) {
 		        	
 		            if (!e.getValueIsAdjusting()&&kontoControl.getKontos().size()>0) {
@@ -187,17 +192,26 @@ public class ConfigurationPanel extends JPanel {
 		        }
 		      });	
 	 } 
+	/**
+	 * 
+	 */
 	private void reloadKontoToListModel(){
 		listModel.clear();
 		for(EmailKonto konto : this.kontoControl.getKontos()) {
 		    	listModel.addElement(konto);
 		    }
 	}
+	/**
+	 * 
+	 */
 	private void clearFieldSelectionAndDisableFields(){
       list.clearSelection();
   	  ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(false);
   	  ConfigurationPanel.this.configFieldPanel.clearFields();
 	}
+	/**
+	 * 
+	 */
 	private void checkKonfigLoeschenButton(){
         if(this.list.getModel().getSize()> 0 && !this.list.isSelectionEmpty()) {       	 
       	  	ConfigurationPanel.this.konfigLoeschen.setEnabled(true);
@@ -205,6 +219,9 @@ public class ConfigurationPanel extends JPanel {
         	 ConfigurationPanel.this.konfigLoeschen.setEnabled(false);
         }
 	}
+	/**
+	 * 
+	 */
 	private void initPanelGUI(){	
 		 JSplitPane splitPane = new JSplitPane(); 	
 		 listModel = new DefaultListModel<EmailKonto>();
@@ -233,7 +250,11 @@ public class ConfigurationPanel extends JPanel {
 		 this.add(buttonPane, BorderLayout.NORTH);		
 		 int width = Toolkit.getDefaultToolkit().getScreenSize().width;
 		 splitPane.setDividerLocation((int)(width*0.3));
-	}	
+	}
+	/**
+	 * 
+	 * @return
+	 */
 	public DefaultListModel<EmailKonto> getListModel()  {
 		return listModel;
 	}
