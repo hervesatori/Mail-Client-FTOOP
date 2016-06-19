@@ -70,7 +70,10 @@ public class MailControl {
 	private ArrayList<String> folderContainer;
 	private HashMap<String, ArrayList<String>> parentContainer;
 	private Set<String> folderWithoutParent;
-	
+	/**
+	 * 
+	 * @param currentKonto
+	 */
   public MailControl(EmailKonto currentKonto) {
 	  //Initialisieren der Variablen
 	  this.currentKonto = currentKonto;

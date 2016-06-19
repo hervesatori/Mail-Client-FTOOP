@@ -14,7 +14,12 @@ import javax.swing.JTable;
 
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
-
+/**
+ * Popup Fenster für neue, antworten und weiterleiten von Mails, ebenso als lese Mailframe
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class PopupMailFrame extends JFrame {
 	public static final int NEW_MAIL_FRAME = 1;
 	public static final int READING_MAIL_FRAME = 2;	
@@ -23,12 +28,16 @@ public class PopupMailFrame extends JFrame {
 	private final Mail currentMail;
 	private final JTable mailTable;
 	private final MailControl currentMc;
-	/**
-	 *   Popup Fenster für neue, antworten und weiterleiten von Mails, ebenso als lese Mailframe
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private String titel;
-	
+	/**
+	 * 
+	 * @param titel
+	 * @param mailWindow
+	 * @param popupMailFrameType
+	 * @param folderSelectionListener
+	 */
 	public PopupMailFrame(String titel, MailPane mailWindow, int popupMailFrameType, FolderSelectionListener folderSelectionListener) {
 		this.titel = titel;
 		this.mailWindow = mailWindow;

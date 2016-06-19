@@ -15,13 +15,24 @@ import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
-
+/**
+ * Die abstrakte Klasse SwingWorker  wird implementiert
+ * Mailtree wird hier aktualisiert
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public final class MailWorker extends SwingWorker<Integer, Mail> {
 	private final EmailKontoControl kontoControl;
 	private final HashMap<String,MailControl> mailControlContainer;
 	private final MainView mailClient;
 	private JFrame frameWaiting;
-	
+	/**
+	 * 
+	 * @param kontoControl
+	 * @param mailControlContainer
+	 * @param mailClient
+	 */
 	public MailWorker(EmailKontoControl kontoControl,HashMap<String,MailControl> mailControlContainer, MainView mailClient){
 		this.kontoControl = kontoControl;
 		this.mailControlContainer = mailControlContainer;

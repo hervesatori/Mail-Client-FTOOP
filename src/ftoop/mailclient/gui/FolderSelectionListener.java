@@ -13,7 +13,13 @@ import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailContainer;
 import ftoop.mailclient.daten.MailControl;
 
-
+/**
+ * Mailtree Eventlistener, wenn im Mailtree die Selektion ändert, wird die Methode
+ * valueChanged ausgeführt
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public final class FolderSelectionListener implements TreeSelectionListener {
 	
 	private MainView mailClient;
@@ -22,7 +28,10 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 	private MailTableModel currentMailsInTable;
 	private List<Mail> currentContainingMails;
 
-	
+	/**
+	 * 
+	 * @param mailClient
+	 */
 	
 	public FolderSelectionListener(MainView mailClient) {
 		this.mailClient = mailClient;
@@ -72,7 +81,7 @@ public final class FolderSelectionListener implements TreeSelectionListener {
 			gelesenColumn.setMinWidth(0);
 			gelesenColumn.setMaxWidth(0);
 			gelesenColumn.setPreferredWidth(0);
-//			// JTable wird nach Datum sortiert
+			// JTable wird nach Datum sortiert
 			this.currentTable .setAutoCreateRowSorter(true);
 			this.currentTable .getRowSorter().toggleSortOrder(3);
 			this.currentTable .setDefaultRenderer(Object.class, new BoldRenderer());

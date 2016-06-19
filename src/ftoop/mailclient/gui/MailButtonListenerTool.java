@@ -8,7 +8,12 @@ import javax.swing.JTable;
 
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
-
+/**
+ * Events um die JButtons senden, antworten, weiterleiten und löschen zu steuern werden hier implementiert
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class MailButtonListenerTool {
 	
 	private MailButtonListenerTool(){
@@ -23,7 +28,7 @@ public class MailButtonListenerTool {
 		    	   try {
 		    		   System.out.println("Versende nun Mail an: " + mailWindow.getAn() + "mit Inhalt: "+mailWindow.getMessageText());
 					   String to = mailWindow.getAn();
-					   String from = mailWindow.getCurrentMC().getCurrentKonto().getEmail();//FolderSelectionListener.getSelectedMailControl().getCurrentKonto().getEmail().replaceAll(";","");
+					   String from = mailWindow.getCurrentMC().getCurrentKonto().getEmail();
 					   String subject = mailWindow.getBetreff();
 					   String msg = mailWindow.getMessageText();
 					   Mail mail = new Mail(null, null, to, null, null, from, subject,msg, null);

@@ -18,11 +18,14 @@ import javax.swing.event.ListSelectionListener;
 
 import ftoop.mailclient.daten.EmailKonto;
 import ftoop.mailclient.daten.EmailKontoControl;
-
+/**
+ * JPanel "Konfiguration" wird erstellt und EmailKontos werden hochgeladen
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class ConfigurationPanel extends JPanel {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPane;
 	private JPanel buttonPane;
@@ -36,7 +39,10 @@ public class ConfigurationPanel extends JPanel {
 	private boolean neuModus = false;
 	private MainView mailClient;
 
-	
+	/**
+	 * 
+	 * @param mailClient
+	 */
 	public ConfigurationPanel(MainView mailClient)  {
 		this.mailClient = mailClient;
 		this.kontoControl = this.mailClient.getKontoControl();
@@ -44,7 +50,7 @@ public class ConfigurationPanel extends JPanel {
 		initPanelGUI();
 		loadMailKontoConfig();
 	}	 
-		 
+	
 	public void loadMailKontoConfig() {	 
 		    //Model ListModel wird erstellt
 			 for(EmailKonto konto : this.kontoControl.getKontos()) {
@@ -104,8 +110,7 @@ public class ConfigurationPanel extends JPanel {
 		    //Buttons Listener NEU  LOESCHEN SPEICHERN
 		    neu.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
-		        	ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(true);        	
-		    	  
+		          ConfigurationPanel.this.configFieldPanel.setFieldsEnabled(true);        	
 		    	  speichern.setEnabled(true);
 		    	  neuModus = true;
 		    	  konfigLoeschen.setEnabled(false);
@@ -224,11 +229,10 @@ public class ConfigurationPanel extends JPanel {
 		 splitPane.setLeftComponent(scrollPane);
 		 this.configFieldPanel = new ConfigurationFieldsPanel();
 		 splitPane.setRightComponent(configFieldPanel);
-//		this.add(scrollPane, BorderLayout.WEST);
-		this.add(splitPane,BorderLayout.CENTER);
-		this.add(buttonPane, BorderLayout.NORTH);		
-		int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-		splitPane.setDividerLocation((int)(width*0.3));
+		 this.add(splitPane,BorderLayout.CENTER);
+		 this.add(buttonPane, BorderLayout.NORTH);		
+		 int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+		 splitPane.setDividerLocation((int)(width*0.3));
 	}	
 	public DefaultListModel<EmailKonto> getListModel()  {
 		return listModel;

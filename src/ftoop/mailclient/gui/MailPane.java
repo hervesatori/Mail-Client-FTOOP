@@ -18,7 +18,12 @@ import org.jsoup.nodes.Document;
 
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
-
+/**
+ * JPanel für E-Mail Header und Message wird definiert
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class MailPane extends JPanel {
 	
 	/**
@@ -124,15 +129,13 @@ public class MailPane extends JPanel {
 		  this.txtAn.setText(mail.getFrom());
 		  this.txtBetreff.setText("Re: " + mail.getSubject());
 		  this.txtVon.setEditable(false);
-		  this.txtVon.setText(mail.getFrom());
+		  this.txtVon.setText(mail.getTo());
 		  break;
 	   case FORWARD:
-
 		  this.headerPane.add(new JLabel(" "));
-		   this.loadMsgContentToRespond();
-
+		  this.loadMsgContentToRespond();
 		  this.txtVon.setEditable(false);
-		  this.txtVon.setText(mail.getFrom());
+		  this.txtVon.setText(mail.getTo());
 		  this.txtBetreff.setText("Fw: " + mail.getSubject());
 		  break;
 	   case NEW: 

@@ -39,19 +39,19 @@ import ftoop.mailclient.daten.EmailKontoControl;
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
 
-
+/**
+ * Hauptlayout von Mail Client 
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 
 public final class MainView extends JFrame{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -8066584911865251505L;
-	/**
-	 * 
-	 */
+	
 	private EmailKontoControl kontoControl;
 	private HashMap<String,MailControl> mailControlContainer;
-//	private JPanel panelCenter;
 	private JSplitPane splitPane;
 	// Labeltitel für Mails werden definiert
 	private String xmlPath = "kontos.xml";
@@ -323,10 +323,6 @@ public final class MainView extends JFrame{
 	    this.mailTreeModel.reload(this.rootNode);
 	  }
 
-
-	//	  public void synchronizeFolders(){
-//		  
-//	  }
 	  public void checkOrdnerSynchro(){
 		  if(this.kontoControl.getKontos().size()>0){
 			  this.ordnerSynchro.setEnabled(true);

@@ -5,15 +5,15 @@ import java.awt.Font;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-
+/**
+ * JTable Renderer, wenn Mail ungelesen ist, wird die entsprechende Zeile fett
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class BoldRenderer extends DefaultTableCellRenderer {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
-    
-    
     
     public Component getTableCellRendererComponent(JTable tblData,
             Object value, boolean isSelected, boolean hasFocus,

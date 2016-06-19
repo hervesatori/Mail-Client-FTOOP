@@ -8,12 +8,22 @@ import javax.swing.SwingWorker;
 
 import ftoop.mailclient.daten.Mail;
 import ftoop.mailclient.daten.MailControl;
-
+/**
+ * Versucht Mail vom Server zu löschen
+ * Die abstrakte Klasse SwingWorker  wird implementiert
+ * 
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class DeleteMailWorker extends SwingWorker<Void, Void>{
 	private final Mail mailToDelete;
 	private final MailControl mc; 
 	
-	
+	/**
+	 * 
+	 * @param toBeDeleted
+	 * @param currentMc
+	 */
 	public DeleteMailWorker(Mail toBeDeleted, MailControl currentMc){
 		this.mailToDelete = toBeDeleted;
 		this.mc = currentMc; 

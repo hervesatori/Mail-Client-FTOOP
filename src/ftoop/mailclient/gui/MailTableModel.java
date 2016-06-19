@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 
 import ftoop.mailclient.daten.Mail;
 /**
+ * Tablemodel, hier werden die Spalten der Emailliste definiert
  * 
  * @author Herve Satori & Dominique Borer
  *
@@ -28,7 +29,10 @@ public class MailTableModel extends AbstractTableModel {
 	private static final String[] COLUMN_NAMES = { "Von","An","Betreff", "Datum","Attachements","Gelesen"};
   
     private final List<Mail> containingMails;
-
+    /**
+     * 
+     * @param containingMails
+     */
     public MailTableModel(final List<Mail> containingMails) 
     {
         // Kopie von containingMails

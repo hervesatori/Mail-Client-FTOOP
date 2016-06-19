@@ -13,15 +13,28 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-
+/**
+ * Steuerung von Emailkontos
+ * @author Dominique Borer & Herve Satori
+ *
+ */
 public class EmailKontoControl {
-
+/**
+ * @param Kontos
+ */
 	private ArrayList<EmailKonto> Kontos;
-  
+  /**
+   * 
+   */
   public EmailKontoControl(){
 	  //Initialisieren der Variablen
 	  this.Kontos = new ArrayList<EmailKonto>();
   }
+  /**
+   * 
+   * @param pathToXML  
+   * XML File
+   */
   public void loadKonten(String pathToXML) {
 	  SAXBuilder builder = new SAXBuilder();
 	  File xmlFile = new File(pathToXML);
@@ -55,7 +68,10 @@ public class EmailKontoControl {
 		System.out.println(jdomex.getMessage());
 	  }
 	}
-
+/**
+ * 
+ * @param path
+ */
   public void saveKonten(String path) {
 	  //Root Element Erstellen
 	  Element root = new Element("Kontos");
@@ -114,11 +130,17 @@ public class EmailKontoControl {
 		   e.printStackTrace();
 	   }
   }
-
+/**
+ * Getter
+ * @return Variable Kontos
+ */
   public ArrayList<EmailKonto> getKontos() {
 	return Kontos;
   }
-
+/**
+ * Setter
+ * @param kontos Variable Kontos
+ */
   public void setKontos(ArrayList<EmailKonto> kontos) {
 	Kontos = kontos;
   }
